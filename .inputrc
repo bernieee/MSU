@@ -1,0 +1,7 @@
+set completion-ignore-case on
+set completion-map-case on
+set show-all-if-ambiguous on
+set completion-prefix-display-length on
+
+#"\e[A": history-search-backward
+#"\e[B": history-search-forward
