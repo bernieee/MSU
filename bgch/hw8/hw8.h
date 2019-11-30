@@ -156,7 +156,6 @@ int strsnp_(const char *string1, const char *string2)//9
 }
 
 
-
 const char *strstr_(const char *string1, const char *string2)//10
 {
     int i;

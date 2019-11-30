@@ -283,7 +283,7 @@ int BinSort(double *a, int n, int (*Sift) (double x, double y))//7
 }
 
 
-int MergeSort(double *a, double *b, int n, int (*Sift) (double x, double y))//8
+/*int MergeSort(double *a, double *b, int n, int (*Sift) (double x, double y))//8
 {
     int i;
     int j;
@@ -312,6 +312,8 @@ int MergeS(double *a, double *b, int l, int m, int r, int (*Sift) (double x, dou
     int i = 0;
     int j = 0;
     int c;
+    double *tmp;
+
     while ((l + i < m) && (m + j < r))
     {
         if ((*Sift)(a[l + i], a[m + j]) < 0)
@@ -335,11 +337,78 @@ int MergeS(double *a, double *b, int l, int m, int r, int (*Sift) (double x, dou
         b[i + j] = a[m + j];
         j++;
     }
+    
+    //tmp = (a + l);
+    //tmp = b;
+    //*b = tmp;
     for (c = 0 ; c < i + j ; c++)
     {
         a[l + c] = b[c];
     }
     return 0;
+}*/
+
+
+int MergeSort(double *a, double *b, int n, int (*Sift) (double x, double y))//8
+
+{
+double *A; double *buf;
+A=a;
+int shag = 1; // шаг разбиения последовательности
+//double *b = (int*)malloc(n * sizeof(b)); // дополнительный массив
+while (shag < n) // пока шаг меньше длины массива
+{
+int j= 0; // индекс результирующего массива
+int left = 0; // левая граница участка
+int seredina = left + shag; // середина участка
+int right = left + shag * 2; // правая граница участка
+while (left <=n)
+{
+if (seredina>=n)
+seredina=n;
+
+if (right>=n)
+right=n;
+
+int i1 = left, i2 = seredina; // индексы сравниваемых элементов
+
+for (; i1 < seredina && i2 < right; ) // пока i1 не дошёл до середины и i2 не дошёл до конца
+{
+if (a[i1] < a[i2]) { b[j++] = a[i1++]; } // заполняем участок результирующей последовательности
+else { b[j++] = a[i2++]; }
+}
+// Или i1 < m или i2 < r - только один из операторов while может выполниться
+
+
+while (i1 < seredina)
+{
+b[j] = a[i1];
+j++;i1++;
+}// заносим оставшиеся элементы сортируемых участков
+
+
+while (i2 < right)
+{
+b[j] = a[i2];
+j++;i2++;
+} // в результирующий массив
+
+
+left = left+shag * 2; // перемещаемся на следующий сортируемый участок
+seredina = seredina + shag * 2;
+right = right + shag * 2;
+}
+buf=a;
+a=b;
+b=buf;
+shag = shag*2; // увеличиваем в 2 раза шаг разбиения
+}
+if (A!=a)
+for (int i = 0; i < n; i++)
+{
+a[i] = b[i];
+}
+return 0;
 }
 
 
