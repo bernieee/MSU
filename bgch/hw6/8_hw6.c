@@ -6,7 +6,7 @@ int main(int argc, char *argv[])
     int n;
     int i;
     int c;
-    int ans;
+    clock_t time;
     double *a;
     double *b;
 
@@ -46,7 +46,10 @@ int main(int argc, char *argv[])
     else
         PrintArray(a, n);
     printf("\n");
+    time = clock();
     MergeSort(a, b, n);
+    time = clock() - time;
+    printf("Time = %lf\n", (double)time / CLOCKS_PER_SEC);
     if (n > 20)
         PrintArray(a, 20);
     else

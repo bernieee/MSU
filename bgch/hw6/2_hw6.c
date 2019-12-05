@@ -33,7 +33,7 @@ int main(int argc, char *argv[])
 
     a = (double *) malloc(n * sizeof(double));
     b = (double *) malloc(m * sizeof(double));
-    c = (double *) malloc(m + n * sizeof(double));
+    c = (double *) malloc((m + n) * sizeof(double));
     c1 = InitArray(fname1, a, n);
     c2 = InitArray(fname2, b, m);
     PrintMistakes(c1);

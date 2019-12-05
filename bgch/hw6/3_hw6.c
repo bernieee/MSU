@@ -31,7 +31,7 @@ int main(int argc, char *argv[])
         PrintArray(a, 20);
     else
         PrintArray(a, n);
-    ans = FindX(a, n, x);
+    ans = FindX1(a, n, x);
     printf("%d\n", ans);
     if (n > 20)
         PrintArray(a, 20);
