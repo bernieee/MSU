@@ -17,7 +17,7 @@ int MinSort(double *a, int n, int (*Sift) (double x, double y));//5
 int InsertSort(double *a, int n, int (*Sift) (double x, double y));//6
 int BinSort(double *a, int n, int (*Sift) (double x, double y));//7
 int MergeSort(double *a, double *b, int n, int (*Sift) (double x, double y));//8
-double Min(double a, double b);//8
+int Min(int a, int b);//8
 int MergeS(double *a, double *b, int l, int m, int r, int (*Sift) (double x, double y));//8
 void QuickSort(double *a, int n, int (*Sift) (double x, double y));//9
 int HeapSort(double *a, int n, int (*Sift) (double x, double y));//10
