@@ -91,7 +91,7 @@ int BinSearch(double *a, int n, double x, int (*Sift) (double x, double y))//1
     while (l < r)
     {
         m = (l + r) / 2;
-        if ((*Sift)(a[m], x) > 0)
+        if ((*Sift)(a[m], x) < 0)
             l = m + 1;
         else
             r = m;

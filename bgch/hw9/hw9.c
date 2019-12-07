@@ -116,7 +116,7 @@ int BinSearch(char **a, int n, char *x, int (*Sift) (char *x, char *y))//1
     while (l < r)
     {
         m = (l + r) / 2;
-        if ((*Sift)(a[m], x) > 0)
+        if ((*Sift)(a[m], x) < 0)
             l = m + 1;
         else
             r = m;
