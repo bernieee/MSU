@@ -4,7 +4,9 @@
 
 int main(int argc, char* argv[])
 {
-    const char *ans;
+   //int ch;
+    char *ans;
+    time_t time;
 
     if (argc != 3)
     {
@@ -12,12 +14,28 @@ int main(int argc, char* argv[])
         return 1;
     }
 
-    ans = strrchr_(argv[1], (int)argv[2][0]);
+    time = clock();
+    ans = test_strrch_(argv[1], (int)argv[2][0], &strrchr_);
+    time = clock() - time;
     if (ans == 0)
         printf("No elements\n");
     else
     {
         printf("Place = %s\n", ans);
     }
+    printf("Time = %lf\n", (double)time / CLOCKS_PER_SEC);
+
+    time = clock();
+    ans = test_strrch_(argv[1], (int)argv[2][0], &strrchr);
+    time = clock() - time;
+    if (ans == 0)
+        printf("Std No elements\n");
+    else
+    {
+        printf("Std Place = %s\n", ans);
+    }
+    printf("Std Time = %lf\n", (double)time / CLOCKS_PER_SEC);
+
+
     return 0;
 }

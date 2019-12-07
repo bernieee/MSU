@@ -13,9 +13,10 @@ char *strcat_(char *string1, const char* string2);//3
 int  strcmp_(const char *string1, const char* string2);//4
 int  strcasecmp_(const char *string1, const char* string2);//5
 char *strchr_(const char *string, int ch);//6
-const char *strrchr_(const char *string, int ch);//7
+char *strrchr_(const char *string, int ch);//7
 int strcsnp_(const char *string1, const char *string2);//8
 int strsnp_(const char *string1, const char *string2);//9
 const char *strstr_(const char *string1, const char *string2);//10
 char * (*p)(const char *, int);
-char *test_str_(const char *string1, int string2, char * (*p)(const char *, int));
+char *test_strch_(const char *string1, int string2, char * (*p)(const char *, int));
+char *test_strrch_(const char *string1, int string2, char * (*p)(const char *, int));

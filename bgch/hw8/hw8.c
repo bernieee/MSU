@@ -107,7 +107,7 @@ char *strrchr_(const char *string, int ch)//7
     }
     if (i == 0)
         return 0;
-    return (string + i);
+    return (char *)(string + i);
 }
 
 

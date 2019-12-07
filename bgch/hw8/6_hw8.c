@@ -19,7 +19,7 @@ int main(int argc, char* argv[])
     }
 
     time = clock();
-    ans = test_str_(argv[1], (int)argv[2][0], &strchr_);
+    ans = test_strch_(argv[1], (int)argv[2][0], &strchr_);
     time = clock() - time;
     if (ans == 0)
         printf("No elements\n");
@@ -30,7 +30,7 @@ int main(int argc, char* argv[])
     printf("Time = %lf\n", (double)time / CLOCKS_PER_SEC);
 
     time = clock();
-    ans = test_str_(argv[1], (int)argv[2][0], &strchr);
+    ans = test_strch_(argv[1], (int)argv[2][0], &strchr);
     time = clock() - time;
     if (ans == 0)
         printf("Std No elements\n");
