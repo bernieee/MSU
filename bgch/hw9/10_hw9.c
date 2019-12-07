@@ -1,4 +1,4 @@
-#include "hw6.h"
+#include "hw9.h"
 
 int main(int argc, char *argv[])
 {
@@ -7,36 +7,24 @@ int main(int argc, char *argv[])
     int i;
     int c;
     clock_t time;
-    double *a;
+    char **a;
 
-    if (argc < 2)
+    if (argc != 3)
     {
         printf("Usage %s file\n", argv[0]);
         return 1;
     }
-    else if (argc == 3)
-    {
-        fname = argv[2];
-    }
     n = atoi(argv[1]);
-    //fname = argv[2];
+    fname = argv[2];
 
-    a = (double *) malloc(n * sizeof(double));
+    a = (char **) malloc(n * sizeof(char *));
     c = InitArray(fname, a, n);
     //printf("%d\n", c);
     PrintMistakes(c);
     if (c != n)
     {
-        if (c == -1)
-        {
-            for (i = 0 ; i < n ; i++)
-                a[i] = rand();
-        }
-        else
-        {
-            free(a);
-            return -1;
-        }
+        free(a);
+        return -1;
     }
     if (n > 20)
         PrintArray(a, 20);
@@ -44,7 +32,7 @@ int main(int argc, char *argv[])
         PrintArray(a, n);
     printf("\n");
     time = clock();
-    InsertSort(a, n);
+    HeapSort(a, n, SiftDown);
     time = clock() - time;
     printf("Time = %lf\n", (double)time / CLOCKS_PER_SEC);
     if (n > 20)

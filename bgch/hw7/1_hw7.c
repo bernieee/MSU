@@ -1,8 +1,8 @@
-#include "hw6.h"
+#include "hw7.h"
 
 int main(int argc, char *argv[])
 {
-    char const *fname = 0;
+    const char *fname = 0;
     int n;
     int c;
     int ans;
@@ -31,12 +31,8 @@ int main(int argc, char *argv[])
         PrintArray(a, 20);
     else
         PrintArray(a, n);
-    ans = FindX1(a, n, x);
+    ans = BinSearch(a, n, x, SiftUp);
     printf("%d\n", ans);
-    if (n > 20)
-        PrintArray(a, 20);
-    else
-        PrintArray(a, n);
     free(a);
     return 0;
 }

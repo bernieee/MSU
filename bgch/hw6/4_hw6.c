@@ -1,12 +1,13 @@
 #include "hw6.h"
 
+
 int main(int argc, char *argv[])
 {
     char const *fname = 0;
     int n;
     int i;
     int c;
-    int ans;
+    clock_t time;
     double *a;
 
     if (argc < 2)
@@ -43,11 +44,15 @@ int main(int argc, char *argv[])
     else
         PrintArray(a, n);
     printf("\n");
+    time = clock();
     BubbleSort(a, n);
+    time = clock() - time;
+    printf("Time = %lf\n", (double)time / CLOCKS_PER_SEC);
     if (n > 20)
         PrintArray(a, 20);
     else
         PrintArray(a, n);
     free(a);
+
     return 0;
 }
