@@ -417,7 +417,7 @@ int MergeS(char **a, char **b, int l, int m, int r, int (*Sift) (char *x, char *
 void QuickSort(char **a, int n, int (*Sift) (char *x, char *y))//9
 {
     int i;
-    char x[LEN];// = a[(n - 1) / 2];
+    char *x;// = a[(n - 1) / 2];
     //i = FindX(a, n, x, Sift);
 
     if (n <= 1)
@@ -426,13 +426,13 @@ void QuickSort(char **a, int n, int (*Sift) (char *x, char *y))//9
     }
     while (n > 1)
     {
-        strcpy(x, a[(n - 1) / 2]);
+        x = a[(n - 1) / 2];
         i = FindX(a, n, x, Sift);
         if (i == 0)
         {
-            strcpy(x, a[0]);
-            strcpy(a[0], a[(n - 1) / 2]);
-            strcpy(a[(n - 1) / 2], x);
+            x = a[0];
+            a[0] = a[(n - 1) / 2];
+            a[(n - 1) / 2] = x;
             i = 1;
         }
         if (i < n - i)
@@ -454,7 +454,7 @@ void QuickSort(char **a, int n, int (*Sift) (char *x, char *y))//9
 {
     int i;
     char x;
-    strcpy(x, a[(n - 1) / 2]);
+    (x, a[(n - 1) / 2]);
     i = FindX(a, n, x, Sift);
 
     if (i - 1 > 0)
@@ -473,10 +473,10 @@ int HeapSort(char **a, int n, int (*Sift) (char *x, char *y))//10
    int i;
    int k;
    int j = 0;
-   char c[LEN];
+   char *c;
    for (i = 1 ; i < n ; i++)
    {
-       strcpy(c, a[i]);
+       c = a[i];
        j = i;
        while ((j > 0) && (Sift(c, a[(j - 1) / 2]) > 0))
        {
@@ -485,17 +485,17 @@ int HeapSort(char **a, int n, int (*Sift) (char *x, char *y))//10
        k = i;
        while (k > j)
        {
-           strcpy(a[k], a[(k - 1) / 2]);
+           (a[k], a[(k - 1) / 2]);
            k = (k - 1) / 2;
        }
-       strcpy(a[j], c);
+       a[j] = c;
    }
 
    for (i = n - 1 ; i > 0 ; i--)
    {
-       strcpy(c, a[0]);
-       strcpy(a[0], a[i]);
-       strcpy(a[i], c);
+       c = a[0];
+       a[0] = a[i];
+       a[i] = c;
        j = 0;
        while (j < i)
        {
@@ -506,9 +506,9 @@ int HeapSort(char **a, int n, int (*Sift) (char *x, char *y))//10
                j = 2 *k + 2;
            if (j == k)
                break;
-           strcpy(c, a[k]);
-           strcpy(a[k], a[j]);
-           strcpy(a[j], c);
+           c = a[k];
+           a[k] = a[j];
+           a[j] = c;
        }
    }
    return 0;
