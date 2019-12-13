@@ -23,6 +23,8 @@ int main(int argc, char *argv[])
     PrintMistakes(c);
     if (c != n)
     {
+        for (i = 0; i < n; i++)
+            free(a[i]);
         free(a);
         return -1;
     }
@@ -32,13 +34,15 @@ int main(int argc, char *argv[])
         PrintArray(a, n);
     printf("\n");
     time = clock();
-    HeapSort(a, n, SiftDown);
+    HeapSort(a, n, SiftUp);
     time = clock() - time;
     printf("Time = %lf\n", (double)time / CLOCKS_PER_SEC);
     if (n > 20)
         PrintArray(a, 20);
     else
         PrintArray(a, n);
+    for (i = 0; i < n; i++)
+            free(a[i]);
     free(a);
     return 0;
 }

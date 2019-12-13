@@ -23,6 +23,8 @@ int main(int argc, char *argv[])
     PrintMistakes(c);
     if (c != n)
     {
+        for (i = 0;i < n; i++)
+            free(a[i]);
         free(a);
         return -1;
     }
@@ -39,6 +41,8 @@ int main(int argc, char *argv[])
         PrintArray(a, 20);
     else
         PrintArray(a, n);
+    for (i = 0;i < n; i++)
+           free(a[i]);
     free(a);
     return 0;
 }

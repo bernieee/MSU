@@ -19,11 +19,12 @@ int main(int argc, char *argv[])
 
     a = (char **) malloc(n * sizeof(char *));
     c = InitArray(fname, a, n);
-    //printf("%d\n", c);
     PrintMistakes(c);
     if (c != n)
     {
-        free(a);
+        for (i = 0; i < n; i++)
+            free(a[i]);
+        free(a)
         return -1;
     }
     if (n > 20)
@@ -39,6 +40,8 @@ int main(int argc, char *argv[])
         PrintArray(a, 20);
     else
         PrintArray(a, n);
+    for (i = 0; i < n; i++)
+        free(a[i]);
     free(a);
     return 0;
 }
