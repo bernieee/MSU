@@ -118,7 +118,7 @@ char *strrchr_(const char *string, int ch)//7
 
 long unsigned int strcspn_(const char *string1, const char *string2)//8
 {
-    int buf[8];
+    char buf[32];
     int i;
     int j;
     for (i = 0; i < 8; i++)
@@ -128,12 +128,15 @@ long unsigned int strcspn_(const char *string1, const char *string2)//8
     for (i = 0; string2[i]; i++)
     {
         j = (unsigned int)string2[i];
-        buf[j >> 5] |= (1 << (32 - j & 31));
+        buf[j >> 3] |= (1 << (8 - (j & 7)));
+        //buf[j >> 3] |= (1 << (8 - (j & 7)));
+        //printf("1.%d\n", buf[j >> 3] & (1 << (8 - (j & 7))));
     }
     for (i = 0; string1[i]; i++)
     {
         j = (unsigned int)string1[i];
-        if (buf[j >> 5] | (1 << (32 - j & 31)))
+        //printf("2.%d\n", buf[j >> 3] & (1 << (8 - (j & 7))));
+        if ((buf[j >> 3] & (1 << (8 - (j & 7)))) != 0)
             return i;
     }
     return i;
@@ -164,7 +167,7 @@ long unsigned int strcspn_(const char *string1, const char *string2)//8
 }*/
 
 
-long unsigned int strspn_(const char *string1, const char *string2)//9
+/*long unsigned int strspn_(const char *string1, const char *string2)//9
 {
     int buf[8];
     int i;
@@ -181,11 +184,40 @@ long unsigned int strspn_(const char *string1, const char *string2)//9
     for (i = 0; string1[i]; i++)
     {
         j = (unsigned int)string1[i];
-        if ((buf[j >> 5] | (1 << (32 - j & 31))) != 1)
+        if ((buf[j >> 5] | (1 << (32 - j & 31))) == 0)
+            return i;
+    }
+    return i;
+}*/
+
+
+long unsigned int strspn_(const char *string1, const char *string2)//9
+{
+    char buf[32];
+    int i;
+    int j;
+    for (i = 0; i < 8; i++)
+    {
+        buf[i] = 0;
+    }
+    for (i = 0; string2[i]; i++)
+    {
+        j = (unsigned int)string2[i];
+        buf[j >> 3] |= (1 << (8 - (j & 7)));
+        //buf[j >> 3] |= (1 << (8 - (j & 7)));
+        //printf("1.%d\n", buf[j >> 3] & (1 << (8 - (j & 7))));
+    }
+    for (i = 0; string1[i]; i++)
+    {
+        j = (unsigned int)string1[i];
+        //printf("2.%d\n", buf[j >> 3] & (1 << (8 - (j & 7))));
+        if ((buf[j >> 3] & (1 << (8 - (j & 7)))) == 0)
             return i;
     }
     return i;
 }
+
+
 
 
 char *strstr_(const char *string1, const char *string2)//10
