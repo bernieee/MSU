@@ -5,18 +5,6 @@
 #include "hw8.h"
 
 
-
-/*int test_str_(const char *string1, const char *string2, int (*p)(const char *, const char *))
-{
-    int i;
-    int res = 0;
-    for (i = 0; i < N; i++)
-    {
-        res = (*p)(string1, string2);
-    }
-    return res;
-}*/
-
 int strlen_(const char *string)//1
 {
     int len = 0;
@@ -29,13 +17,13 @@ int strlen_(const char *string)//1
 char *strcpy_(char *string1, const char *string2)//2
 {
     int len = 0;
-    while (*(string1++) = *(string2++))
-    /*while (string2[len] != '\0')
+    //while (*(string1++) = *(string2++))
+    while (string2[len] != '\0')
     {
         string1[len] = string2[len];
         len++;
     }
-    string1[len] = '\0';*/
+    string1[len] = '\0';
     return string1;
 }
 
@@ -91,7 +79,7 @@ char *strchr_(const char *string, int ch)//6
             break;
         string++;
     }
-    return (char *)string;//((int)(*string) == ch) ? (char *) string : NULL;
+    return (char *)string;
 }
 
 
