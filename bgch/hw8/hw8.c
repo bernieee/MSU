@@ -31,16 +31,13 @@ char *strcpy_(char *string1, const char *string2)//2
 char *strcat_(char *string1, const char *string2)//3
 {
     int len1;
-    int len2;
     len1 = strlen_(string1);
-    len2 = 0;
-    while (string2[len2] != '\0')
+    string1 += len1;
+    while (*string2 != '\0')
     {
-        string1[len1] = string2[len2];
-        len1++;
-        len2++;
+        *(string1++) = *(string2++);
     }
-    string1[len1] = '\0';
+    *string1 = '\0';
     return string1;
 }
 
@@ -99,7 +96,7 @@ char *strrchr_(const char *string, int ch)//7
 }
 
 
-int strcsnp_(const char *string1, const char *string2)//8
+long unsigned int strcspn_(const char *string1, const char *string2)//8
 {
     int i;
     int j;
@@ -119,7 +116,7 @@ int strcsnp_(const char *string1, const char *string2)//8
 }
 
 
-int strsnp_(const char *string1, const char *string2)//9
+long unsigned int strspn_(const char *string1, const char *string2)//9
 {
     int i;
     int j;
@@ -143,7 +140,7 @@ int strsnp_(const char *string1, const char *string2)//9
 }
 
 
-const char *strstr_(const char *string1, const char *string2)//10
+char *strstr_(const char *string1, const char *string2)//10
 {
     int i;
     int j;
@@ -168,5 +165,5 @@ const char *strstr_(const char *string1, const char *string2)//10
     }
     if (string1[i] == '\0')
         return 0;
-    return (string1 + i);
+    return (char *)(string1 + i);
 }
