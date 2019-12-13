@@ -26,3 +26,27 @@ char *test_strrch_(const char *string1, int string2, char * (*p)(const char *, i
     }
     return res;
 }
+
+long unsigned int test_strcspn_(const char *string1, const char *string2, long unsigned int (*p)(const char *, const char *))
+{
+    int i;
+    int res = 0;
+    for (i = 0; i < N; i++)
+    {
+        res = (*p)(string1, string2);
+    }
+    return res;
+}
+
+
+char *test_strstr_(const char *string1, const char *string2, char * (*p)(const char *, const char *))
+{
+    int i;
+    char *res = 0;
+    for (i = 0; i < N; i++)
+    {
+        res = (*p)(string1, string2);
+    }
+    return res;
+}
+
