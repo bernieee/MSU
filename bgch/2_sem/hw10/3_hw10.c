@@ -22,7 +22,7 @@ int main(int argc, char **argv)
     b = argv[2];      // filename2 to write down
     s = argv[3];
     t = argv[4];
-    
+
     time = clock();
     result = Func3(a, b, s, t);
     time = clock() - time;
