@@ -276,26 +276,40 @@ static int Questions(FILE *b, char *buf, char *s)//5
             j++;
         else if ((buf[i] != s[j]) && (s[j + 1] != '!'))
             return 0;
-        else if ((buf[i] != s[i] ) && (s[j + 1] == '!'))
-            j += 2;
+        else if ((buf[i] != s[j]) && (s[j + 1] == '!'))
+            j++;
         else
         {
             i++;
             j++;
         }
     }
+    if ((s[j] == '\0') && (buf[i] != '\0'))
+        return 0;
+    while (s[j] != '\0')
+    {
+        if ((s[j] != '!') && (s[j + 1] != '!'))
+            return 0;
+        j += 2;
+    }
     fprintf(b, "%s\n", buf);
     return 1;
 }
+
+//seven oneeee one eleven
+
+//seven one*eeee one eleven
 
 
 static int Plus(FILE *b, char *buf, char *s)//6
 {
     int i;
     int j;
+    int num;
     char x;
     i = 0;
     j = 0;
+    num = 0;
     while ((buf[i] != '\0') && (s[j] != '\0'))
     {
         if ((buf[i] != s[j]) && (s[j] == '!'))
@@ -305,11 +319,23 @@ static int Plus(FILE *b, char *buf, char *s)//6
         else if ((buf[i] == s[j]) && (s[j + 1] == '!'))
         {
             x = s[j];
-            while (buf[i] == s[j])
+            while (buf[i] == x)
+            {
                 i++;
+                num++;
+            }
             j += 2;
+
             while (s[j] == x)
+            {
+                if (s[j + 1] == '!')
+                    j++;
                 j++;
+                num--;
+            }
+            if (num <= 0)
+                return 0;
+            num = 0;
         }
         else
         {
@@ -326,23 +352,42 @@ static int Stars(FILE *b, char *buf, char *s)//7
 {
     int i;
     int j;
+    int num;
     char x;
     i = 0;
     j = 0;
+    num = 0;
     while ((buf[i] != '\0') && (s[j] != '\0'))
     {
         if ((buf[i] != s[j]) && (s[j] == '!'))
             j++;
         else if ((buf[i] != s[j]) && (s[j + 1] != '!'))
             return 0;
-        else if ((buf[i] == s[j] ) && (s[j + 1] == '!'))
+        else if ((buf[i] != s[j]) && (s[j + 1] == '!'))
+            j++;
+        else if ((buf[i] == s[j]) && (s[j + 1] == '!'))
         {
             x = s[j];
-            while (buf[i] == s[j])
+            while (buf[i] == x)
+            {
                 i++;
+                num++;
+            }
             j += 2;
+
             while (s[j] == x)
-                j++;
+            {
+                if (s[j + 1] == '!')
+                    j += 2;
+                else
+                {
+                    j++;
+                    num--;
+                }
+            }
+            if (num < 0)
+                return 0;
+            num = 0;
         }
         else
         {
@@ -351,6 +396,51 @@ static int Stars(FILE *b, char *buf, char *s)//7
         }
     }
     fprintf(b, "%s\n", buf);
+    return 1;
+}
+
+
+static int Range(FILE *b, char *buf, char *s)//8
+{
+    int i;
+    int j;
+    int k;
+    int n;
+    int m;
+    int len;
+    char x;
+    i = 0;
+    j = 0;
+    k = 0;
+    len = 0;
+//memcpy(words[j] + 1, buf + len2, len1);
+
+    while ((buf[i] != '\0') && (s[j] != '\0'))
+    {
+        if ((buf[i] != s[j]) && (s[j] == '!'))
+        {
+            j++;
+            n = (int)s[j];
+            j += 2;
+            m = (int)s[j];
+            j += 2;
+            printf("%d %d\n", m, n);
+            if (((int)buf[i] >= n) && ((int)buf[i] <=m))
+            {
+                i++;
+            }
+            else
+                return 0;
+        }//asd[12-55]fdfds[34-56]gfd
+        else if (buf[i] != s[j])
+            return 0;
+        else
+        {
+            i++;
+            j++;
+        }
+    }
+    printf("%s\n", buf);
     return 1;
 }
 
@@ -374,9 +464,7 @@ int Func1(const char *fname1, const char *fname2, char *s, char *t)//1
     {
         buf[strlen(buf) - 1] = '\0';
         if (Find1(b, buf, s, buft) == 1)
-        {
             ans++;
-        }
     }
     if (!feof(a))
     {
@@ -410,9 +498,7 @@ int Func2(const char *fname1, const char *fname2, char *s, char *t)//2
     {
         buf[strlen(buf) - 1] = '\0';
         if (Find2(b, buf, s, buft) == 1)
-        {
             ans++;
-        }
     }
     if (!feof(a))
     {
@@ -450,9 +536,7 @@ int Func3(const char *fname1, const char *fname2, char *s, char *t)//3
     {
         buf[strlen(buf) - 1] = '\0';
         if (Find3(b, buf, words, num, buft) == 1)
-        {
             ans++;
-        }
     }
     if (!feof(a))
     {
@@ -486,9 +570,7 @@ int Func4(const char *fname1, const char *fname2, char *s)//4
     {
         buf[strlen(buf) - 1] = '\0';
         if (Points(b, buf, str) == 1)
-        {
             ans++;
-        }
     }
     if (!feof(a))
     {
@@ -519,9 +601,7 @@ int Func5(const char *fname1, const char *fname2, char *s)//5
     {
         buf[strlen(buf) - 1] = '\0';
         if (Questions(b, buf, str) == 1)
-        {
             ans++;
-        }
     }
     if (!feof(a))
     {
@@ -552,9 +632,7 @@ int Func6(const char *fname1, const char *fname2, char *s)//6
     {
         buf[strlen(buf) - 1] = '\0';
         if (Plus(b, buf, str) == 1)
-        {
             ans++;
-        }
     }
     if (!feof(a))
     {
@@ -585,9 +663,7 @@ int Func7(const char *fname1, const char *fname2, char *s)//7
     {
         buf[strlen(buf) - 1] = '\0';
         if (Stars(b, buf, str) == 1)
-        {
             ans++;
-        }
     }
     if (!feof(a))
     {
@@ -614,11 +690,12 @@ int Func8(const char *fname1, const char *fname2, char *s)//8
         return ERROR_OPEN;
 
     Remove(s, str, '[');
-    Remove(s, str, ']');
+    Remove(str, str, ']');
     while (fgets(buf, LEN, a))
     {
         buf[strlen(buf) - 1] = '\0';
-        ans++;
+        if (Range(b, buf, str) == 1)
+            ans++;
     }
     if (!feof(a))
     {
