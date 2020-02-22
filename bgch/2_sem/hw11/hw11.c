@@ -53,21 +53,18 @@ static int Remove(char *s, char *res, char x)//'.', '?', '+', '*' --> '!'
         j++;
     }
     res[j] = s[i];
-    printf("%s\n", res);
     return SUCCESS;
 }
 
 
 static int Str2words(char *s, char words[LEN][LEN], char *buft)//3
 {
-    int n;
     int i;
     int j;
     int flag;
     int len1;
     int len2;
     char buf[LEN];
-    n = 0;
     i = 0;
     j = 0;
     flag = 0;
@@ -99,9 +96,6 @@ static int Str2words(char *s, char words[LEN][LEN], char *buft)//3
     words[j][len1 + 1] = ' ';
     words[j][len1 + 2] = '\0';
     j++;
-
-    //for (i = 0; i < j; i++)
-    //    printf("%s\n", words[i]);
     return j;
 }
 
@@ -110,9 +104,7 @@ static int Replace(char *buf, char *res, char *buft, int f)//1, 2, 3:f == 1 if b
 {
     int i;
     int j;
-    int lens;
     int flag;
-    lens = strlen(buf);
     i = 0;
     j = 0;
     flag = 0;;
@@ -153,7 +145,7 @@ static int Replace(char *buf, char *res, char *buft, int f)//1, 2, 3:f == 1 if b
                 j++;
             }
         }
-        else if (buft[(int)buf[i]] == 1)
+        if (buft[(int)buf[i]] == 1)
         {
             res[j] = ' ';
             i++;
@@ -193,7 +185,6 @@ static int Find1(FILE *b, char *buf, char *s, char *buft)//1
     if (res != NULL)
     {
         fprintf(b, "%s\n", buf);
-        //printf("%s\n", string2);
         return 1;
     }
     else
@@ -213,7 +204,6 @@ static int Find2(FILE *b, char *buf, char *s, char *buft)//2
     if (res != NULL)
     {
         fprintf(b, "%s\n", buf);
-        //printf("%s\n", string2);
         return 1;
     }
     else
@@ -234,14 +224,12 @@ static int Find3(FILE *b, char *buf, char words[LEN][LEN], int num, char *buft)/
         if (res != NULL)
         {
             fprintf(b, "%s\n", buf);
-            //printf("%s\n", words[i]);
             return 1;
         }
     }
     if (res != NULL)
     {
         fprintf(b, "%s\n", buf);
-        //printf("%s\n", words[i]);
         return 1;
     }
     else
@@ -259,6 +247,8 @@ static int Points(FILE *b, char *buf, char *s)//4
             return 0;
         i++;
     }
+    if ((buf[i] != '\0') || (s[i] != '\0'))
+        return 0;
     fprintf(b, "%s\n", buf);
     return 1;
 }
@@ -295,10 +285,6 @@ static int Questions(FILE *b, char *buf, char *s)//5
     fprintf(b, "%s\n", buf);
     return 1;
 }
-
-//seven oneeee one eleven
-
-//seven one*eeee one eleven
 
 
 static int Plus(FILE *b, char *buf, char *s)//6
@@ -343,6 +329,8 @@ static int Plus(FILE *b, char *buf, char *s)//6
             j++;
         }
     }
+    if ((buf[i] != '\0') || (s[j] != '\0'))
+        return 0;
     fprintf(b, "%s\n", buf);
     return 1;
 }
@@ -395,6 +383,14 @@ static int Stars(FILE *b, char *buf, char *s)//7
             j++;
         }
     }
+    if ((s[j] == '\0') && (buf[i] != '\0'))
+        return 0;
+    while (s[j] != '\0')
+    {
+        if ((s[j] != '!') && (s[j + 1] != '!'))
+            return 0;
+        j += 2;
+    }
     fprintf(b, "%s\n", buf);
     return 1;
 }
@@ -404,16 +400,10 @@ static int Range(FILE *b, char *buf, char *s)//8
 {
     int i;
     int j;
-    int k;
     int n;
     int m;
-    int len;
-    char x;
     i = 0;
     j = 0;
-    k = 0;
-    len = 0;
-//memcpy(words[j] + 1, buf + len2, len1);
 
     while ((buf[i] != '\0') && (s[j] != '\0'))
     {
@@ -424,14 +414,13 @@ static int Range(FILE *b, char *buf, char *s)//8
             j += 2;
             m = (int)s[j];
             j += 2;
-            printf("%d %d\n", m, n);
-            if (((int)buf[i] >= n) && ((int)buf[i] <=m))
+            if (((int)buf[i] >= n) && ((int)buf[i] <= m))
             {
                 i++;
             }
             else
                 return 0;
-        }//asd[12-55]fdfds[34-56]gfd
+        }
         else if (buf[i] != s[j])
             return 0;
         else
@@ -440,13 +429,15 @@ static int Range(FILE *b, char *buf, char *s)//8
             j++;
         }
     }
-    printf("%s\n", buf);
+    if ((buf[i] != '\0') || (s[j] != '\0'))
+        return 0;
+    fprintf(b, "%s\n", buf);
     return 1;
 }
 
 
-//s is in string from a
-//'\<string'  --  in the beginning of word; first coming in word
+//s is in string from a;
+//'\<string'  --  in the beginning of word; first coming in word;
 int Func1(const char *fname1, const char *fname2, char *s, char *t)//1
 {
     FILE *a;
@@ -478,8 +469,8 @@ int Func1(const char *fname1, const char *fname2, char *s, char *t)//1
 }
 
 
-//s is in sting from a
-//'string/>'  --  in the end of word; last coming in word
+//s is in sting from a;
+//'string/>'  --  in the end of word; last coming in word;
 int Func2(const char *fname1, const char *fname2, char *s, char *t)//2
 {
     FILE *a;
@@ -487,7 +478,6 @@ int Func2(const char *fname1, const char *fname2, char *s, char *t)//2
     char buf[LEN];
     char buft[STR];
     int ans = 0;
-    int i = 0;
     if (!(a = fopen(fname1, "r")))
         return ERROR_OPEN;
     if (!(b = fopen(fname2, "w")))
@@ -512,7 +502,7 @@ int Func2(const char *fname1, const char *fname2, char *s, char *t)//2
 }
 
 
-//string from a and s have common word
+//string from a and s have common word;
 int Func3(const char *fname1, const char *fname2, char *s, char *t)//3
 {
     FILE *a;
@@ -550,9 +540,9 @@ int Func3(const char *fname1, const char *fname2, char *s, char *t)//3
 }
 
 
-//string from a is equal to s
+//string from a is equal to s;
 //'.' in s is any symbol in string from a;
-//'\.' & '\\' are '/' & '\' in s
+//'\.' & '\\' are '.' & '\' in s;
 int Func4(const char *fname1, const char *fname2, char *s)//4
 {
     FILE *a;
@@ -584,6 +574,9 @@ int Func4(const char *fname1, const char *fname2, char *s)//4
 }
 
 
+//string from a is equal to s;
+//in s symbol before '?' can be used 1 or 0 times;
+//'\?' & '\\' are '?' & '\' in s;
 int Func5(const char *fname1, const char *fname2, char *s)//5
 {
     FILE *a;
@@ -615,6 +608,9 @@ int Func5(const char *fname1, const char *fname2, char *s)//5
 }
 
 
+//string from a is equal to s;
+//in s symbol before '+' can be used 1 or more times;
+//'\+' & '\\' are '+' & '\' in s;
 int Func6(const char *fname1, const char *fname2, char *s)//6
 {
     FILE *a;
@@ -646,6 +642,9 @@ int Func6(const char *fname1, const char *fname2, char *s)//6
 }
 
 
+//string from a is equal to s;
+//in s symbol before '*' can be used 0 or more times;
+//'\*' & '\\' are '*' & '\' in s;
 int Func7(const char *fname1, const char *fname2, char *s)//7
 {
     FILE *a;
@@ -677,6 +676,9 @@ int Func7(const char *fname1, const char *fname2, char *s)//7
 }
 
 
+//string from a is equal to s;
+//in s [n-m] can be equal to any symbol in string from a with code in range between codes of n and m;
+//'\*' & '\\' are '*' & '\' in s;
 int Func8(const char *fname1, const char *fname2, char *s)//8
 {
     FILE *a;
@@ -707,13 +709,3 @@ int Func8(const char *fname1, const char *fname2, char *s)//8
     fclose(b);
     return ans;
 }
-
-
-/*
-seven eleven oneone
- nine tttttwo
-ten twenty
-
- nine t*wo
- nine s*tttttwo
-*/
