@@ -33,6 +33,7 @@ static int Change1(FILE *b, char *buf, const char *s, const char *r)
             break;
         }
     }
+    fprintf(b, "\n");
     if (flag == 1)
         return 1;
     else
@@ -166,14 +167,14 @@ static int StrS1(char *s)
     int j = 0;
     int i = 0;
     int flag2 = 0;
-    if (s[0] == 94)
+    if (s[0] == '^')//^
         flag1 = 1;
     while (s[j] != '\0')
     {
         s[i] = s[j];//rewrite s
-        if (s[i] == 92)
+        if (s[i] == '\\')
         {
-            if (s[j + 1] == 92)
+            if (s[j + 1] == '\\')
             {
                 if (flag2 == 0)
                 {
@@ -186,7 +187,7 @@ static int StrS1(char *s)
                     j++;
                 }
             }
-            if (s[j + 1]==94)
+            else if (s[j + 1] == '^')
             {
                 j++;
                 if (flag2 == 1)
@@ -195,8 +196,8 @@ static int StrS1(char *s)
                     i++;
                 }
             }
-            j++;
-            i++;
+            //j++;
+            //i++;
             flag2 = 0;
         }
         else
@@ -207,6 +208,7 @@ static int StrS1(char *s)
         }
     }
     s[i] = '\0';
+    printf("%s\n", s);
     return flag1;
 }
 
@@ -217,7 +219,7 @@ static int StrS2(char *s, int lens)
     int j = 0;
     int i = 0;
     int flag2 = 0;
-    if (s[lens - 1] == 36)
+    if (s[lens - 1] == '&')
     {
         flag1 = 1;
         s[lens - 1]='\0';
@@ -225,9 +227,9 @@ static int StrS2(char *s, int lens)
     while (s[j] != '\0')
     {
         s[i] = s[j];
-        if (s[i] == 92)
+        if (s[i] == '\\')
         {
-            if (s[j + 1] == 92)
+            if (s[j + 1] == '\\')
             {
                 if (flag2 == 0)
                 {
@@ -241,7 +243,7 @@ static int StrS2(char *s, int lens)
                     j++;
                 }
             }
-            if (s[j + 1] == 36)
+            if (s[j + 1] == '&')
             {
                 j++;
                 if (flag2 == 1)
@@ -332,8 +334,6 @@ static int Change7(FILE *b, char *buf, const char *s, const char *l, const char 
 static int Change8(FILE *b, char *buf, const char *bufs, const char *bufr)
 {
     int res;
-    int lens;
-    int flag;
     int i;
     i = 0;
     res = 0;
@@ -356,9 +356,9 @@ static int Change8(FILE *b, char *buf, const char *bufs, const char *bufr)
 static int SR(char *bufs, char *bufr, const char *s, const char *r)
 {
     int i;
-    int lens;
+    //int lens;
     int lenr;
-    lens = strlen(s);
+    //lens = strlen(s);
     lenr = strlen(r);
     for (i = 0; i < 256; i++)
     {
@@ -417,7 +417,6 @@ int Func2(const char *fname1, const char *fname2, const char *s, const char *t)/
     char buf[LEN];
     char buft[STR];
     int ans = 0;
-    int i = 0;
     if (!(a = fopen(fname1, "r")))
         return ERROR_OPEN;
     if (!(b = fopen(fname2, "w")))

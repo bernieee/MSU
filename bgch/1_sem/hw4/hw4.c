@@ -21,7 +21,6 @@ int StandartDeviation(const char *fname, double *d)//1
     f = fopen(fname, "r");
     if (f == NULL)
     {
-        fclose(f);
         return -1;
     }
 
@@ -31,15 +30,17 @@ int StandartDeviation(const char *fname, double *d)//1
         sum_q += (x * x);
         sum += x;
     }
-
-    *d = sqrt((sum_q - sum * sum / n) / n);
+    if (n != 0)
+    {
+         *d = (sum_q - sum * sum / n) / n;
+    }
 
     if (feof(f) == 0)
     {
         fclose(f);
         return -2;
     }
-
+    fclose(f);
     return n;
 }
 
@@ -47,20 +48,20 @@ int StandartDeviation(const char *fname, double *d)//1
 int SequenceWhat(const char *fname)//2
 {
     FILE *f;
-    int d = 0;
-    int q =0;
+    double d = 0;
+    double q =0;
     int arif = 0;
     int geom = 0;
     int len = 0;
     double x0;
     double x1;
     double x2;
+    double eps = 1e-7;
 
 
     f = fopen(fname, "r");
     if (f == NULL)
     {
-        fclose(f);
         return -1;
     }
 
@@ -74,7 +75,7 @@ int SequenceWhat(const char *fname)//2
         return 4;
     }
 
-    if (fscanf(f, "%lf", &x1) == 1) 
+    if (fscanf(f, "%lf", &x1) == 1)
     {
         len++;
     }
@@ -85,15 +86,39 @@ int SequenceWhat(const char *fname)//2
     }
 
     d = x1 - x0;
-    q = x1 / x0;
+    if ((x0 < eps) && (x0 > -eps))
+    {
+        q = x1 / x0;
+    }
+    else
+    {
+        fclose(f);
+        return 0;
+    }
+
+    if ((q < eps) && (q > -eps))
+    {
+        fclose(f);
+        return 0;
+    }
+    if ((d < eps) && (d > -eps))
+    {
+        fclose(f);
+        return 0;
+    }
 
     while (fscanf(f,"%lf",&x2)==1)
     {
-        if (x2 - x1 == d)
+        if (fabs(x1) < eps)
+        {
+            fclose(f);
+            return 0;
+        }
+        else if (fabs(x2 - x1 - d) < eps)
         {
             arif = 1;
         }
-        else if (x2 / x1 == q)
+        else if (fabs(x2 / x1 - q) < eps)
         {
             geom = 1;
         }
@@ -131,7 +156,6 @@ int ElemIsXFirst(const char *fname, double x)//3
     f = fopen(fname, "r");
     if (f == NULL)
     {
-        fclose(f);
         return -1;
     }
 
@@ -168,7 +192,6 @@ int ElemIsXLast(const char *fname, double x)//4
     f = fopen(fname, "r");
     if (f == NULL)
     {
-        fclose(f);
         return -1;
     }
 
@@ -204,7 +227,6 @@ int MaxElem(const char *fname, double *x)//5
     f = fopen(fname, "r");
     if (f == NULL)
     {
-        fclose(f);
         return -1;
     }
 
@@ -398,7 +420,7 @@ int FirstLastElemIsX(const char *fname, double x, int *i, int *j)//8
 }
 
 
-int main(void)
+int main(int argc, char *argv[])
 {
     int ans1;
     int ans2;
@@ -430,8 +452,16 @@ int main(void)
     const char *fname7 = "7.txt";
     const char *fname8 = "8.txt";
 
-    scanf("%lf\n%lf\n%lf\n", &x3, &x4, &x8);
-    
+    if (argc != 2)
+    {
+        printf("Usage %s file\n", argv[0]);
+        return 1;
+    }
+    fname2 = argv[1];
+
+    printf("INPUT:\n");
+    scanf("%lf%lf%lf", &x3, &x4, &x8);
+
     ans1 = StandartDeviation(fname1, &d);//1
     ans2 = SequenceWhat(fname2);//2
     ans3 = ElemIsXFirst(fname3, x3);//3
@@ -448,10 +478,10 @@ int main(void)
     else
     {
         printf("NUMBER OF ELEMENTS: %d\n", ans1);
-        printf("STANDART DEVIATION IS: %lf\n", d);
+        if (ans1 != 0) printf("STANDART DEVIATION IS: %lf\n", d);
     }
-    
-    
+
+
     if (ans2 == -1)
         printf("CAN'T OPEN FILE\n");
     else if (ans2 == -2)
@@ -466,8 +496,8 @@ int main(void)
         printf("CONST\n");
     else
         printf("NAN\n");
-    
-    
+
+
     if (ans3 == -1)
         printf("CAN'T OPEN FILE\n");
     else if (ans3 == -2)
@@ -476,8 +506,8 @@ int main(void)
         printf("NO SUCH ELEMENT\n");
     else
         printf("NUMBER OF ELEMENTS IS: %d\n", ans3);
-    
-    
+
+
     if (ans4 == -1)
         printf("CAN'T OPEN FILE\n");
     else if (ans4 == -2)
@@ -486,8 +516,8 @@ int main(void)
         printf("NO SUCH ELEMENT\n");
     else
         printf("NUMBER OF ELEMENTS IS: %d\n", ans4);
-    
-    
+
+
     if (ans5 == -1)
         printf("CAN'T OPEN FILE\n");
     else if (ans5 == -2)
@@ -497,10 +527,10 @@ int main(void)
     else
     {
         printf("NUMBER OF MAX ELEMENT IS: %d\n", ans5);
-        printf("MAX ELEMENT IS: %lf\n", x5); 
+        printf("MAX ELEMENT IS: %lf\n", x5);
     }
-    
-    
+
+
     if (ans6 == -1)
         printf("CAN'T OPEN FILE\n");
     else if (ans6 == -2)
@@ -510,10 +540,10 @@ int main(void)
     else
     {
         printf("NUMBER OF MAX ELEMENTS IS: %d\n", ans6);
-        printf("MAX ELEMENT IS: %lf\n", x6); 
+        printf("MAX ELEMENT IS: %lf\n", x6);
     }
-    
-    
+
+
     if (ans7 == -1)
         printf("CAN'T OPEN FILE\n");
     else if (ans7 == -2)
@@ -524,20 +554,22 @@ int main(void)
     {
         printf("FIRST NUMBER OF MAX ELEMENTS IS: %d\n", i1);
         printf("LAST NUMBER OF MAX ELEMENTS IS: %d\n", j1);
-        printf("MAX ELEMENT IS: %lf\n", x7); 
+        printf("MAX ELEMENT IS: %lf\n", x7);
     }
-    
-    
+
+
     if (ans8 == -1)
         printf("CAN'T OPEN FILE\n");
     else if (ans8 == -2)
         printf("CAN'T READ AN ELEMENT\n");
+    else if (ans8 == 0)
+        printf("NO ELEMENTS\n");
     else
     {
         printf("FIRST NUMBER OF ELEMENT IS: %d\n", i2);
         printf("LAST NUMBER OF ELEMENT IS: %d\n", j2);
-        //printf("MAX ELEMENT IS: %lf\n", x); 
+        //printf("MAX ELEMENT IS: %lf\n", x);
     }
-    
+
     return 0;
 }
