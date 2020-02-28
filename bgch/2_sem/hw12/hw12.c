@@ -13,7 +13,7 @@ int init_array123(const char *fname, int n, double *x, double *y)
         return ERROR_OPEN;
 
     for (i = 0; i < n; i++)
-        fscanf(f, "%lf%lf%lf", &x[i], &y[i]);
+        if(fscanf(f, "%lf%lf", &x[i], &y[i]))
 
     return SUCCESS;
 }
@@ -28,7 +28,7 @@ int init_array4(const char *fname, int n, double *x, double *y, double *d)
         return ERROR_OPEN;
 
     for (i = 0; i < n; i++)
-        fscanf(f, "%lf%lf%lf", &x[i], &y[i], &d[i]);
+        if(fscanf(f, "%lf%lf%lf", &x[i], &y[i], &d[i]))
 
     return SUCCESS;
 }
@@ -250,7 +250,7 @@ double derivative_newton(int n, double x0, double *x, double *y, double *d)//4
 
 static double sin_(double x, double eps)//5
 {
-    double sin_esp;
+    double sin_eps;
     double step;
     double fact;
 
@@ -258,7 +258,7 @@ static double sin_(double x, double eps)//5
     sin_eps = step;
     fact = 2.;
 
-    while (step > eps)
+    while (fabs(step) > eps)
     {
         step *= (-1) * x * x / fact / (fact + 1);
         fact += 2;
@@ -279,7 +279,7 @@ static double cos_(double x, double eps)//6
     cos_eps = step;
     fact = 1;
 
-    while (step > eps)
+    while (fabs(step) > eps)
     {
         step *= (-1) * x * x / fact / (fact + 1);
         fact += 2;
@@ -292,37 +292,37 @@ static double cos_(double x, double eps)//6
 
 static double sin_quarter(double x, double eps)//5
 {
-    if ((x >= 0.) && (x <= M_PI_4))
+    if ((x >= 0.) && (x <= M_PI_4))//1
     {
-        return sin_(x);
+        return sin_(x, eps);
     }
-    else if ((x > M_PI_4) && (x <= M_PI_2))
+    else if ((x > M_PI_4) && (x <= M_PI_2))//2
     {
         return 2 * sin_(x / 2, eps) * cos_(x / 2, eps);
     }
-    else if ((x > M_PI_2) && (x <= M_PI_4 * 3))
+    else if ((x > M_PI_2) && (x <= M_PI_4 * 3))//3
     {
         return 2 * sin_((M_PI - x) / 2, eps) * cos_((M_PI - x) / 2, eps);
     }
-    else if ((x > M_PI_4 * 3) && (x <= M_PI))
+    else if ((x > M_PI_4 * 3) && (x <= M_PI))//4
     {
-        return sin_(M_PI - x);
+        return sin_(M_PI - x, eps);
     }
-    else if ((x > M_PI) && (x <= M_PI_4 * 5))
+    else if ((x > M_PI) && (x <= M_PI_4 * 5))//5
     {
-        return sin_(x - M_PI);
+        return (-1) * sin_(x - M_PI, eps);
     }
-    else if ((x > M_PI_4 * 5) && (x <= M_PI_2 * 3))
+    else if ((x > M_PI_4 * 5) && (x <= M_PI_2 * 3))//6
     {
-        return 2 * sin_((x - M_PI) / 2, eps) * cos_((x - M_PI) / 2, eps);
+        return (-2) * sin_((x - M_PI) / 2, eps) * cos_((x - M_PI) / 2, eps);
     }
-    else if ((x > M_PI_2 * 3) && (x <= M_PI_4 * 7))
+    else if ((x > M_PI_2 * 3) && (x <= M_PI_4 * 7))//7
     {
-        return 2 * sin_((2 * M_PI - x) / 2, eps) * cos_((2 * M_PI - x) / 2, eps);
+        return (-2) * sin_((2 * M_PI - x) / 2, eps) * cos_((2 * M_PI - x) / 2, eps);
     }
-    else if ((x > M_PI_4 * 3) && (x <= M_PI))
+    else if ((x > M_PI_4 * 7) && (x < 2 * M_PI))//8
     {
-        return sin_(2 * M_PI - x);
+        return (-1) * sin_(2 * M_PI - x, eps);
     }
     return MISTAKE;
 }
@@ -334,25 +334,25 @@ static double cos_quarter(double x, double eps)//6
 
     if ((x >= 0.) && (x <= M_PI_4))
     {
-        return cos_(x);
+        return cos_(x, eps);
     }
     else if ((x > M_PI_4) && (x <= M_PI_2))
     {
-        cos2 = cos_(x / 2, eps);
+        cos_2 = cos_(x / 2, eps);
         return 2 * cos_2 * cos_2 - 1;
     }
     else if ((x > M_PI_2) && (x <= M_PI_4 * 3))
     {
-        cos2 = cos_((M_PI - x) / 2, eps);
+        cos_2 = cos_((M_PI - x) / 2, eps);
         return 1 - 2 * cos_2 * cos_2;
     }
     else if ((x > M_PI_4 * 3) && (x <= M_PI))
     {
-        return (-1) * cos_(M_PI - x);
+        return (-1) * cos_(M_PI - x, eps);
     }
     else if ((x > M_PI) && (x <= M_PI_4 * 5))
     {
-        return (-1) * cos_(x - M_PI);
+        return (-1) * cos_(x - M_PI, eps);
     }
     else if ((x > M_PI_4 * 5) && (x <= M_PI_2 * 3))
     {
@@ -364,9 +364,9 @@ static double cos_quarter(double x, double eps)//6
         cos_2 = cos_((2 * M_PI - x) / 2, eps);
         return 2 * cos_2 * cos_2 - 1;
     }
-    else if ((x > M_PI_4 * 3) && (x <= M_PI))
+    else if ((x > M_PI_4 * 7) && (x < 2 * M_PI))
     {
-        return cos_(2 * M_PI - x);
+        return cos_(2 * M_PI - x, eps);
     }
     return MISTAKE;
 }
@@ -393,7 +393,8 @@ double cos_eps_x(double x, double eps)//6
     cos_eps = cos_quarter(x, eps);
 
     return cos_eps;
-}*
+}
+
 
 /*double cos_eps_x(double x, double eps)//6
 {
@@ -429,6 +430,21 @@ double cos_eps_x(double x, double eps)//6
 }*/
 
 
+static double exp_(double x)
+{
+    double exp_x;
+    int i;
+
+    exp_x = 1.;
+
+    for (i = 0; i < (int)x; i++)
+    {
+        exp_x *= M_E;
+    }
+
+    return exp_x;
+}
+
 double e_eps_x(double x, double eps)//7
 {
     double e_eps_int;
@@ -450,7 +466,7 @@ double e_eps_x(double x, double eps)//7
         x = x - e_eps_int;
     }
     step = 1.;
-    e_eps_int = exp(e_eps_int);
+    e_eps_int = exp_(e_eps_int);
     e_eps_fract = step;
     fact = 1;
 
@@ -462,7 +478,9 @@ double e_eps_x(double x, double eps)//7
     }
 
     if (flag == 1)
-        e_eps_int = 1 / e_eps_int / e_eps_fract;
+        e_eps_int = 1 / e_eps_int;
+
+    e_eps_int *= e_eps_fract;
 
     return e_eps_int;
 }
@@ -493,9 +511,9 @@ double log_eps_x(double x, double eps)//8
 
     while (fabs(step) > eps)
     {
-        step *= (-1) * log_a / fact;
+        step *= (-1) * log_a;
+        log_eps += step / fact;
         fact++;
-        log_eps += step;
     }
 
     log_eps += log_2 * M_LN2;

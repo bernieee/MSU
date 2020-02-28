@@ -1,9 +1,12 @@
 #include<stdio.h>
+#include<stdlib.h>
+#include<math.h>
 
 #define ERROR_OPEN -1
 #define SUCCESS 0
 #define MISTAKE -2
 
+int init_array123(const char *fname, int n, double *x, double *y);
 int init_array4(const char *fname, int n, double *x, double *y, double *d);
 double lagrange(int n, double x0, double *x, double *y);//1
 double classic_newton(int n, double x0, double *x, double *y);//2

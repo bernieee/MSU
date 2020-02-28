@@ -30,7 +30,7 @@ int main(int argc, char **argv)
     init_array123(a, n, x, y);
 
     time = clock();
-    result = aitken(n, x0, x, y, d);
+    result = aitken(n, x0, x, y);
     time = clock() - time;
     printf("%lf\n", result);
     printf("Time = %lf\n", (double)time / CLOCKS_PER_SEC);

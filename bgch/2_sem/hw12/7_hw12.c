@@ -13,7 +13,7 @@ int main(int argc, char **argv)
     double x;
     double eps;
 
-    while (scanf("%lf%lf", &x, &eps))
+    while ((scanf("%lf%lf", &x, &eps)) && (eps >= 0.))
     {
         time_eps = clock();
         result_eps = e_eps_x(x, eps);
@@ -23,13 +23,13 @@ int main(int argc, char **argv)
         result_real = exp(x);
         time_real = clock() - time_real;
 
-        printf("Eps = %lf\n", result_eps);
+        printf("Eps = %.20lf\n", result_eps);
         printf("Time = %lf\n", (double)time_eps / CLOCKS_PER_SEC);
 
-        printf("Real = %lf\n", result_real);
+        printf("Real = %.20lf\n", result_real);
         printf("Time = %lf\n", (double)time_real / CLOCKS_PER_SEC);
 
-        printf("Error = %lf\n", fabs(result_real - result_eps));
+        printf("Error = %.40lf\n", fabs(result_real - result_eps));
     }
 
     return 0;
