@@ -13,7 +13,8 @@ int init_array123(const char *fname, int n, double *x, double *y)
         return ERROR_OPEN;
 
     for (i = 0; i < n; i++)
-        if(fscanf(f, "%lf%lf", &x[i], &y[i]))
+        if(!fscanf(f, "%lf%lf", &x[i], &y[i]))
+            return ERROR_READ;
 
     return SUCCESS;
 }
@@ -28,7 +29,8 @@ int init_array4(const char *fname, int n, double *x, double *y, double *d)
         return ERROR_OPEN;
 
     for (i = 0; i < n; i++)
-        if(fscanf(f, "%lf%lf%lf", &x[i], &y[i], &d[i]))
+        if(!fscanf(f, "%lf%lf%lf", &x[i], &y[i], &d[i]))
+            return ERROR_READ;
 
     return SUCCESS;
 }
@@ -41,7 +43,8 @@ static double l(int n, double x0, int i, double *x)//1
     res = 1.;
     for (j = 0; j < n; j++)
     {
-        res *= (x0 - x[j]) / (x[i] - x[j]);
+        if (j != i)
+            res *= (x0 - x[j]) / (x[i] - x[j]);
     }
 
     return res;
@@ -68,7 +71,7 @@ static int divided_difference(int n, int k, double *x, double *y)//2
 {
     int i;
 
-    for (i = n - 1; i >= k; i--)
+    for (i = n - 1; i > k; i--)
     {
         y[i] = (y[i - 1] - y[i]) / (x[i - 1 - k] - x[i]);
     }
@@ -92,8 +95,9 @@ double classic_newton(int n, double x0, double *x, double *y)//2
     for (i = n - 1; i > 0; i--)
     {
         L += y[i];
-        L *= (x0 - x[i]);
+        L *= (x0 - x[i - 1]);
     }
+
     L += y[0];
 
     return L;
@@ -106,7 +110,7 @@ static int make_scheme(int n, int k, double x0, double *x, double *y)//3
 
     for (i = 0; i < n - k; i++)
     {
-        y[i] = (y[i + 1] * (x0 - x[i + 1 + k]) - y[i] * (x0 - x[i])) / (x[i + 1 + k] - x[i]);
+        y[i] = (y[i + 1] * (x0 - x[i]) - y[i] * (x0 - x[i + 1 + k])) / (x[i + 1 + k] - x[i]);
     }
 
     return 0;
@@ -166,23 +170,9 @@ double derivative_newton(int n, double x0, double *x, double *y, double *d)//4
 
     divided_difference(n, 0, x, y);
 
-    /*for (int k = n - 1; k >= 0; k--)
-    {
-        printf("%lf  %lf\n", d[k], y[k]);
-    }
-
-    printf("\n");*/
-
     for (i = 1; i < 2 * n - 1; i++)
     {
         derivative_divided_difference(n, i, x, y, d, d_k, y_k);
-
-        /*for (int k = n - 1; k >= 0; k--)
-        {
-            printf("%lf  %lf\n", d[k], y[k]);
-        }
-
-        printf("\n");*/
 
         if (i % 2 == 0)
             d_k++;
@@ -212,40 +202,6 @@ double derivative_newton(int n, double x0, double *x, double *y, double *d)//4
 
     return L;
 }
-
-
-/*double sin_eps_x(double x, double eps)//5
-{
-    double sin_eps;
-    double step;
-    int fact;
-    int i;
-
-    x -= floor(x / 2 / M_PI) * 2 * M_PI;// 0 =< x < 2pi
-
-    step = x;
-    sin_eps = step;
-    i = 1;
-    fact = 1;
-
-    while (step > eps)
-    {
-        step *= x * x / (fact + 1) / (fact + 2);
-        fact += 2;
-        if (i == 1)
-        {
-            sin_eps -= step;
-            i = 0;
-        }
-        else
-        {
-            sin_eps += step;
-            i = 1;
-        }
-    }
-
-    return sin_eps;
-}*/
 
 
 static double sin_(double x, double eps)//5
@@ -348,6 +304,7 @@ static double cos_quarter(double x, double eps)//6
     }
     else if ((x > M_PI_4 * 3) && (x <= M_PI))
     {
+
         return (-1) * cos_(M_PI - x, eps);
     }
     else if ((x > M_PI) && (x <= M_PI_4 * 5))
@@ -394,40 +351,6 @@ double cos_eps_x(double x, double eps)//6
 
     return cos_eps;
 }
-
-
-/*double cos_eps_x(double x, double eps)//6
-{
-    double cos_eps;
-    double step;
-    int fact;
-    int i;
-
-    x -= floor(x / 2 / M_PI) * 2 * M_PI;// 0 =< x < 2pi
-
-    step = 1;
-    cos_eps = step;
-    i = 1;
-    fact = 0;
-
-    while (step > eps)
-    {
-        step *= x * x / (fact + 1) / (fact + 2);
-        fact += 2;
-        if (i == 1)
-        {
-            cos_eps -= step;
-            i = 0;
-        }
-        else
-        {
-            cos_eps += step;
-            i = 1;
-        }
-    }
-
-    return cos_eps;
-}*/
 
 
 static double exp_(double x)
