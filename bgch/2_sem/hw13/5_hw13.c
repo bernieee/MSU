@@ -24,7 +24,7 @@ int main(int argc, char **argv)
     eps = atof(argv[3]);
 
     time = clock();
-    result = interpolation_2_method_root(a, b, eps, &x, &func);
+    result = interpolation_2_method_root(a, b, eps, &x, &parabol);
     time = clock() - time;
 
     printf("Iterations = %d\n", result);

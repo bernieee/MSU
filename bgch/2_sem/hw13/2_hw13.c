@@ -22,7 +22,7 @@ int main(int argc, char **argv)
     eps = atof(argv[2]);
 
     time = clock();
-    result = newton_method_root(x0, eps, &x, &func, &deriv);
+    result = newton_method_root(x0, eps, &x, &parabol, &parabol_deriv);
     time = clock() - time;
 
     printf("Iterations = %d\n", result);

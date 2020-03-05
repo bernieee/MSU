@@ -24,7 +24,7 @@ int main(int argc, char **argv)
     eps = atof(argv[3]);
 
     time = clock();
-    result = golden_section_method_max(a, b, eps, &x, &func);
+    result = golden_section_method_max(a, b, eps, &x, &parabol);
     time = clock() - time;
 
     printf("Iterations = %d\n", result);

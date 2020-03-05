@@ -29,7 +29,7 @@ int main(int argc, char **argv)
     d = malloc((3 * (m + 1)) * sizeof(double));
 
     time = clock();
-    result = interpolation_m_method_root(a, b, eps, &x, m, d, &func);
+    result = interpolation_m_method_root(a, b, eps, &x, m, d, &parabol);
     time = clock() - time;
 
     printf("Iterations = %d\n", result);

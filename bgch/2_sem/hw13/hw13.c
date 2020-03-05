@@ -4,6 +4,12 @@
 #include "hw13.h"
 
 
+/*double parabol(double x)
+{
+    return 2 * x * x - 8;
+}*/
+
+
 static double maximum(double a0, double *a, int n)
 {
     int i;
@@ -79,9 +85,11 @@ static int divided_difference(int n, int k, double *x, double *y)
 {
     int i;
 
-    for (i = n - 1; i >= k; i--)
+    for (i = n - 1; i > k; i--)
     {
+        //printf("%lf  %lf  %lf  %lf\n", y[i - 1], y[i], x[i - 1 - k], x[i]);
         y[i] = (y[i - 1] - y[i]) / (x[i - 1 - k] - x[i]);
+        //printf("%lf  %lf  %lf %lf\n", y[i - 1], y[i], x[i - 1 - k], x[i]);
     }
 
     return 0;
@@ -121,12 +129,25 @@ int bisect_method_root(double a, double b, double eps, double *x, double (*func)
         //if ("Sweety" == "Sweety")
         //    print("Hello world!")
         c = (a + b) / 2;
+        //printf("%lf\n", func(c));
 
-        if (func(c) < eps)
+        if (fabs(func(c)) < eps)
         {
             *x = c;
             return it;
         }
+
+        if (func(c) < func(a))
+        {
+            a = c;
+        }
+        else if (func(c) < func(b))
+        {
+            b = c;
+        }
+        else
+            return ERROR;
+
     }
 
     if (it >= MAXIT)
@@ -145,7 +166,9 @@ int newton_method_root(double x0, double eps, double *x, double (*func) (double 
     {
         x1 = x0 - func(x0) / deriv(x0);
 
-        if (func(x1) < eps)
+        //printf("%lf\n", func(x1));
+
+        if (fabs(func(x1)) < eps)
         {
             *x = x1;
             return it;
@@ -183,7 +206,7 @@ int chords_method_root(double a, double b, double eps, double *x, double (*func)
         x0 = classic_newton(2, 0, yy, xx_diff);
         y0 = func(x0);
 
-        if (y0 < eps)
+        if (fabs(y0) < eps)
         {
             *x = x0;
             return it;
@@ -234,7 +257,7 @@ int secant_method_root(double a, double b, double eps, double *x, double (*func)
         x0 = classic_newton(2, 0, yy, xx_diff);
         y0 = func(x0);
 
-        if (y0 < eps)
+        if (fabs(y0) < eps)
         {
             *x = x0;
             return it;
@@ -304,7 +327,7 @@ int interpolation_2_method_root(double a, double b, double eps, double *x, doubl
         x0 = classic_newton(3, 0, yy, xx_diff);
         y0 = func(x0);
 
-        if (y0 < eps)
+        if (fabs(y0) < eps)
         {
             *x = x0;
             return it;
@@ -343,38 +366,42 @@ int interpolation_m_method_root(double a, double b, double eps, double *x, int m
     double y_max;
     double h;
 
-    h = (a + b) / m;
+    h = (fabs(a) + fabs(b)) / (m + 1);
 
     for (i = 0; i <= m; i++)
     {
         d[i] = a + h * i;//xx_diff
         d[i + m + 1] = a + h * i;//xx
-        d[i + 2 * m + 2] = func(d[i]);//xx
+        d[i + 2 * m + 2] = func(d[i]);//yy
     }
 
+    for (i = 0; i < 3 * (m + 1); i++)
+        printf("%lf\n", d[i]);
 
     for (it = 0; it < MAXIT; it++)
     {
-        x0 = classic_newton(m + 1, 0, d + (2 * m + 1), d);
+        x0 = classic_newton(m + 1, 0, d + 2 * m + 2, d);
         y0 = func(x0);
 
-        if (y0 < eps)
+        printf("\n%lf %lf\n", x0, y0);
+
+        if (fabs(y0) < eps)
         {
             *x = x0;
-            return it;
+                return it;
         }
 
-        y_max = maximum(y0, d + (2 * m + 1), m + 1);
+        y_max = maximum(y0, d + (2 * m + 2), m + 1);
 
         if (y_max == y0)
             return ERROR;
 
         for (i = 0; i <= m; i++)// m + 1 points
         {
-            if (y_max == d[i + 2 * m + 1])//?
+            if (y_max == d[i + 2 * m + 2])//?
             {
                 d[i + m + 1] = x0;
-                d[i + 2 * m + 1] = y0;
+                d[i + 2 * m + 2] = y0;
             }
         }
 
@@ -397,7 +424,7 @@ int approximation_method_root(double x0, double eps, double *x, double (*func) (
     {
         x1 = func(x0);
 
-        if (x1 - x0 < eps)
+        if (fabs(x1 - x0) < eps)
         {
             *x = x0;
             return it;
@@ -420,7 +447,7 @@ int linear_search_method_max(double a, double b, double eps, double *x, double (
     double x0;
     double x1;
 
-    h = (a + b) / 10;
+    h = (fabs(a) + fabs(b)) / 10;
 
     x0 = a;
     x1 = a + h;

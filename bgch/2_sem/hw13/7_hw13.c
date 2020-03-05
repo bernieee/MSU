@@ -22,7 +22,7 @@ int main(int argc, char **argv)
     eps = atof(argv[2]);
 
     time = clock();
-    result = approximation_method_root(x0, eps, &x, &func);
+    result = approximation_method_root(x0, eps, &x, &sin);
     time = clock() - time;
 
     printf("Iterations = %d\n", result);
