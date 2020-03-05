@@ -96,7 +96,7 @@ static double classic_newton(int n, double x0, double *x, double *y)// x0 = y0, 
 }
 
 
-int bisect_method(double a, double b, double eps, double *x, double (*func) (double x))//1
+int bisect_method_root(double a, double b, double eps, double *x, double (*func) (double x))//1
 {
     int it;
     double c;
@@ -120,7 +120,7 @@ int bisect_method(double a, double b, double eps, double *x, double (*func) (dou
 }
 
 
-int newton_method(double x0, double eps, double *x, double (*func) (double x), double (*deriv) (double x))//2
+int newton_method_root(double x0, double eps, double *x, double (*func) (double x), double (*deriv) (double x))//2
 {
     int it;
     double x1;
@@ -145,7 +145,7 @@ int newton_method(double x0, double eps, double *x, double (*func) (double x), d
 }
 
 
-int chords_method(double a, double b, double eps, double *x, double (*func) (double x))//3
+int chords_method_root(double a, double b, double eps, double *x, double (*func) (double x))//3
 {
     int it;
     double x0;
@@ -194,7 +194,7 @@ int chords_method(double a, double b, double eps, double *x, double (*func) (dou
 }
 
 
-int secant_method(double a, double b, double eps, double *x, double (*func) (double x))//4
+int secant_method_root(double a, double b, double eps, double *x, double (*func) (double x))//4
 {
     int it;
     double x0;
@@ -259,7 +259,7 @@ int secant_method(double a, double b, double eps, double *x, double (*func) (dou
 }
 
 
-int interpolation_2_method(double a, double b, double eps, double *x, double (*func) (double x))//5
+int interpolation_2_method_root(double a, double b, double eps, double *x, double (*func) (double x))//5
 {
     int it;
     int i;
@@ -317,7 +317,7 @@ int interpolation_2_method(double a, double b, double eps, double *x, double (*f
 }
 
 
-int interpolation_m_method(double a, double b, double eps, double *x, int m, double *d, double (*func) (double x))//6
+int interpolation_m_method_root(double a, double b, double eps, double *x, int m, double *d, double (*func) (double x))//6
 {
     int it;
     int i;
@@ -370,3 +370,196 @@ int interpolation_m_method(double a, double b, double eps, double *x, int m, dou
     return it;
 }
 
+
+int approximation_method_root(double x0, double eps, double *x, double (*func) (double x))//7
+{
+    int it;
+    double x1;
+
+    for (it = 0; it < MAXIT; it++)
+    {
+        x1 = func(x0);
+
+        if (x1 - x0 < eps)
+        {
+            *x = x0;
+            return it;
+        }
+
+        x0 = x1;
+    }
+
+    if (it >= MAXIT)
+        return ERROR;
+
+    return it;
+}
+
+
+int linear_search_method_max(double a, double b, double eps, double *x, double (*func) (double x))//8
+{
+    int it;
+    double h;
+    double x0;
+    double x1;
+
+    h = (a + b) / 10;
+
+    x0 = a;
+    x1 = a + h;
+
+    for (it = 0; it < MAXIT; it++)
+    {
+        if (fabs(h) < eps)
+        {
+            *x = func(x0);
+            return it;
+        }
+
+        if (func(x0) < func(x1))
+        {
+            x0 = x1;
+            x1 += h;
+        }
+        else
+        {
+            h = (-1) * h / 10;
+            x0 = x1;
+            x1 += h;
+        }
+    }
+
+    if (it >= MAXIT)
+        return ERROR;
+
+    return it;
+}
+
+
+int golden_section_method_max(double a, double b, double eps, double *x, double (*func) (double x))//9
+{
+    int it;
+    double x1;
+    double x2;
+    double y1;
+    double y2;
+    double phi;
+    double h;
+
+    phi = 2 - (1 + sqrt(5)) / 2;
+    h = b - a;
+
+    x1 = a + phi * h;
+    x2 = b - phi * h;
+
+    y1 = func(x1);
+    y2 = func(x2);
+
+    for (it = 0; it < MAXIT; it++)
+    {
+        if (fabs(h) < eps)
+        {
+            *x = func((x1 + x2) / 2);
+            return it;
+        }
+
+        if (y1 < y2)
+        {
+            a = x1;
+            h = b - a;
+            x1 = x2;
+            y1 = y2;
+            x2 = b - phi * h;
+            y2 = func(x2);
+
+        }
+        else
+        {
+            b = x2;
+            h = b - a;
+            x2 = x1;
+            y2 = y1;
+            x1 = a + phi * h;
+            y1 = func(x1);
+        }
+    }
+
+    if (it >= MAXIT)
+        return ERROR;
+
+    return it;
+}
+
+
+int interpolation_2_method_max(double a, double b, double eps, double *x, double (*func) (double x))//10
+{
+    int it;
+    int i;
+    double x_maxima;
+    double y_maxima;
+    double h;
+    double y_min;
+    double xx[4];
+    double yy_diff[4];
+    double yy[4];
+
+    h = b - a;
+
+    xx[0] = a;
+    yy[0] = func(a);
+    yy_diff[0] = yy[0];
+
+    xx[1] = b;
+    yy[1] = func(b);
+    yy_diff[1] = yy[1];
+
+    xx[2] = (a + b) / 2;
+    yy[2] = func(xx[2]);
+    yy_diff[2] = yy[2];
+
+    x_maxima = xx[0];
+    y_maxima = yy[0];
+
+    for (it = 0; it < MAXIT; it++)
+    {
+        if (fabs(h) < eps)
+        {
+            *x = y_maxima;
+            return it;
+        }
+
+        for (i = 0; i < 3; i++)
+        {
+            divided_difference(3, i, xx, yy_diff);
+        }
+
+        x_maxima = (-1) * yy_diff[1] / 2 / yy_diff[2];
+        y_maxima = func(x_maxima);
+
+        y_min = minimum(y_maxima, yy, 3);
+
+        if (y_min == y_maxima)
+            return ERROR;
+
+        for (i = 0; i < 3; i++)
+        {
+            if (y_min == yy[i])//?
+            {
+                xx[i] = x_maxima;
+                yy[i] = y_maxima;
+            }
+        }
+
+        a = minimum(x_maxima, xx, 3);
+        b = maximum(x_maxima, xx, 3);
+
+        h = b - a;
+
+        replace(yy, yy_diff, 3);
+    }
+
+    if (it >= MAXIT)
+        return ERROR;
+
+    return it;
+}
