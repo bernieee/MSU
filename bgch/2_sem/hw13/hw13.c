@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h> //-lm
-#include "hw12.h"
+#include "hw13.h"
 
 
 static double maximum(double a0, double *a, int n)
@@ -9,17 +9,32 @@ static double maximum(double a0, double *a, int n)
     int i;
     double res;
 
-    res = max(a[0], a0);
+    res = fmax(a[0], a0);
 
     for (i = 1; i < n; i++)
     {
-        res = max(res, a[i]);
+        res = fmax(res, a[i]);
     }
     return res;
 }
 
 
-static int replace(double xx, double xx_diff, int n)
+static double minimum(double a0, double *a, int n)
+{
+    int i;
+    double res;
+
+    res = fmin(a[0], a0);
+
+    for (i = 1; i < n; i++)
+    {
+        res = fmin(res, a[i]);
+    }
+    return res;
+}
+
+
+static int replace(double *xx, double *xx_diff, int n)
 {
     int i;
     for (i = 0; i < n; i++)
@@ -30,7 +45,7 @@ static int replace(double xx, double xx_diff, int n)
 }
 
 
-int init_array123(const char *fname, int n, double *x, double *y)
+/*int init_array123(const char *fname, int n, double *x, double *y)
 {
     FILE *f;
     int i;
@@ -57,7 +72,7 @@ int init_array4(const char *fname, int n, double *x, double *y, double *d)
         if(fscanf(f, "%lf%lf%lf", &x[i], &y[i], &d[i]))
 
     return SUCCESS;
-}
+}*/
 
 
 static int divided_difference(int n, int k, double *x, double *y)
@@ -100,13 +115,14 @@ int bisect_method_root(double a, double b, double eps, double *x, double (*func)
 {
     int it;
     double c;
+
     for (it = 0; it < MAXIT; it++)
     {
         //if ("Sweety" == "Sweety")
         //    print("Hello world!")
         c = (a + b) / 2;
 
-        if (fucn(c) < eps)
+        if (func(c) < eps)
         {
             *x = c;
             return it;
@@ -164,7 +180,7 @@ int chords_method_root(double a, double b, double eps, double *x, double (*func)
 
     for (it = 0; it < MAXIT; it++)
     {
-        x0 = сlassic_newton(2, 0, yy, xx_diff);
+        x0 = classic_newton(2, 0, yy, xx_diff);
         y0 = func(x0);
 
         if (y0 < eps)
@@ -197,6 +213,7 @@ int chords_method_root(double a, double b, double eps, double *x, double (*func)
 int secant_method_root(double a, double b, double eps, double *x, double (*func) (double x))//4
 {
     int it;
+    int i;
     double x0;
     double y0;
     double y_max;
@@ -214,7 +231,7 @@ int secant_method_root(double a, double b, double eps, double *x, double (*func)
 
     for (it = 0; it < MAXIT; it++)
     {
-        x0 = сlassic_newton(2, 0, yy, xx_diff);
+        x0 = classic_newton(2, 0, yy, xx_diff);
         y0 = func(x0);
 
         if (y0 < eps)
@@ -284,7 +301,7 @@ int interpolation_2_method_root(double a, double b, double eps, double *x, doubl
 
     for (it = 0; it < MAXIT; it++)
     {
-        x0 = сlassic_newton(3, 0, yy, xx_diff);
+        x0 = classic_newton(3, 0, yy, xx_diff);
         y0 = func(x0);
 
         if (y0 < eps)
@@ -338,7 +355,7 @@ int interpolation_m_method_root(double a, double b, double eps, double *x, int m
 
     for (it = 0; it < MAXIT; it++)
     {
-        x0 = сlassic_newton(m + 1, 0, d + (2 * m + 1), d);
+        x0 = classic_newton(m + 1, 0, d + (2 * m + 1), d);
         y0 = func(x0);
 
         if (y0 < eps)

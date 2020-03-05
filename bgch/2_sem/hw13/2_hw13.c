@@ -1,38 +1,33 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include "hw12.h"
+#include "hw13.h"
 
 
 int main(int argc, char **argv)
 {
-    const char *a;
-    int n;
     double x0;
-    double result;
+    double eps;
+    double x;
+    int result;
     clock_t time;
-    double *x;
-    double *y;
 
-    if (argc != 4)
+    if (argc != 3)
     {
-        printf("You have only <%d> args instead of <4>\n", argc);
+        printf("You have only <%d> args instead of <3>\n", argc);
         return -1;
     }
 
-    a = argv[1];      // filename1 to read
-    n = atoi(argv[2]);
-    x0 = atof(argv[3]);
-
-    x = malloc(n * sizeof(double));
-    y = malloc(n * sizeof(double));
-
-    init_array123(a, n, x, y);
+    x0 = atof(argv[1]);      // filename1 to read
+    eps = atof(argv[2]);
 
     time = clock();
-    result = classic_newton(n, x0, x, y);
+    result = newton_method_root(x0, eps, &x, &func, &deriv);
     time = clock() - time;
-    printf("%lf\n", result);
+
+    printf("Iterations = %d\n", result);
+    if (result != -1)
+        printf("Root = %lf\n", x);
     printf("Time = %lf\n", (double)time / CLOCKS_PER_SEC);
 
     return 0;

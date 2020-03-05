@@ -1,18 +1,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include "hw12.h"
+#include "hw13.h"
 
 
 int main(int argc, char **argv)
 {
-    const char *a;
-    int n;
-    double x0;
-    double result;
+    double a;
+    double b;
+    double eps;
+    double x;
+    int result;
     clock_t time;
-    double *x;
-    double *y;
 
     if (argc != 4)
     {
@@ -20,19 +19,17 @@ int main(int argc, char **argv)
         return -1;
     }
 
-    a = argv[1];      // filename1 to read
-    n = atoi(argv[2]);
-    x0 = atof(argv[3]);
-
-    x = malloc(n * sizeof(double));
-    y = malloc(n * sizeof(double));
-
-    init_array123(a, n, x, y);
+    a = atof(argv[1]);      // filename1 to read
+    b = atof(argv[2]);
+    eps = atof(argv[3]);
 
     time = clock();
-    result = lagrange(n, x0, x, y);
+    result = bisect_method_root(a, b, eps, &x, &func);
     time = clock() - time;
-    printf("%lf\n", result);
+
+    printf("Iterations = %d\n", result);
+    if (result != -1)
+        printf("Root = %lf\n", x);
     printf("Time = %lf\n", (double)time / CLOCKS_PER_SEC);
 
     return 0;

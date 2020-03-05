@@ -1,36 +1,36 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include "hw12.h"
+#include "hw13.h"
 
 
 int main(int argc, char **argv)
 {
-    double result_eps;
-    double result_real;
-    clock_t time_eps;
-    clock_t time_real;
-    double x;
+    double a;
+    double b;
     double eps;
+    double x;
+    int result;
+    clock_t time;
 
-    while ((scanf("%lf%lf", &x, &eps)) && (eps >= 0.))
+    if (argc != 4)
     {
-        time_eps = clock();
-        result_eps = log_eps_x(x, eps);
-        time_eps = clock() - time_eps;
-
-        time_real = clock();
-        result_real = log(x);
-        time_real = clock() - time_real;
-
-        printf("Eps = %.20lf\n", result_eps);
-        printf("Time = %lf\n", (double)time_eps / CLOCKS_PER_SEC);
-
-        printf("Real = %.20lf\n", result_real);
-        printf("Time = %lf\n", (double)time_real / CLOCKS_PER_SEC);
-
-        printf("Error = %.40lf\n", fabs(result_real - result_eps));
+        printf("You have only <%d> args instead of <4>\n", argc);
+        return -1;
     }
+
+    a = atof(argv[1]);      // filename1 to read
+    b = atof(argv[2]);
+    eps = atof(argv[3]);
+
+    time = clock();
+    result = linear_search_method_max(a, b, eps, &x, &func);
+    time = clock() - time;
+
+    printf("Iterations = %d\n", result);
+    if (result != -1)
+        printf("Max = %lf\n", x);
+    printf("Time = %lf\n", (double)time / CLOCKS_PER_SEC);
 
     return 0;
 }

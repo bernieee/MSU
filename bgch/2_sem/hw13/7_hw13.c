@@ -1,36 +1,34 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include "hw12.h"
+#include "hw13.h"
 
 
 int main(int argc, char **argv)
 {
-    double result_eps;
-    double result_real;
-    clock_t time_eps;
-    clock_t time_real;
-    double x;
+    double x0;
     double eps;
+    double x;
+    int result;
+    clock_t time;
 
-    while ((scanf("%lf%lf", &x, &eps)) && (eps >= 0.))
+    if (argc != 3)
     {
-        time_eps = clock();
-        result_eps = e_eps_x(x, eps);
-        time_eps = clock() - time_eps;
-
-        time_real = clock();
-        result_real = exp(x);
-        time_real = clock() - time_real;
-
-        printf("Eps = %.20lf\n", result_eps);
-        printf("Time = %lf\n", (double)time_eps / CLOCKS_PER_SEC);
-
-        printf("Real = %.20lf\n", result_real);
-        printf("Time = %lf\n", (double)time_real / CLOCKS_PER_SEC);
-
-        printf("Error = %.40lf\n", fabs(result_real - result_eps));
+        printf("You have only <%d> args instead of <3>\n", argc);
+        return -1;
     }
+
+    x0 = atof(argv[1]);      // filename1 to read
+    eps = atof(argv[2]);
+
+    time = clock();
+    result = approximation_method_root(x0, eps, &x, &func);
+    time = clock() - time;
+
+    printf("Iterations = %d\n", result);
+    if (result != -1)
+        printf("Root = %lf\n", x);
+    printf("Time = %lf\n", (double)time / CLOCKS_PER_SEC);
 
     return 0;
 }

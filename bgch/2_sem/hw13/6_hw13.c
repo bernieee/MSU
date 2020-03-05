@@ -1,36 +1,41 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include "hw12.h"
+#include "hw13.h"
 
 
 int main(int argc, char **argv)
 {
-    double result_eps;
-    double result_real;
-    clock_t time_eps;
-    clock_t time_real;
-    double x;
+    int m;
+    double a;
+    double b;
     double eps;
+    double x;
+    double *d;
+    int result;
+    clock_t time;
 
-    while ((scanf("%lf%lf", &x, &eps)) && (eps >= 0.))
+    if (argc != 5)
     {
-        time_eps = clock();
-        result_eps = cos_eps_x(x, eps);
-        time_eps = clock() - time_eps;
-
-        time_real = clock();
-        result_real = cos(x);
-        time_real = clock() - time_real;
-
-        printf("Eps = %.20lf\n", result_eps);
-        printf("Time = %lf\n", (double)time_eps / CLOCKS_PER_SEC);
-
-        printf("Real = %.20lf\n", result_real);
-        printf("Time = %lf\n", (double)time_real / CLOCKS_PER_SEC);
-
-        printf("Error = %.40lf\n", fabs(result_real - result_eps));
+        printf("You have only <%d> args instead of <5>\n", argc);
+        return -1;
     }
+
+    m = atoi(argv[1]);
+    a = atof(argv[2]);      // filename1 to read
+    b = atof(argv[3]);
+    eps = atof(argv[4]);
+
+    d = malloc((3 * (m + 1)) * sizeof(double));
+
+    time = clock();
+    result = interpolation_m_method_root(a, b, eps, &x, m, d, &func);
+    time = clock() - time;
+
+    printf("Iterations = %d\n", result);
+    if (result != -1)
+        printf("Root = %lf\n", x);
+    printf("Time = %lf\n", (double)time / CLOCKS_PER_SEC);
 
     return 0;
 }
