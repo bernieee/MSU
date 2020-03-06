@@ -5,7 +5,7 @@
 
 double parabol(double x)
 {
-    return -x * x - 5 * x + 6;
+    return 0.4 * x * x * x * x * x - 3 * x * x * x - 5;
 }
 double line(double x)
 {
@@ -17,7 +17,7 @@ double sin_deriv(double x)
 }
 double parabol_deriv(double x)
 {
-    return 4 * x;
+    return 2 * x * x * x * x - 9 * x * x;
 }
 double line_deriv(double x)
 {

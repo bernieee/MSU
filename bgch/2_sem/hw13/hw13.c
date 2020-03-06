@@ -15,11 +15,11 @@ static double maximum(double a0, double *a, int n)
     int i;
     double res;
 
-    res = fmax(a[0], a0);
+    res = fmax(fabs(a[0]), fabs(a0));
 
     for (i = 1; i < n; i++)
     {
-        res = fmax(res, a[i]);
+        res = fmax(fabs(res), fabs(a[i]));
     }
     return res;
 }
@@ -30,11 +30,11 @@ static double minimum(double a0, double *a, int n)
     int i;
     double res;
 
-    res = fmin(a[0], a0);
+    res = fmin(fabs(a[0]), fabs(a0));
 
     for (i = 1; i < n; i++)
     {
-        res = fmin(res, a[i]);
+        res = fmin(fabs(res), fabs(a[i]));
     }
     return res;
 }
@@ -87,6 +87,8 @@ static int divided_difference(int n, int k, double *x, double *y)
 
     for (i = n - 1; i > k; i--)
     {
+        if (!(x[i - 1 - k] - x[i]))
+            return ERROR;
         //printf("%lf  %lf  %lf  %lf\n", y[i - 1], y[i], x[i - 1 - k], x[i]);
         y[i] = (y[i - 1] - y[i]) / (x[i - 1 - k] - x[i]);
         //printf("%lf  %lf  %lf %lf\n", y[i - 1], y[i], x[i - 1 - k], x[i]);
@@ -111,7 +113,7 @@ static double classic_newton(int n, double x0, double *x, double *y)// x0 = y0, 
     for (i = n - 1; i > 0; i--)
     {
         L += y[i];
-        L *= (x0 - x[i]);
+        L *= (x0 - x[i - 1]);
     }
     L += y[0];
 
@@ -123,6 +125,18 @@ int bisect_method_root(double a, double b, double eps, double *x, double (*func)
 {
     int it;
     double c;
+
+    if (fabs(a) < eps)
+    {
+        *x = a;
+        return 0;
+    }
+
+    if (fabs(b) < eps)
+    {
+        *x = b;
+        return 0;
+    }
 
     for (it = 0; it < MAXIT; it++)
     {
@@ -137,17 +151,18 @@ int bisect_method_root(double a, double b, double eps, double *x, double (*func)
             return it;
         }
 
-        if (func(c) < func(a))
-        {
-            a = c;
-        }
-        else if (func(c) < func(b))
+        //printf("%lf %lf %lf\n", func(a), func(b), func(c));
+
+        if (func(c) * func(a) < 0)
         {
             b = c;
         }
+        else if (func(c) * func(b) < 0)
+        {
+            a = c;
+        }
         else
             return ERROR;
-
     }
 
     if (it >= MAXIT)
@@ -162,11 +177,19 @@ int newton_method_root(double x0, double eps, double *x, double (*func) (double 
     int it;
     double x1;
 
+    if (fabs(func(x0)) < eps)
+    {
+        *x = x0;
+        return 0;
+    }
+
     for (it = 0; it < MAXIT; it++)
     {
+        if (!deriv(x0))
+            return ERROR;
         x1 = x0 - func(x0) / deriv(x0);
 
-        //printf("%lf\n", func(x1));
+        //printf("%e\n", func(x1));
 
         if (fabs(func(x1)) < eps)
         {
@@ -201,10 +224,27 @@ int chords_method_root(double a, double b, double eps, double *x, double (*func)
     xx_diff[1] = b;
     yy[1] = func(b);
 
+    if (fabs(yy[0]) < eps)
+    {
+        *x = xx[0];
+        return 0;
+    }
+
+    if (fabs(yy[1]) < eps)
+    {
+        *x = xx[1];
+        return 0;
+    }
+
+    //printf("%lf %lf\n", xx[0], yy[0]);
+    //printf("%lf %lf\n", xx[1], yy[1]);
+
     for (it = 0; it < MAXIT; it++)
     {
         x0 = classic_newton(2, 0, yy, xx_diff);
         y0 = func(x0);
+
+        //printf("%lf %lf\n", x0, y0);
 
         if (fabs(y0) < eps)
         {
@@ -212,16 +252,18 @@ int chords_method_root(double a, double b, double eps, double *x, double (*func)
             return it;
         }
 
-        if (y0 < 0)
+        if (y0 * yy[0] < 0)
+        {
+            xx[1] = x0;
+            yy[1] = y0;
+        }
+        else if (y0 * yy[1] < 0)
         {
             xx[0] = x0;
             yy[0] = y0;
         }
         else
-        {
-            xx[1] = x0;
-            yy[1] = y0;
-        }
+            return ERROR;
 
         replace(xx, xx_diff, 2);
     }
@@ -252,6 +294,18 @@ int secant_method_root(double a, double b, double eps, double *x, double (*func)
     xx_diff[1] = b;
     yy[1] = func(b);
 
+    if (fabs(yy[0]) < eps)
+    {
+        *x = xx[0];
+        return 0;
+    }
+
+    if (fabs(yy[1]) < eps)
+    {
+        *x = xx[1];
+        return 0;
+    }
+
     for (it = 0; it < MAXIT; it++)
     {
         x0 = classic_newton(2, 0, yy, xx_diff);
@@ -265,7 +319,7 @@ int secant_method_root(double a, double b, double eps, double *x, double (*func)
 
         y_max = maximum(y0, yy, 2);
 
-        if (y_max == y0)
+        if (y_max == fabs(y0))
             return ERROR;
 
         for (i = 0; i < 2; i++)
@@ -322,6 +376,27 @@ int interpolation_2_method_root(double a, double b, double eps, double *x, doubl
     xx_diff[2] = (a + b) / 2;
     yy[2] = func(xx[2]);
 
+    if ((xx[2] == xx[1]) || (xx[2] == x[0]))
+        return ERROR;
+
+    if (fabs(yy[0]) < eps)
+    {
+        *x = xx[0];
+        return 0;
+    }
+
+    if (fabs(yy[1]) < eps)
+    {
+        *x = xx[1];
+        return 0;
+    }
+
+    if (fabs(yy[2]) < eps)
+    {
+        *x = xx[2];
+        return 0;
+    }
+
     for (it = 0; it < MAXIT; it++)
     {
         x0 = classic_newton(3, 0, yy, xx_diff);
@@ -335,12 +410,12 @@ int interpolation_2_method_root(double a, double b, double eps, double *x, doubl
 
         y_max = maximum(y0, yy, 3);
 
-        if (y_max == y0)
+        if (y_max == fabs(y0))
             return ERROR;
 
         for (i = 0; i < 3; i++)
         {
-            if (y_max == yy[i])//?
+            if (y_max == fabs(yy[i]))//?
             {
                 xx[i] = x0;
                 yy[i] = y0;
@@ -383,7 +458,7 @@ int interpolation_m_method_root(double a, double b, double eps, double *x, int m
         x0 = classic_newton(m + 1, 0, d + 2 * m + 2, d);
         y0 = func(x0);
 
-        printf("\n%lf %lf\n", x0, y0);
+        //printf("\n%lf %lf\n", x0, y0);
 
         if (fabs(y0) < eps)
         {
@@ -393,12 +468,12 @@ int interpolation_m_method_root(double a, double b, double eps, double *x, int m
 
         y_max = maximum(y0, d + (2 * m + 2), m + 1);
 
-        if (y_max == y0)
+        if (y_max == fabs(y0))
             return ERROR;
 
         for (i = 0; i <= m; i++)// m + 1 points
         {
-            if (y_max == d[i + 2 * m + 2])//?
+            if (y_max == fabs(d[i + 2 * m + 2]))//?
             {
                 d[i + m + 1] = x0;
                 d[i + 2 * m + 2] = y0;

@@ -41,7 +41,8 @@ static double l(int n, double x0, int i, double *x)//1
     res = 1.;
     for (j = 0; j < n; j++)
     {
-        res *= (x0 - x[j]) / (x[i] - x[j]);
+        if (x[i] != x[j])
+            res *= (x0 - x[j]) / (x[i] - x[j]);
     }
 
     return res;
@@ -68,7 +69,7 @@ static int divided_difference(int n, int k, double *x, double *y)//2
 {
     int i;
 
-    for (i = n - 1; i >= k; i--)
+    for (i = n - 1; i > k; i--)
     {
         y[i] = (y[i - 1] - y[i]) / (x[i - 1 - k] - x[i]);
     }
@@ -92,7 +93,7 @@ double classic_newton(int n, double x0, double *x, double *y)//2
     for (i = n - 1; i > 0; i--)
     {
         L += y[i];
-        L *= (x0 - x[i]);
+        L *= (x0 - x[i - 1]);
     }
     L += y[0];
 
