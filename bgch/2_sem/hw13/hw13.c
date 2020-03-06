@@ -4,12 +4,6 @@
 #include "hw13.h"
 
 
-/*double parabol(double x)
-{
-    return 2 * x * x - 8;
-}*/
-
-
 static double maximum(double a0, double *a, int n)
 {
     int i;
@@ -51,36 +45,6 @@ static int replace(double *xx, double *xx_diff, int n)
 }
 
 
-/*int init_array123(const char *fname, int n, double *x, double *y)
-{
-    FILE *f;
-    int i;
-
-    if (!(f = fopen(fname, "r")))
-        return ERROR_OPEN;
-
-    for (i = 0; i < n; i++)
-        if(fscanf(f, "%lf%lf", &x[i], &y[i]))
-
-    return SUCCESS;
-}
-
-
-int init_array4(const char *fname, int n, double *x, double *y, double *d)
-{
-    FILE *f;
-    int i;
-
-    if (!(f = fopen(fname, "r")))
-        return ERROR_OPEN;
-
-    for (i = 0; i < n; i++)
-        if(fscanf(f, "%lf%lf%lf", &x[i], &y[i], &d[i]))
-
-    return SUCCESS;
-}*/
-
-
 static int divided_difference(int n, int k, double *x, double *y)
 {
     int i;
@@ -91,7 +55,7 @@ static int divided_difference(int n, int k, double *x, double *y)
             return ERROR;
         //printf("%lf  %lf  %lf  %lf\n", y[i - 1], y[i], x[i - 1 - k], x[i]);
         y[i] = (y[i - 1] - y[i]) / (x[i - 1 - k] - x[i]);
-        //printf("%lf  %lf  %lf %lf\n", y[i - 1], y[i], x[i - 1 - k], x[i]);
+        //printf("%lf\n", y[i]);
     }
 
     return 0;
@@ -140,10 +104,7 @@ int bisect_method_root(double a, double b, double eps, double *x, double (*func)
 
     for (it = 0; it < MAXIT; it++)
     {
-        //if ("Sweety" == "Sweety")
-        //    print("Hello world!")
         c = (a + b) / 2;
-        //printf("%lf\n", func(c));
 
         if (fabs(func(c)) < eps)
         {
@@ -151,13 +112,12 @@ int bisect_method_root(double a, double b, double eps, double *x, double (*func)
             return it;
         }
 
-        //printf("%lf %lf %lf\n", func(a), func(b), func(c));
-
-        if (func(c) * func(a) < 0)
+        if ((func(c) >= 0 && func(a) <= 0) || (func(c) <= 0 && func(a) >= 0))
         {
             b = c;
         }
-        else if (func(c) * func(b) < 0)
+        else if ((func(c) >= 0 && func(b) <= 0) || (func(c) <= 0 && func(b) >= 0))
+
         {
             a = c;
         }
@@ -187,9 +147,8 @@ int newton_method_root(double x0, double eps, double *x, double (*func) (double 
     {
         if (!deriv(x0))
             return ERROR;
-        x1 = x0 - func(x0) / deriv(x0);
 
-        //printf("%e\n", func(x1));
+        x1 = x0 - func(x0) / deriv(x0);
 
         if (fabs(func(x1)) < eps)
         {
@@ -236,15 +195,10 @@ int chords_method_root(double a, double b, double eps, double *x, double (*func)
         return 0;
     }
 
-    //printf("%lf %lf\n", xx[0], yy[0]);
-    //printf("%lf %lf\n", xx[1], yy[1]);
-
     for (it = 0; it < MAXIT; it++)
     {
         x0 = classic_newton(2, 0, yy, xx_diff);
         y0 = func(x0);
-
-        //printf("%lf %lf\n", x0, y0);
 
         if (fabs(y0) < eps)
         {
@@ -252,12 +206,12 @@ int chords_method_root(double a, double b, double eps, double *x, double (*func)
             return it;
         }
 
-        if (y0 * yy[0] < 0)
+        if ((y0 >= 0 && yy[0] <= 0) || (y0 < 0 && yy[0] > 0))
         {
             xx[1] = x0;
             yy[1] = y0;
         }
-        else if (y0 * yy[1] < 0)
+        else if ((y0 >= 0 && yy[1] <= 0) || (y0 < 0 && yy[1] > 0))
         {
             xx[0] = x0;
             yy[0] = y0;
@@ -311,39 +265,78 @@ int secant_method_root(double a, double b, double eps, double *x, double (*func)
         x0 = classic_newton(2, 0, yy, xx_diff);
         y0 = func(x0);
 
+        //printf("\n%lf\n", x0);
+
         if (fabs(y0) < eps)
         {
             *x = x0;
             return it;
         }
 
-        y_max = maximum(y0, yy, 2);
-
-        if (y_max == fabs(y0))
-            return ERROR;
-
-        for (i = 0; i < 2; i++)
+        if (((yy[0] >= 0) && (yy[1] >= 0) && (y0 >= 0)) || ((yy[0] < 0) && (yy[1] < 0) && (y0 < 0)))
         {
-            if (y_max == fabs(yy[i]))//?
+            y_max = maximum(y0, yy, 2);
+
+            if ((y_max >= fabs(y0)) && (y_max <= fabs(y0)))
+                return ERROR;
+
+            for (i = 0; i < 2; i++)
             {
-                xx[i] = x0;
-                yy[i] = y0;
+                if ((y_max >= fabs(yy[i])) && (y_max <= fabs(yy[i])))
+                {
+                    xx[i] = x0;
+                    yy[i] = y0;
+                }
             }
+        }
+        else
+        {
+            if ((y0 >= 0 && yy[0] >= 0) || (y0 < 0 && yy[0] < 0))
+            {
+                if (fabs(y0) <= fabs(yy[0]))
+                {
+                    xx[0] = x0;
+                    yy[0] = y0;
+                }
+                else
+                    return ERROR;
+            }
+            else if ((y0 >= 0 && yy[1] >= 0) || (y0 < 0 && yy[1] < 0))
+            {
+                if (fabs(y0) <= fabs(yy[1]))
+                {
+                    xx[1] = x0;
+                    yy[1] = y0;
+                }
+                else
+                    return ERROR;
+            }
+            else// if ((yy[0] > 0 && yy[1] > 0) || (yy[0] < 0 && yy[1] < 0))
+            {
+                y_max = maximum(y0, yy, 2);
+
+                if ((y_max >= fabs(y0)) && (y_max <= fabs(y0)))
+                    return ERROR;
+
+                if (fabs(yy[0]) <= fabs(yy[1]))
+                {
+                    xx[1] = x0;
+                    yy[1] = y0;
+                }
+                else //if (fabs(yy[0]) <= fabs(yy[1]))
+                {
+                    xx[0] = x0;
+                    yy[0] = y0;
+                }
+                //else
+                //    return ERROR;
+            }
+            //else
+            //    return ERROR;
+
         }
 
         replace(xx, xx_diff, 2);
-        /*if (y_max == yy[0])//?
-        {
-            xx[0] = x0;
-            yy[0] = y0;
-        }
-        else if (y_max == yy[1])//?
-        {
-            xx[1] = x0;
-            yy[1] = y0;
-        }
-        else
-            return ERROR;*/
     }
 
     if (it >= MAXIT)
@@ -376,7 +369,7 @@ int interpolation_2_method_root(double a, double b, double eps, double *x, doubl
     xx_diff[2] = (a + b) / 2;
     yy[2] = func(xx[2]);
 
-    if ((xx[2] == xx[1]) || (xx[2] == x[0]))
+    if (((xx[2] >= xx[1]) && (xx[2] <= xx[1])) || ((xx[2] >= x[0]) && (xx[2] <= x[0])))
         return ERROR;
 
     if (fabs(yy[0]) < eps)
@@ -410,12 +403,12 @@ int interpolation_2_method_root(double a, double b, double eps, double *x, doubl
 
         y_max = maximum(y0, yy, 3);
 
-        if (y_max == fabs(y0))
+        if ((y_max >= fabs(y0)) && (y_max <= fabs(y0)))
             return ERROR;
 
         for (i = 0; i < 3; i++)
         {
-            if (y_max == fabs(yy[i]))//?
+            if ((y_max >= fabs(yy[i])) && (y_max <= fabs(yy[i])))
             {
                 xx[i] = x0;
                 yy[i] = y0;
@@ -450,15 +443,13 @@ int interpolation_m_method_root(double a, double b, double eps, double *x, int m
         d[i + 2 * m + 2] = func(d[i]);//yy
     }
 
-    for (i = 0; i < 3 * (m + 1); i++)
-        printf("%lf\n", d[i]);
+    //for (i = 0; i < 3 * (m + 1); i++)
+    //    printf("%lf\n", d[i]);
 
     for (it = 0; it < MAXIT; it++)
     {
         x0 = classic_newton(m + 1, 0, d + 2 * m + 2, d);
         y0 = func(x0);
-
-        //printf("\n%lf %lf\n", x0, y0);
 
         if (fabs(y0) < eps)
         {
@@ -468,12 +459,12 @@ int interpolation_m_method_root(double a, double b, double eps, double *x, int m
 
         y_max = maximum(y0, d + (2 * m + 2), m + 1);
 
-        if (y_max == fabs(y0))
+        if ((y_max >= fabs(y0)) && (y_max <= fabs(y0)))
             return ERROR;
 
         for (i = 0; i <= m; i++)// m + 1 points
         {
-            if (y_max == fabs(d[i + 2 * m + 2]))//?
+            if ((y_max >= fabs(d[i + 2 * m + 2])) && (y_max <= fabs(d[i + 2 * m + 2])))
             {
                 d[i + m + 1] = x0;
                 d[i + 2 * m + 2] = y0;
@@ -543,7 +534,7 @@ int linear_search_method_max(double a, double b, double eps, double *x, double (
 
         //printf("%lf\n", x1);
 
-        if ((func(x0) < func(x1)))// && (x1 + h > a) && (x1 + h < b))
+        if ((func(x0) < func(x1)))
         {
             if (!(x1 + h < b))
                 h /= 10;
@@ -551,23 +542,16 @@ int linear_search_method_max(double a, double b, double eps, double *x, double (
             x0 = x1;
             x1 += h;
         }
-        else if ((func(x0) > func(x1)))// && (x1 + h > a) && (x1 + h < b))
+        else if ((func(x0) > func(x1)))
         {
             h = (-1) * h;
 
             if (!(x1 + h > b))
                 h /= 10;
 
-            //h = (-1) * h;
             x0 = x1;
             x1 += h;
         }
-        /*else if ((!(x1 + h > a)) || (!(x1 + h < b)))
-        {
-            h /= 10;
-            x0 = x1;
-            x1 += h
-        }*/
         else
             return ERROR;
     }

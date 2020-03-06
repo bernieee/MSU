@@ -5,8 +5,8 @@
 
 double parabol(double x)
 {
-    return x * x * x - 2;
-    //return 0.4 * x * x * x * x * x - 3 * x * x * x - 5;
+    //return x * x * x - 2;
+    return 0.4 * x * x * x * x * x - 3 * x * x * x - 5;
     //return -(2 - (x - 3) * (x - 3));
 }
 double line(double x)
