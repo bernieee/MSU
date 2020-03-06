@@ -89,14 +89,20 @@ int bisect_method_root(double a, double b, double eps, double *x, double (*func)
 {
     int it;
     double c;
+    double res_a;
+    double res_b;
+    double res_c;
 
-    if (fabs(a) < eps)
+    res_a = func(a);
+    res_b = func(b);
+
+    if (fabs(res_a) < eps)
     {
         *x = a;
         return 0;
     }
 
-    if (fabs(b) < eps)
+    if (fabs(res_b) < eps)
     {
         *x = b;
         return 0;
@@ -105,21 +111,23 @@ int bisect_method_root(double a, double b, double eps, double *x, double (*func)
     for (it = 0; it < MAXIT; it++)
     {
         c = (a + b) / 2;
+        res_c = func(c);
 
-        if (fabs(func(c)) < eps)
+        if (fabs(res_c) < eps)
         {
             *x = c;
             return it;
         }
 
-        if ((func(c) >= 0 && func(a) <= 0) || (func(c) <= 0 && func(a) >= 0))
+        if ((res_c >= 0 && res_a <= 0) || (res_c <= 0 && res_a >= 0))
         {
             b = c;
+            res_b = res_c;
         }
-        else if ((func(c) >= 0 && func(b) <= 0) || (func(c) <= 0 && func(b) >= 0))
-
+        else if ((res_c >= 0 && res_b <= 0) || (res_c <= 0 && res_b >= 0))
         {
             a = c;
+            res_a = res_c;
         }
         else
             return ERROR;
@@ -136,8 +144,14 @@ int newton_method_root(double x0, double eps, double *x, double (*func) (double 
 {
     int it;
     double x1;
+    double res_x0;
+    double der_x0;
+    double res_x1;
 
-    if (fabs(func(x0)) < eps)
+    res_x0 = func(x0);
+    der_x0 = deriv(x0);
+
+    if (fabs(res_x0) < eps)
     {
         *x = x0;
         return 0;
@@ -145,18 +159,21 @@ int newton_method_root(double x0, double eps, double *x, double (*func) (double 
 
     for (it = 0; it < MAXIT; it++)
     {
-        if (!deriv(x0))
+        if (!der_x0)
             return ERROR;
 
-        x1 = x0 - func(x0) / deriv(x0);
+        x1 = x0 - res_x0 / der_x0;
+        res_x1 = func(x1);
+        der_x0 = deriv(x1);
 
-        if (fabs(func(x1)) < eps)
+        if (fabs(res_x1) < eps)
         {
             *x = x1;
             return it;
         }
 
         x0 = x1;
+        res_x0 = res_x1;
     }
 
     if (it >= MAXIT)
@@ -200,18 +217,21 @@ int chords_method_root(double a, double b, double eps, double *x, double (*func)
         x0 = classic_newton(2, 0, yy, xx_diff);
         y0 = func(x0);
 
+        printf("%lf %lf %lf\n", xx[0], xx[1], x0);
+        printf("%lf %lf %lf\n", yy[0], yy[1], y0);
+
         if (fabs(y0) < eps)
         {
             *x = x0;
             return it;
         }
 
-        if ((y0 >= 0 && yy[0] <= 0) || (y0 < 0 && yy[0] > 0))
+        if ((y0 >= 0 && yy[0] <= 0/* && y0 >= a && y0 <= b*/) || (y0 < 0 && yy[0] > 0/* && y0 >= a && y0 <= b*/))
         {
             xx[1] = x0;
             yy[1] = y0;
         }
-        else if ((y0 >= 0 && yy[1] <= 0) || (y0 < 0 && yy[1] > 0))
+        else if ((y0 >= 0 && yy[1] <= 0/* && y0 >= a && y0 <= b*/) || (y0 < 0 && yy[1] > 0/* && y0 >= a && y0 <= b*/))
         {
             xx[0] = x0;
             yy[0] = y0;
@@ -227,6 +247,7 @@ int chords_method_root(double a, double b, double eps, double *x, double (*func)
 
     return it;
 }
+
 
 
 int secant_method_root(double a, double b, double eps, double *x, double (*func) (double x))//4
@@ -265,6 +286,9 @@ int secant_method_root(double a, double b, double eps, double *x, double (*func)
         x0 = classic_newton(2, 0, yy, xx_diff);
         y0 = func(x0);
 
+        //printf("%lf %lf %lf\n", xx[0], xx[1], x0);
+        //printf("%lf %lf %lf\n", yy[0], yy[1], y0);
+
         //printf("\n%lf\n", x0);
 
         if (fabs(y0) < eps)
@@ -273,12 +297,16 @@ int secant_method_root(double a, double b, double eps, double *x, double (*func)
             return it;
         }
 
-        if (((yy[0] >= 0) && (yy[1] >= 0) && (y0 >= 0)) || ((yy[0] < 0) && (yy[1] < 0) && (y0 < 0)))
+        if (((yy[0] > 0) && (yy[1] > 0) && (y0 > 0)) || ((yy[0] < 0) && (yy[1] < 0) && (y0 < 0)))
         {
             y_max = maximum(y0, yy, 2);
+            //printf("1!\n");
 
             if ((y_max >= fabs(y0)) && (y_max <= fabs(y0)))
+            {
+                //printf("1 %lf %lf %lf  %d\n", xx[0], xx[1], x0, it);
                 return ERROR;
+            }
 
             for (i = 0; i < 2; i++)
             {
@@ -291,32 +319,54 @@ int secant_method_root(double a, double b, double eps, double *x, double (*func)
         }
         else
         {
-            if ((y0 >= 0 && yy[0] >= 0) || (y0 < 0 && yy[0] < 0))
+            y_max = maximum(y0, yy, 2);
+            //printf("2!\n");
+
+            if ((y0 > 0 && yy[0] > 0) || (y0 < 0 && yy[0] < 0))// xa
             {
-                if (fabs(y0) <= fabs(yy[0]))
+                if ((y_max >= fabs(y0)) && (y_max <= fabs(y0)))
                 {
-                    xx[0] = x0;
-                    yy[0] = y0;
-                }
-                else
+                    //printf("2 %lf %lf %lf  %d\n", xx[0], xx[1], x0, it);
                     return ERROR;
-            }
-            else if ((y0 >= 0 && yy[1] >= 0) || (y0 < 0 && yy[1] < 0))
-            {
-                if (fabs(y0) <= fabs(yy[1]))
+                }
+
+                if (fabs(y0) <= fabs(yy[0]))
                 {
                     xx[1] = x0;
                     yy[1] = y0;
                 }
                 else
-                    return ERROR;
+                {
+                    xx[0] = x0;
+                    yy[0] = y0;
+                }
             }
-            else// if ((yy[0] > 0 && yy[1] > 0) || (yy[0] < 0 && yy[1] < 0))
+            else if ((y0 > 0 && yy[1] > 0) || (y0 < 0 && yy[1] < 0))// xb
             {
-                y_max = maximum(y0, yy, 2);
-
                 if ((y_max >= fabs(y0)) && (y_max <= fabs(y0)))
+                {
+                    //printf("3 %d\n", it);
+                    //printf("3 %lf %lf %lf  %d\n", xx[0], xx[1], x0, it);
                     return ERROR;
+                }
+
+                if (fabs(y0) <= fabs(yy[1]))
+                {
+                    xx[0] = x0;
+                    yy[0] = y0;
+                }
+                else
+                {
+                    xx[1] = x0;
+                    yy[1] = y0;
+                }
+            }
+            else// if ((yy[0] > 0 && yy[1] > 0) || (yy[0] < 0 && yy[1] < 0)) ab
+            {
+                //y_max = maximum(y0, yy, 2);
+
+                //if ((y_max >= fabs(y0)) && (y_max <= fabs(y0)))
+                //    return ERROR;
 
                 if (fabs(yy[0]) <= fabs(yy[1]))
                 {
@@ -344,6 +394,152 @@ int secant_method_root(double a, double b, double eps, double *x, double (*func)
 
     return it;
 }
+
+
+/*int secant_method_root(double a, double b, double eps, double *x, double (*func) (double x))//4
+{
+    int it;
+    int i;
+    double x0;
+    double y0;
+    double y_max;
+    double xx[3];
+    double xx_diff[3];
+    double yy[3];
+
+    xx[0] = a;
+    xx_diff[0] = a;
+    yy[0] = func(a);
+
+    xx[1] = b;
+    xx_diff[1] = b;
+    yy[1] = func(b);
+
+    if (fabs(yy[0]) < eps)
+    {
+        *x = xx[0];
+        return 0;
+    }
+
+    if (fabs(yy[1]) < eps)
+    {
+        *x = xx[1];
+        return 0;
+    }
+
+    for (it = 0; it < MAXIT; it++)
+    {
+        x0 = classic_newton(2, 0, yy, xx_diff);
+        y0 = func(x0);
+
+        printf("%lf %lf %lf\n", xx[0], xx[1], x0);
+        printf("%lf %lf %lf\n", yy[0], yy[1], y0);
+
+        //printf("\n%lf\n", x0);
+
+        if (fabs(y0) < eps)
+        {
+            *x = x0;
+            return it;
+        }
+
+        if (((yy[0] > 0) && (yy[1] > 0) && (y0 > 0)) || ((yy[0] < 0) && (yy[1] < 0) && (y0 < 0)))
+        {
+            y_max = maximum(y0, yy, 2);
+            printf("1!\n");
+
+            if ((y_max >= fabs(y0)) && (y_max <= fabs(y0)))
+            {
+                printf("1 %lf %lf %lf  %d\n", xx[0], xx[1], x0, it);
+                return ERROR;
+            }
+
+            for (i = 0; i < 2; i++)
+            {
+                if ((y_max >= fabs(yy[i])) && (y_max <= fabs(yy[i])))
+                {
+                    xx[i] = x0;
+                    yy[i] = y0;
+                }
+            }
+        }
+        else
+        {
+            y_max = maximum(y0, yy, 2);
+            printf("2!\n");
+
+            if ((y0 > 0 && yy[0] > 0) || (y0 < 0 && yy[0] < 0))// xa
+            {
+                if ((y_max >= fabs(y0)) && (y_max <= fabs(y0)))
+                {
+                    printf("2 %lf %lf %lf  %d\n", xx[0], xx[1], x0, it);
+                    return ERROR;
+                }
+
+                if (fabs(y0) <= fabs(yy[0]))
+                {
+                    xx[1] = x0;
+                    yy[1] = y0;
+                }
+                else
+                {
+                    xx[0] = x0;
+                    yy[0] = y0;
+                }
+            }
+            else if ((y0 > 0 && yy[1] > 0) || (y0 < 0 && yy[1] < 0))// xb
+            {
+                if ((y_max >= fabs(y0)) && (y_max <= fabs(y0)))
+                {
+                    //printf("3 %d\n", it);
+                    printf("3 %lf %lf %lf  %d\n", xx[0], xx[1], x0, it);
+                    return ERROR;
+                }
+
+                if (fabs(y0) <= fabs(yy[1]))
+                {
+                    xx[0] = x0;
+                    yy[0] = y0;
+                }
+                else
+                {
+                    xx[1] = x0;
+                    yy[1] = y0;
+                }
+            }
+            else// if ((yy[0] > 0 && yy[1] > 0) || (yy[0] < 0 && yy[1] < 0)) ab
+            {
+                //y_max = maximum(y0, yy, 2);
+
+                //if ((y_max >= fabs(y0)) && (y_max <= fabs(y0)))
+                //    return ERROR;
+
+                if (fabs(yy[0]) <= fabs(yy[1]))
+                {
+                    xx[1] = x0;
+                    yy[1] = y0;
+                }
+                else //if (fabs(yy[0]) <= fabs(yy[1]))
+                {
+                    xx[0] = x0;
+                    yy[0] = y0;
+                }
+                //else
+                //    return ERROR;
+            }
+            //else
+            //    return ERROR;
+
+        }
+
+        replace(xx, xx_diff, 2);
+    }
+
+    if (it >= MAXIT)
+        return ERROR;
+
+    return it;
+}*/
 
 
 int interpolation_2_method_root(double a, double b, double eps, double *x, double (*func) (double x))//5

@@ -2,10 +2,12 @@
 #include <math.h>
 #include "hw13.h"
 
+static int count = 0;
 
 double parabol(double x)
 {
     //return x * x * x - 2;
+    count++;
     return 0.4 * x * x * x * x * x - 3 * x * x * x - 5;
     //return -(2 - (x - 3) * (x - 3));
 }
