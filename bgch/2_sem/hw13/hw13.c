@@ -324,7 +324,7 @@ int secant_method_root(double a, double b, double eps, double *x, double (*func)
 
         for (i = 0; i < 2; i++)
         {
-            if (y_max == yy[i])//?
+            if (y_max == fabs(yy[i]))//?
             {
                 xx[i] = x0;
                 yy[i] = y0;
@@ -527,25 +527,49 @@ int linear_search_method_max(double a, double b, double eps, double *x, double (
     x0 = a;
     x1 = a + h;
 
+    if (fabs(h) < eps)
+    {
+        *x = func(x0);
+        return it;
+    }
+
     for (it = 0; it < MAXIT; it++)
     {
         if (fabs(h) < eps)
         {
-            *x = func(x0);
+            *x = func(x1);
             return it;
         }
 
-        if (func(x0) < func(x1))
+        //printf("%lf\n", x1);
+
+        if ((func(x0) < func(x1)))// && (x1 + h > a) && (x1 + h < b))
         {
+            if (!(x1 + h < b))
+                h /= 10;
+
             x0 = x1;
             x1 += h;
         }
+        else if ((func(x0) > func(x1)))// && (x1 + h > a) && (x1 + h < b))
+        {
+            h = (-1) * h;
+
+            if (!(x1 + h > b))
+                h /= 10;
+
+            //h = (-1) * h;
+            x0 = x1;
+            x1 += h;
+        }
+        /*else if ((!(x1 + h > a)) || (!(x1 + h < b)))
+        {
+            h /= 10;
+            x0 = x1;
+            x1 += h
+        }*/
         else
-        {
-            h = (-1) * h / 10;
-            x0 = x1;
-            x1 += h;
-        }
+            return ERROR;
     }
 
     if (it >= MAXIT)
