@@ -322,44 +322,46 @@ int secant_method_root(double a, double b, double eps, double *x, double (*func)
             y_max = maximum(y0, yy, 2);
             //printf("2!\n");
 
-            if ((y0 > 0 && yy[0] > 0) || (y0 < 0 && yy[0] < 0))// xa
+            if ((y0 > 0 && yy[0] > 0 && y0 >= a && y0 <= b) || (y0 < 0 && yy[0] < 0 && y0 >= a && y0 <= b))// xa
             {
-                if ((y_max >= fabs(y0)) && (y_max <= fabs(y0)))
+                /*if ((y_max >= fabs(y0)) && (y_max <= fabs(y0)))
                 {
                     //printf("2 %lf %lf %lf  %d\n", xx[0], xx[1], x0, it);
                     return ERROR;
-                }
+                }*/
 
-                if (fabs(y0) <= fabs(yy[0]))
-                {
-                    xx[1] = x0;
-                    yy[1] = y0;
-                }
-                else
+                //if (fabs(y0) <= fabs(yy[0]))
+                //{
+                    xx[0] = x0;
+                    yy[0] = y0;
+                    continue;
+                //}
+                /*else
                 {
                     xx[0] = x0;
                     yy[0] = y0;
-                }
+                }*/
             }
-            else if ((y0 > 0 && yy[1] > 0) || (y0 < 0 && yy[1] < 0))// xb
+            if ((y0 > 0 && yy[1] > 0 && y0 >= a && y0 <= b) || (y0 < 0 && yy[1] < 0 && y0 >= a && y0 <= b))// xb
             {
-                if ((y_max >= fabs(y0)) && (y_max <= fabs(y0)))
+                /*if ((y_max >= fabs(y0)) && (y_max <= fabs(y0)))
                 {
                     //printf("3 %d\n", it);
                     //printf("3 %lf %lf %lf  %d\n", xx[0], xx[1], x0, it);
                     return ERROR;
-                }
+                }*/
 
-                if (fabs(y0) <= fabs(yy[1]))
-                {
-                    xx[0] = x0;
-                    yy[0] = y0;
-                }
-                else
+                //if (fabs(y0) <= fabs(yy[1]))
+                //{
+                    xx[1] = x0;
+                    yy[1] = y0;
+                    continue;
+                //}
+                /*`else
                 {
                     xx[1] = x0;
                     yy[1] = y0;
-                }
+                }*/
             }
             else// if ((yy[0] > 0 && yy[1] > 0) || (yy[0] < 0 && yy[1] < 0)) ab
             {
