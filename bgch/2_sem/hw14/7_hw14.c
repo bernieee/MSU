@@ -14,7 +14,7 @@ int main(int argc, char *argv[])
     if (!((argc == 5 || argc == 6) && (m = atoi(argv[1])) > 0 && (n = atoi(argv[2])) > 0
         && (sscanf(argv[3], "%d", &i)) && (sscanf(argv[4], "%d", &j))))
     {
-        printf("Usage %s n m [file]\n", argv[0]);
+        printf("Usage %s n m i j [file]\n", argv[0]);
         return 1;
     }
 
