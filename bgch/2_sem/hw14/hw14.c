@@ -202,7 +202,6 @@ void sum_lines_multiplied_by_b(double *a, double b, int m, int n, int i, int j)/
     }
 }
 
-
 void matrix_multipied_by_vector_to_vector(double *a, double *b, double *c, int m, int n)//9
 {
     int i;
@@ -241,4 +240,3 @@ void matrix_multipied_by_matrix_to_matrix(double *a, double *b, double *c, int m
         }
     }
 }
-
