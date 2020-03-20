@@ -47,24 +47,24 @@ int main(int argc, char *argv[])
             free(a);
             return 2;
         }
-        else
-        {
-            init_matrix(a, n, n);
-        }
-
-        print_matrix(a, n, n);
-
-        t = clock();
-        symmetry(a, n);
-        t = clock() - t;
-
-        print_matrix(a, n, n);
-
-        printf("Elapsed = %.2f\n", t / CLOCKS_PER_SEC);
-
-        free(a);
-        return 0;
     }
+    else
+    {
+        init_matrix(a, n, n);
+    }
+
+    print_matrix(a, n, n);
+
+    t = clock();
+    symmetry(a, n);
+    t = clock() - t;
+
+    print_matrix(a, n, n);
+
+    printf("Elapsed = %.2f\n", t / CLOCKS_PER_SEC);
+
+    free(a);
+    return 0;
 }
 
 
