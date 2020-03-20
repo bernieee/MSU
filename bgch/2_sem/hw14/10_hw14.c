@@ -97,7 +97,9 @@ int main(int argc, char *argv[])
     }
 
     print_matrix(a, m, n);
+    printf("\n");
     print_matrix(b, n, k);
+    printf("\n");
 
     t = clock();
     matrix_multiplied_by_matrix_to_matrix(a, b, c, m, n, k);

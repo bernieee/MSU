@@ -58,6 +58,7 @@ int main(int argc, char *argv[])
     }
 
     print_matrix(a, m, n);
+    printf("\n");
 
     t = clock();
     replace_columns(a, m, n, i, j);

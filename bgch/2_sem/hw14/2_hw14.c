@@ -4,6 +4,7 @@
 int main(int argc, char *argv[])
 {
     int n;
+    int res;
     double *a;
     double t;
     const char *fname = 0;
@@ -56,12 +57,13 @@ int main(int argc, char *argv[])
     print_matrix(a, n, n);
 
     t = clock();
-    trace(a, n);
+    res = trace(a, n);
     t = clock() - t;
 
     print_matrix(a, n, n);
 
     printf("Elapsed = %.2f\n", t / CLOCKS_PER_SEC);
+    printf("Result = %d\n", res);
 
     free(a);
     return 0;

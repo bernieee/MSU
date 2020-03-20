@@ -54,6 +54,7 @@ int main(int argc, char *argv[])
     }
 
     print_matrix(a, n, n);
+    printf("\n");
 
     t = clock();
     transponent(a, n);
