@@ -53,7 +53,7 @@ void print_matrix(double *a, int m, int n)
     for (i = 0; i < m_max; i++)
     {
         for (j = 0; j < n_max; j++)
-            printf(" %lf", a[i * n + m * j]);
+            printf(" %lf", a[i * n + j]);
         printf("\n");
     }
 }
@@ -67,11 +67,11 @@ int symmetry(double *a, int n)//1
 
     step = n;
 
-    for (i = 1; i < n; i++)
+    for (i = 0; i < n - 1; i++)
     {
         for (j = 1; j < step; j++)
         {
-            if (fabs(a[j] - a[j + (n - 1) * j]) > 0)
+            if (fabs(a[j + (n + 1) * i] - a[j + (n + 1) * i + (n - 1) * j]) > 0)
                 return 0;
         }
         step--;
@@ -106,13 +106,14 @@ void transponent(double *a, int n)//3
 
     step = n;
 
-    for (i = 1; i < n; i++)
+    for (i = 0; i < n - 1; i++)
     {
         for (j = 1; j < step; j++)
         {
-            rem = a[j];
-            a[j] = a[j + (n - 1) * j];
-            a[j + (n - 1) * j] = rem;
+            //printf("%lf %lf\n", a[j + (n + 1) * i], a[j + (n + 1) * i + (n - 1) * j]);
+            rem = a[j + (n + 1) * i];
+            a[j + (n + 1) * i] = a[j + (n + 1) * i + (n - 1) * j];
+            a[j + (n + 1) * i + (n - 1) * j] = rem;
         }
         step--;
     }
@@ -128,13 +129,13 @@ void matrix_plus_transponent(double *a, int n)//4
 
     step = n;
 
-    for (i = 1; i < n; i++)
+    for (i = 0; i < n - 1; i++)
     {
         for (j = 1; j < step; j++)
         {
-            res = (a[j] + a[j + (n - 1) * j]) / 2;
-            a[i] = res;
-            a[j + (n - 1) * j] = res;
+            res = (a[j + (n + 1) * i] + a[j + (n + 1) * i + (n - 1) * j]) / 2;
+            a[j + (n + 1) * i] = res;
+            a[j + (n + 1) * i + (n - 1) * j] = res;
         }
         step--;
     }
@@ -150,16 +151,21 @@ void matrix_minus_transponent(double *a, int n)//5
 
     step = n;
 
-    for (i = 1; i < n; i++)
+    for (i = 0; i < n - 1; i++)
     {
+        a[(n + 1) * i] = 0;
         for (j = 1; j < step; j++)
         {
-            res = (a[j] - a[j + (n - 1) * j]) / 2;
-            a[i] = res;
-            a[j + (n - 1) * j] = res;
+            res = (a[j + (n + 1) * i] - a[j + (n + 1) * i + (n - 1) * j]) / 2;
+            a[j + (n + 1) * i] = res;
+            if (fabs(res) > 0)
+                a[j + (n + 1) * i + (n - 1) * j] = -res;
+            else
+                a[j + (n + 1) * i + (n - 1) * j] = 0;
         }
         step--;
     }
+    a[(n + 1) * i] = 0;
 }
 
 
@@ -237,9 +243,23 @@ void matrix_multiplied_by_matrix_to_matrix(double *a, double *b, double *c, int 
             rem = 0;
             for (j = 0; j < n; j++)
             {
-                rem += a[i * n + j] * b[j];
+                //printf("%lf %lf\n", a[i * n + j], b[k * j + t]);
+                rem += a[i * n + j] * b[k * j + t];
             }
             c[t + k * i] = rem;
         }
     }
+
+    /*for ( i = 0; i < m; i++ )
+    {
+        for ( p = 0; p < k; p++ )
+        {
+            s = 0;
+            for ( j = 0; j < n; j++ )
+            {
+                s += a[i*n+j]*b[p+j*k];
+            }
+            c[i*k+p] = s;
+        }
+    }*/
 }

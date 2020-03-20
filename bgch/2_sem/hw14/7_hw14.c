@@ -18,7 +18,7 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    if (argc == 4)
+    if (argc == 6)
     {
         fname = argv[5];
     }

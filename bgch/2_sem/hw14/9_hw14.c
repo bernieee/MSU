@@ -33,12 +33,15 @@ int main(int argc, char *argv[])
     if (!(b = (double *) malloc(n * sizeof(double))))
     {
         printf("Not enough memory!\n");
+        free(a);
         return 2;
     }
 
     if (!(c = (double *) malloc(m * sizeof(double))))
     {
         printf("Not enough memory!\n");
+        free(a);
+        free(b);
         return 2;
     }
 

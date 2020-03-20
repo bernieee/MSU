@@ -60,8 +60,6 @@ int main(int argc, char *argv[])
     res = trace(a, n);
     t = clock() - t;
 
-    print_matrix(a, n, n);
-
     printf("Elapsed = %.2f\n", t / CLOCKS_PER_SEC);
     printf("Result = %d\n", res);
 

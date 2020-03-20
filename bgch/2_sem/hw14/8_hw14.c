@@ -19,9 +19,9 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    if (argc == 4)
+    if (argc == 7)
     {
-        fname = argv[5];
+        fname = argv[6];
     }
 
     if (!(a = (double *) malloc(n * m * sizeof(double))))
@@ -62,7 +62,7 @@ int main(int argc, char *argv[])
     printf("\n");
 
     t = clock();
-    sum_lines_multiplied_by_b(a, m, n, i, j, b);
+    sum_lines_multiplied_by_b(a, b, m, n, i, j);
     t = clock() - t;
 
     print_matrix(a, m, n);
