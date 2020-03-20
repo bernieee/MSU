@@ -169,9 +169,9 @@ void replace_lines(double *a, int m, int n, int i, int j)//6
 
     for (k = 0; k < n; k++)
     {
-        rem = a[k + (i - 1) * n];
-        a[k + (i - 1) * n] = a[k + (j - 1) * n];
-        a[k + (j - 1) * n] = rem;
+        rem = a[k + i * n];
+        a[k + i * n] = a[k + j * n];
+        a[k + j * n] = rem;
     }
 }
 
@@ -183,9 +183,9 @@ void replace_columns(double *a, int m, int n, int i, int j)//7
 
     for (k = 0; k < m; k++)
     {
-        rem = a[(i - 1) + k * n];
-        a[(i - 1) + k * n] = a[(j - 1) + k * n];
-        a[(j - 1) + k * n] = rem;
+        rem = a[i + k * n];
+        a[i + k * n] = a[j + k * n];
+        a[j + k * n] = rem;
     }
 }
 
@@ -197,8 +197,8 @@ void sum_lines_multiplied_by_b(double *a, double b, int m, int n, int i, int j)/
 
     for (k = 0; k < n; k++)
     {
-        rem = a[k + (j - 1) * n] + a[k + (i - 1) * n] * b;
-        a[k + (j - 1) * n] = rem;
+        rem = a[k + j * n] + a[k + i * n] * b;
+        a[k + j * n] = rem;
     }
 }
 
