@@ -21,7 +21,6 @@ int read_matrix(double *a, int m, int n, const char *fname)
 {
     FILE *f;
     int i;
-    int j;
     int len;
 
     len = n * m;
@@ -52,9 +51,11 @@ void print_matrix(double *a, int m, int n)
     m_max = (m > M_MAX ? M_MAX : m);
 
     for (i = 0; i < m_max; i++)
+    {
         for (j = 0; j < n_max; j++)
             printf(" %lf", a[i * n + m * j]);
         printf("\n");
+    }
 }
 
 
@@ -111,7 +112,7 @@ void transponent(double *a, int n)//3
         {
             rem = a[j];
             a[j] = a[j + (n - 1) * j];
-            a[j + (n - 1) * j] = a[j];
+            a[j + (n - 1) * j] = rem;
         }
         step--;
     }
@@ -202,16 +203,15 @@ void sum_lines_multiplied_by_b(double *a, double b, int m, int n, int i, int j)/
     }
 }
 
-void matrix_multipied_by_vector_to_vector(double *a, double *b, double *c, int m, int n)//9
+void matrix_multiplied_by_vector_to_vector(double *a, double *b, double *c, int m, int n)//9
 {
     int i;
     int j;
     double rem;
 
-    rem = 0;
-
     for (i = 0; i < m; i++)
     {
+        rem = 0;
         for (j = 0; j < n; j++)
         {
             rem += a[i * n + j] * b[j];
@@ -221,7 +221,7 @@ void matrix_multipied_by_vector_to_vector(double *a, double *b, double *c, int m
 }
 
 
-void matrix_multipied_by_matrix_to_matrix(double *a, double *b, double *c, int m, int n, int k)//10
+void matrix_multiplied_by_matrix_to_matrix(double *a, double *b, double *c, int m, int n, int k)//10
 {
     int i;
     int j;
@@ -232,6 +232,7 @@ void matrix_multipied_by_matrix_to_matrix(double *a, double *b, double *c, int m
     {
         for (i = 0; i < m; i++)
         {
+            rem = 0;
             for (j = 0; j < n; j++)
             {
                 rem += a[i * n + j] * b[j];
