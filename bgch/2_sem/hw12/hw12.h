@@ -1,10 +1,11 @@
-#include<stdio.h>
-#include<stdlib.h>
-#include<math.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
 
 #define ERROR_OPEN -1
+#define ERROR_READ -2
 #define SUCCESS 0
-#define MISTAKE -2
+#define MISTAKE -3
 
 int init_array123(const char *fname, int n, double *x, double *y);
 int init_array4(const char *fname, int n, double *x, double *y, double *d);
