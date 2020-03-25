@@ -29,7 +29,7 @@ int main(int argc, char **argv)
 
     printf("Iterations = %d\n", result);
     if (result != -1)
-        printf("Root = %lf\n", x);
+        printf("Root = %e\nResidual = %e\n", x, parabol(x));
     printf("Time = %lf\n", (double)time / CLOCKS_PER_SEC);
 
     return 0;

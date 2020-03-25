@@ -7,12 +7,8 @@
 int main(int argc, char **argv)
 {
     int m;
-    int i;
     double a;
     double b;
-    double l;
-    double r;
-    double h;
     double eps;
     double x;
     double *d;
@@ -32,25 +28,16 @@ int main(int argc, char **argv)
 
     d = malloc((3 * (m + 1)) * sizeof(double));
 
-    h = (b - a) / 100;
+    time = clock();
+    result = interpolation_m_method_root(a, b, eps, &x, m, d, &parabol);
+    time = clock() - time;
 
-    l = a;
-    r = l + h;
+    printf("Iterations = %d\n", result);
+    if (result != -1)
+        printf("Root = %lf\n", x);
+    printf("Time = %lf\n", (double)time / CLOCKS_PER_SEC);
 
-    //time = clock();
-    for (i = 0; i < 100; i++)
-    {
-        result = interpolation_m_method_root(l, r, eps, &x, m, d, &parabol);
-        //time = clock() - time;
-
-        //printf("Iterations = %d\n", result);
-        if (result != -1)
-            printf("Iterations = %d\nRoot = %e\nResidual = %e\n\n", result, x, parabol(x));
-
-        l = r;
-        r += h;
-        //printf("Time = %lf\n", (double)time / CLOCKS_PER_SEC);
-    }
+    free(d);
 
     return 0;
 }

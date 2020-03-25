@@ -4,6 +4,43 @@
 #include "hw13.h"
 
 
+
+static int count = 0;
+
+double parabol(double x)
+{
+    //return x * x * x - 2;
+    count++;
+    //return x - 1e100;
+    //return x * x * x - 2 * x * x + x - 2;
+    //return 0.4 * x * x * x * x * x - 3 * x * x * x - 5;
+    //return sqrt(sqrt(x)) - 10;
+    //return -(2 - (x - 3) * (x - 3));
+    return x * x / 10;
+}
+double line(double x)
+{
+    return x - 1;
+}
+double sin_deriv(double x)
+{
+    return cos(x);
+}
+double parabol_deriv(double x)
+{
+    //(void) x;
+    //return 1;
+    return 3 * x * x - 4 * x + 1;
+}
+//double line_deriv(double x)
+//{
+//    return 1;
+//}
+//double parabol(double x)
+//double parabol(double x)
+
+
+
 static double maximum(double a0, double *a, int n)
 {
     int i;
@@ -51,7 +88,7 @@ static int divided_difference(int n, int k, double *x, double *y)
 
     for (i = n - 1; i > k; i--)
     {
-        if (!(x[i - 1 - k] - x[i]))
+        if ((x[i - 1 - k] - x[i]) >= 0 && (x[i - 1 - k] - x[i]) <= 0 )
             return ERROR;
         //printf("%lf  %lf  %lf  %lf\n", y[i - 1], y[i], x[i - 1 - k], x[i]);
         y[i] = (y[i - 1] - y[i]) / (x[i - 1 - k] - x[i]);
@@ -99,12 +136,14 @@ int bisect_method_root(double a, double b, double eps, double *x, double (*func)
     if (fabs(res_a) < eps)
     {
         *x = a;
+        printf("Count = %d\n", count);
         return 0;
     }
 
     if (fabs(res_b) < eps)
     {
         *x = b;
+        printf("Count = %d\n", count);
         return 0;
     }
 
@@ -116,6 +155,7 @@ int bisect_method_root(double a, double b, double eps, double *x, double (*func)
         if (fabs(res_c) < eps)
         {
             *x = c;
+            printf("Count = %d\n", count);
             return it;
         }
 
@@ -136,6 +176,8 @@ int bisect_method_root(double a, double b, double eps, double *x, double (*func)
     if (it >= MAXIT)
         return ERROR;
 
+    printf("Count = %d\n", count);
+
     return it;
 }
 
@@ -154,12 +196,13 @@ int newton_method_root(double x0, double eps, double *x, double (*func) (double 
     if (fabs(res_x0) < eps)
     {
         *x = x0;
+        printf("Count = %d\n", count);
         return 0;
     }
 
     for (it = 0; it < MAXIT; it++)
     {
-        if (!der_x0)
+        if (der_x0 >= 0 && der_x0 <= 0)
             return ERROR;
 
         x1 = x0 - res_x0 / der_x0;
@@ -169,6 +212,7 @@ int newton_method_root(double x0, double eps, double *x, double (*func) (double 
         if (fabs(res_x1) < eps)
         {
             *x = x1;
+            printf("Count = %d\n", count);
             return it;
         }
 
@@ -178,6 +222,8 @@ int newton_method_root(double x0, double eps, double *x, double (*func) (double 
 
     if (it >= MAXIT)
         return ERROR;
+
+    printf("Count = %d\n", count);
 
     return it;
 }
@@ -203,12 +249,14 @@ int chords_method_root(double a, double b, double eps, double *x, double (*func)
     if (fabs(yy[0]) < eps)
     {
         *x = xx[0];
+        printf("Count = %d\n", count);
         return 0;
     }
 
     if (fabs(yy[1]) < eps)
     {
         *x = xx[1];
+        printf("Count = %d\n", count);
         return 0;
     }
 
@@ -217,21 +265,22 @@ int chords_method_root(double a, double b, double eps, double *x, double (*func)
         x0 = classic_newton(2, 0, yy, xx_diff);
         y0 = func(x0);
 
-        printf("%lf %lf %lf\n", xx[0], xx[1], x0);
-        printf("%lf %lf %lf\n", yy[0], yy[1], y0);
+        //printf("%lf %lf %lf\n", xx[0], xx[1], x0);
+        //printf("%lf %lf %lf\n", yy[0], yy[1], y0);
 
         if (fabs(y0) < eps)
         {
             *x = x0;
+            printf("Count = %d\n", count);
             return it;
         }
 
-        if ((y0 >= 0 && yy[0] <= 0/* && y0 >= a && y0 <= b*/) || (y0 < 0 && yy[0] > 0/* && y0 >= a && y0 <= b*/))
+        if ((y0 >= 0 && yy[0] <= 0 && x0 >= a && x0 <= b) || (y0 < 0 && yy[0] > 0 && x0 >= a && x0 <= b))
         {
             xx[1] = x0;
             yy[1] = y0;
         }
-        else if ((y0 >= 0 && yy[1] <= 0/* && y0 >= a && y0 <= b*/) || (y0 < 0 && yy[1] > 0/* && y0 >= a && y0 <= b*/))
+        else if ((y0 >= 0 && yy[1] <= 0 && x0 >= a && x0 <= b) || (y0 < 0 && yy[1] > 0 && x0 >= a && x0 <= b))
         {
             xx[0] = x0;
             yy[0] = y0;
@@ -245,12 +294,15 @@ int chords_method_root(double a, double b, double eps, double *x, double (*func)
     if (it >= MAXIT)
         return ERROR;
 
+    printf("Count = %d\n", count);
+
+
     return it;
 }
 
 
 
-int secant_method_root(double a, double b, double eps, double *x, double (*func) (double x))//4
+/*int secant_method_root(double a, double b, double eps, double *x, double (*func) (double x))//4
 {
     int it;
     int i;
@@ -324,11 +376,11 @@ int secant_method_root(double a, double b, double eps, double *x, double (*func)
 
             if ((y0 > 0 && yy[0] > 0 && y0 >= a && y0 <= b) || (y0 < 0 && yy[0] < 0 && y0 >= a && y0 <= b))// xa
             {
-                /*if ((y_max >= fabs(y0)) && (y_max <= fabs(y0)))
-                {
+                //if ((y_max >= fabs(y0)) && (y_max <= fabs(y0)))
+                //{
                     //printf("2 %lf %lf %lf  %d\n", xx[0], xx[1], x0, it);
-                    return ERROR;
-                }*/
+                //    return ERROR;
+                //}
 
                 //if (fabs(y0) <= fabs(yy[0]))
                 //{
@@ -336,20 +388,20 @@ int secant_method_root(double a, double b, double eps, double *x, double (*func)
                     yy[0] = y0;
                     continue;
                 //}
-                /*else
-                {
-                    xx[0] = x0;
-                    yy[0] = y0;
-                }*/
+                //else
+                //{
+                //    xx[0] = x0;
+                //    yy[0] = y0;
+                //}
             }
             if ((y0 > 0 && yy[1] > 0 && y0 >= a && y0 <= b) || (y0 < 0 && yy[1] < 0 && y0 >= a && y0 <= b))// xb
             {
-                /*if ((y_max >= fabs(y0)) && (y_max <= fabs(y0)))
-                {
+                //if ((y_max >= fabs(y0)) && (y_max <= fabs(y0)))
+                //{
                     //printf("3 %d\n", it);
                     //printf("3 %lf %lf %lf  %d\n", xx[0], xx[1], x0, it);
-                    return ERROR;
-                }*/
+                //    return ERROR;
+                //}
 
                 //if (fabs(y0) <= fabs(yy[1]))
                 //{
@@ -357,11 +409,11 @@ int secant_method_root(double a, double b, double eps, double *x, double (*func)
                     yy[1] = y0;
                     continue;
                 //}
-                /*`else
-                {
-                    xx[1] = x0;
-                    yy[1] = y0;
-                }*/
+                //else
+                //{
+                //    xx[1] = x0;
+                //    yy[1] = y0;
+                //}
             }
             else// if ((yy[0] > 0 && yy[1] > 0) || (yy[0] < 0 && yy[1] < 0)) ab
             {
@@ -395,10 +447,10 @@ int secant_method_root(double a, double b, double eps, double *x, double (*func)
         return ERROR;
 
     return it;
-}
+}*/
 
 
-/*int secant_method_root(double a, double b, double eps, double *x, double (*func) (double x))//4
+int secant_method_root(double a, double b, double eps, double *x, double (*func) (double x))//4
 {
     int it;
     int i;
@@ -420,12 +472,14 @@ int secant_method_root(double a, double b, double eps, double *x, double (*func)
     if (fabs(yy[0]) < eps)
     {
         *x = xx[0];
+        printf("Count = %d\n", count);
         return 0;
     }
 
     if (fabs(yy[1]) < eps)
     {
         *x = xx[1];
+        printf("Count = %d\n", count);
         return 0;
     }
 
@@ -434,25 +488,26 @@ int secant_method_root(double a, double b, double eps, double *x, double (*func)
         x0 = classic_newton(2, 0, yy, xx_diff);
         y0 = func(x0);
 
-        printf("%lf %lf %lf\n", xx[0], xx[1], x0);
-        printf("%lf %lf %lf\n", yy[0], yy[1], y0);
+        //printf("%lf %lf %lf\n", xx[0], xx[1], x0);
+        //printf("%lf %lf %lf\n", yy[0], yy[1], y0);
 
         //printf("\n%lf\n", x0);
 
         if (fabs(y0) < eps)
         {
             *x = x0;
+            printf("Count = %d\n", count);
             return it;
         }
 
         if (((yy[0] > 0) && (yy[1] > 0) && (y0 > 0)) || ((yy[0] < 0) && (yy[1] < 0) && (y0 < 0)))
         {
             y_max = maximum(y0, yy, 2);
-            printf("1!\n");
+            //printf("1!\n");
 
             if ((y_max >= fabs(y0)) && (y_max <= fabs(y0)))
             {
-                printf("1 %lf %lf %lf  %d\n", xx[0], xx[1], x0, it);
+                //printf("1 %lf %lf %lf  %d\n", xx[0], xx[1], x0, it);
                 return ERROR;
             }
 
@@ -468,13 +523,12 @@ int secant_method_root(double a, double b, double eps, double *x, double (*func)
         else
         {
             y_max = maximum(y0, yy, 2);
-            printf("2!\n");
 
             if ((y0 > 0 && yy[0] > 0) || (y0 < 0 && yy[0] < 0))// xa
             {
                 if ((y_max >= fabs(y0)) && (y_max <= fabs(y0)))
                 {
-                    printf("2 %lf %lf %lf  %d\n", xx[0], xx[1], x0, it);
+                    //printf("2 %lf %lf %lf  %d\n", xx[0], xx[1], x0, it);
                     return ERROR;
                 }
 
@@ -494,7 +548,7 @@ int secant_method_root(double a, double b, double eps, double *x, double (*func)
                 if ((y_max >= fabs(y0)) && (y_max <= fabs(y0)))
                 {
                     //printf("3 %d\n", it);
-                    printf("3 %lf %lf %lf  %d\n", xx[0], xx[1], x0, it);
+                    //printf("3 %lf %lf %lf  %d\n", xx[0], xx[1], x0, it);
                     return ERROR;
                 }
 
@@ -540,8 +594,11 @@ int secant_method_root(double a, double b, double eps, double *x, double (*func)
     if (it >= MAXIT)
         return ERROR;
 
+    printf("Count = %d\n", count);
+
+
     return it;
-}*/
+}
 
 
 int interpolation_2_method_root(double a, double b, double eps, double *x, double (*func) (double x))//5
@@ -573,18 +630,22 @@ int interpolation_2_method_root(double a, double b, double eps, double *x, doubl
     if (fabs(yy[0]) < eps)
     {
         *x = xx[0];
+        printf("Count = %d\n", count);
+
         return 0;
     }
 
     if (fabs(yy[1]) < eps)
     {
         *x = xx[1];
+        printf("Count = %d\n", count);
         return 0;
     }
 
     if (fabs(yy[2]) < eps)
     {
         *x = xx[2];
+        printf("Count = %d\n", count);
         return 0;
     }
 
@@ -596,6 +657,7 @@ int interpolation_2_method_root(double a, double b, double eps, double *x, doubl
         if (fabs(y0) < eps)
         {
             *x = x0;
+            printf("Count = %d\n", count);
             return it;
         }
 
@@ -619,6 +681,8 @@ int interpolation_2_method_root(double a, double b, double eps, double *x, doubl
     if (it >= MAXIT)
         return ERROR;
 
+    printf("Count = %d\n", count);
+
     return it;
 }
 
@@ -632,13 +696,27 @@ int interpolation_m_method_root(double a, double b, double eps, double *x, int m
     double y_max;
     double h;
 
-    h = (fabs(a) + fabs(b)) / (m + 1);
+    h = (fabs(a) + fabs(b)) / m;
 
     for (i = 0; i <= m; i++)
     {
         d[i] = a + h * i;//xx_diff
         d[i + m + 1] = a + h * i;//xx
         d[i + 2 * m + 2] = func(d[i]);//yy
+    }
+
+    if (fabs(func(a)) < eps)
+    {
+        *x = a;
+        printf("Count = %d\n", count);
+        return 0;
+    }
+
+    if (fabs(func(b)) < eps)
+    {
+        *x = b;
+        printf("Count = %d\n", count);
+        return 0;
     }
 
     //for (i = 0; i < 3 * (m + 1); i++)
@@ -652,7 +730,8 @@ int interpolation_m_method_root(double a, double b, double eps, double *x, int m
         if (fabs(y0) < eps)
         {
             *x = x0;
-                return it;
+            printf("Count = %d\n", count);
+            return it;
         }
 
         y_max = maximum(y0, d + (2 * m + 2), m + 1);
@@ -675,6 +754,8 @@ int interpolation_m_method_root(double a, double b, double eps, double *x, int m
     if (it >= MAXIT)
         return ERROR;
 
+    printf("Count = %d\n", count);
+
     return it;
 }
 
@@ -684,6 +765,13 @@ int approximation_method_root(double x0, double eps, double *x, double (*func) (
     int it;
     double x1;
 
+    if (fabs(func(x0)) < eps)
+    {
+        *x = x0;
+        printf("Count = %d\n", count);
+        return 0;
+    }
+
     for (it = 0; it < MAXIT; it++)
     {
         x1 = func(x0);
@@ -691,6 +779,7 @@ int approximation_method_root(double x0, double eps, double *x, double (*func) (
         if (fabs(x1 - x0) < eps)
         {
             *x = x0;
+            printf("Count = %d\n", count);
             return it;
         }
 
@@ -699,6 +788,8 @@ int approximation_method_root(double x0, double eps, double *x, double (*func) (
 
     if (it >= MAXIT)
         return ERROR;
+
+    printf("Count = %d\n", count);
 
     return it;
 }
@@ -719,7 +810,7 @@ int linear_search_method_max(double a, double b, double eps, double *x, double (
     if (fabs(h) < eps)
     {
         *x = func(x0);
-        return it;
+        return 0;
     }
 
     for (it = 0; it < MAXIT; it++)
@@ -863,12 +954,12 @@ int interpolation_2_method_max(double a, double b, double eps, double *x, double
 
         y_min = minimum(y_maxima, yy, 3);
 
-        if (y_min == y_maxima)
+        if (y_min >= fabs(y_maxima) && y_min <= fabs(y_maxima))
             return ERROR;
 
         for (i = 0; i < 3; i++)
         {
-            if (y_min == yy[i])//?
+            if (y_min >= fabs(yy[i]) && y_min <= fabs(yy[i]))//?
             {
                 xx[i] = x_maxima;
                 yy[i] = y_maxima;

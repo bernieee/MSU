@@ -22,12 +22,12 @@ int main(int argc, char **argv)
     eps = atof(argv[2]);
 
     time = clock();
-    result = approximation_method_root(x0, eps, &x, &sin);
+    result = approximation_method_root(x0, eps, &x, &parabol);
     time = clock() - time;
 
     printf("Iterations = %d\n", result);
     if (result != -1)
-        printf("Root = %lf\n", x);
+        printf("Root = %e\nResidual = %e\n", x, parabol(x));
     printf("Time = %lf\n", (double)time / CLOCKS_PER_SEC);
 
     return 0;

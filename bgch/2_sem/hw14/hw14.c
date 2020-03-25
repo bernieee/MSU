@@ -172,11 +172,10 @@ void matrix_minus_transponent(double *a, int n)//5
 
 void replace_lines(double *a, int m, int n, int i, int j)//6
 {
-    (void) m;
-    int k;
     double rem;
+    (void) m;
 
-    for (k = 0; k < n; k++)
+    for (int k = 0; k < n; k++)
     {
         rem = a[k + i * n];
         a[k + i * n] = a[k + j * n];
@@ -201,11 +200,10 @@ void replace_columns(double *a, int m, int n, int i, int j)//7
 
 void sum_lines_multiplied_by_b(double *a, double b, int m, int n, int i, int j)//8
 {
-    (void) m;
-    int k;
     double rem;
+    (void) m;
 
-    for (k = 0; k < n; k++)
+    for (int k = 0; k < n; k++)
     {
         rem = a[k + j * n] + a[k + i * n] * b;
         a[k + j * n] = rem;
