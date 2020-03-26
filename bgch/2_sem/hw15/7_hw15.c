@@ -62,7 +62,7 @@ int main(int argc, char *argv[])
     t = clock() - t;
 
     print_matrix(a, m, n);
-    printf("Elapsed = %.2f\n", t / CLOCKS_PER_SEC);
+    printf("\nElapsed = %.2f\n", t / CLOCKS_PER_SEC);
 
     free(a);
     return 0;

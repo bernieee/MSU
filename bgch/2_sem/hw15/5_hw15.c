@@ -99,6 +99,7 @@ int main(int argc, char *argv[])
     }
 
     print_matrix(A, m, n);
+    printf("\n");
     print_matrix(B, n, m);
     printf("\n");
 
