@@ -64,7 +64,7 @@ int main(int argc, char *argv[])
         int ret_b;
         int ret_x;
         ret_a = read_matrix(A, m, n, fname_a);
-        ret_b = read_matrix(b, m, 1, fname_b);
+        ret_b = read_matrix(b, 1, m, fname_b);
         ret_x = read_matrix(x, n, 1, fname_x);
 
         if (ret_a != SUCCESS)
@@ -131,13 +131,13 @@ int main(int argc, char *argv[])
     else
     {
         init_matrix(A, m, n);
-        init_matrix(b, m, 1);
+        init_matrix(b, 1, m);
         init_matrix(x, n, 1);
     }
 
     print_matrix(A, m, n);
     printf("\n");
-    print_matrix(b, m, 1);
+    print_matrix(b, 1, m);
     printf("\n");
     print_matrix(x, n, 1);
     printf("\n");

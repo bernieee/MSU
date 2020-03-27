@@ -240,6 +240,7 @@ void make_b_formula_1(double *a, int m, int n)//7
 
         a[i] = (a[i - 1] + a[i + 1] + a[i - n] + a[i + n]) / 5;
     }
+    printf("%d\n", i);
 }
 
 
@@ -283,16 +284,19 @@ void replace_max_to_1(double *a, int m, int n)//11
 {
     int res_i;
     int res_j;
+    double res;
 
     res_i = 0;
     res_j = 0;
+    res = -1;
 
     for (int i = 0; i < m; i++)
     {
-        for (int j = 1; j < n; j++)
+        for (int j = 0; j < n; j++)
         {
-            if (a[i * n + j] > a[i * n + j - 1])
+            if (a[i * n + j] > res)
             {
+                res = a[i * n + j];
                 res_i = i;
                 res_j = j;
             }
