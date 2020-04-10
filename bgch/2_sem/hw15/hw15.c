@@ -61,10 +61,12 @@ void print_matrix(double *a, int m, int n)
 
 static void replace_lines(double *a, int m, int n, int i, int j)
 {
+    int k;
     double rem;
+
     (void) m;
 
-    for (int k = 0; k < n; k++)
+    for (k = 0; k < n; k++)
     {
         rem = a[k + i * n];
         a[k + i * n] = a[k + j * n];
@@ -131,17 +133,19 @@ static void matrix_multiplied_by_matrix_to_matrix_minus_E(double *a, double *b, 
 
 double max_sum_lines(double *a, int m, int n)//1
 {
+    int i;
+    int j;
     double sum;
     double max_sum;
     double *pi;
 
     max_sum = -1;
 
-    for (int i = 0; i < m; i++)
+    for (i = 0; i < m; i++)
     {
         pi = a + i * n;
         sum = 0;
-        for (int j = 0; j < n; j++)
+        for (j = 0; j < n; j++)
         {
             sum += fabs(pi[j]);
         }
@@ -154,17 +158,19 @@ double max_sum_lines(double *a, int m, int n)//1
 
 double max_sum_columns(double *a, int m, int n)//2
 {
+    int i;
+    int j;
     double sum;
     double max_sum;
     double *pj;
 
     max_sum = -1;
 
-    for (int j = 0; j < n; j++)
+    for (j = 0; j < n; j++)
     {
         pj = a + j;
         sum = 0;
-        for (int i = 0; i < m; i++)
+        for (i = 0; i < m; i++)
         {
             sum += fabs(pj[i * n]);
         }
@@ -177,12 +183,13 @@ double max_sum_columns(double *a, int m, int n)//2
 
 double first_norm(double *A, double *b, double *x, double *r, int m, int n)//3
 {
+    int i;
     double res;
 
     matrix_multiplied_by_vector_to_vector(A, x, r, m, n);
     res = 0;
 
-    for (int i = 0; i < m; i++)
+    for (i = 0; i < m; i++)
     {
         r[i] -= b[i];
         res += fabs(r[i]);
@@ -194,12 +201,13 @@ double first_norm(double *A, double *b, double *x, double *r, int m, int n)//3
 
 double max_norm(double *A, double *b, double *x, double *r, int m, int n)//4
 {
+    int i;
     double res;
 
     matrix_multiplied_by_vector_to_vector(A, x, r, m, n);
     res = -1;
 
-    for (int i = 0; i < m; i++)
+    for (i = 0; i < m; i++)
     {
         r[i] -= b[i];
         res = fmax(res, fabs(r[i]));
@@ -233,20 +241,23 @@ double max_sum_columns_1_norm(double *A, double *B, double *R, int m, int n)//6
 
 void make_b_formula_1(double *a, int m, int n)//7
 {
-    for (int i = n + 1; i < n * (m - 1); i++)
+    int i;
+
+    for (i = n + 1; i < n * (m - 1); i++)
     {
         if (i % n == 0 || i % n == n - 1)
             continue;
 
         a[i] = (a[i - 1] + a[i + 1] + a[i - n] + a[i + n]) / 5;
     }
-    printf("%d\n", i);
 }
 
 
 void make_b_formula_2(double *a, int m, int n)//8
 {
-    for (int i = n * (m - 1) - 1; i >= n + 1; i--)
+    int i;
+
+    for (i = n * (m - 1) - 1; i >= n + 1; i--)
     {
         if (i % n == 0 || i % n == n - 1)
             continue;
@@ -258,9 +269,12 @@ void make_b_formula_2(double *a, int m, int n)//8
 
 void make_b_formula_3(double *a, int m, int n)//9
 {
-    for (int i = 2 * n - 2; i >= n + 1; i--)
+    int i;
+    int j;
+
+    for (i = 2 * n - 2; i >= n + 1; i--)
     {
-        for (int j = 0; j < m - 2; j++)
+        for (j = 0; j < m - 2; j++)
         {
             a[i + j * n] = (a[i + j * n - 1] + a[i + j * n + 1] + a[i + j * n - n] + a[i + j * n + n]) / 5;
         }
@@ -270,9 +284,12 @@ void make_b_formula_3(double *a, int m, int n)//9
 
 void make_b_formula_4(double *a, int m, int n)//10
 {
-    for (int i = n * (m - 2) + 1; i <= n * (m - 2) + (n - 2); i++)
+    int i;
+    int j;
+
+    for (i = n * (m - 2) + 1; i <= n * (m - 2) + (n - 2); i++)
     {
-        for (int j = 0; j < m - 2; j++)
+        for (j = 0; j < m - 2; j++)
         {
             a[i - j * n] = (a[i - j * n - 1] + a[i - j * n + 1] + a[i - j * n - n] + a[i - j * n + n]) / 5;
         }
@@ -282,6 +299,8 @@ void make_b_formula_4(double *a, int m, int n)//10
 
 void replace_max_to_1(double *a, int m, int n)//11
 {
+    int i;
+    int j;
     int res_i;
     int res_j;
     double res;
@@ -290,13 +309,13 @@ void replace_max_to_1(double *a, int m, int n)//11
     res_j = 0;
     res = -1;
 
-    for (int i = 0; i < m; i++)
+    for (i = 0; i < m; i++)
     {
-        for (int j = 0; j < n; j++)
+        for (j = 0; j < n; j++)
         {
-            if (a[i * n + j] > res)
+            if (fabs(a[i * n + j]) > res)
             {
-                res = a[i * n + j];
+                res = fabs(a[i * n + j]);
                 res_i = i;
                 res_j = j;
             }
