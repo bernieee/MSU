@@ -17,11 +17,12 @@ int read_matrix(double *a, int m, int, const char *fname);
 void print_matrix(double *a, int m, int);
 
 double lambda_sequence(double *A, double *x0, double *x, int n, int m);//1
-void sequence_2(double *A, double *x0, double *b, double *x, int n, int m, double t, double *error1, double *error2);//2
-void sequence_3(double *A, double *x0, double *b, double *x, double *r, int n, int m, double *error1, double *error2);//3
-void sequence_4(double *A, double *x0, double *b, double *x, double *r, int n, int m, double *error1, double *error2);//4
-void sequence_5(double *A, double *x0, double *b, double *x, double *r, int n, int m, double *error1, double *error2);//5
-void sequence_6(double *A, double *x0, double *b, double *x, double *r, int n, int m, double *error1, double *error2);//6
-void sequence_7(double *A, double *x0, double *b, double *x, double *r, int n, int m, double t, double *error1, double *error2);//7
-void sequence_8(double *A, double *x0, double *b, double *x, double *r, double *w, int n, int m, double t, double *error1, double *error2);//8
-void sequence_9(double *A, double *x0, double *b, double *x, double *r, double *w, int n, int m, double t, double *error1, double *error2);//9
+int sequence_2(double *A, double *x0, double *b, double *x, int n, int m, double t, double *error1, double *error2);//2
+int sequence_3(double *A, double *x0, double *b, double *x, double *r, int n, int m, double *error1, double *error2);//3
+int sequence_4(double *A, double *x0, double *b, double *x, double *r, int n, int m, double *error1, double *error2);//4
+int sequence_5(double *A, double *x0, double *b, double *x, double *r, int n, int m, double *error1, double *error2);//5
+int sequence_6(double *A, double *x0, double *b, double *x, double *r, int n, int m, double *error1, double *error2);//6
+int sequence_7(double *A, double *x0, double *b, double *x, double *r, int n, int m, double t, double *error1, double *error2);//7
+int sequence_8(double *A, double *x0, double *b, double *x, double *r, double *w, int n, int m, double t, double *error1, double *error2);//8
+int sequence_9(double *A, double *x0, double *b, double *x, double *r, double *w, int n, int m, double t, double *error1, double *error2);//9
+int sequence_10(double *A, double *x0, double *b, double *x, double *r, double *w, int n, int m, double t, double *error1, double *error2);//10

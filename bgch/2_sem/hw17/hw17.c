@@ -59,7 +59,7 @@ void print_matrix(double *a, int m, int n)
 }
 
 
-static void matrix_multiplied_by_vector_to_vector(double *a, double *b, double *c, int m, int n)
+/*static void matrix_multiplied_by_vector_to_vector(double *a, double *b, double *c, int m, int n)
 {
     int i;
     int j;
@@ -96,7 +96,7 @@ static void matrix_multiplied_by_matrix_to_matrix(double *a, double *b, double *
             c[t + k * i] = rem;
         }
     }
-}
+}*/
 
 
 static double residual_1(double *A, double *b, double *x, int n)
@@ -160,6 +160,22 @@ static void make_b(double *A, double *b, int n)
 
         b[i] = sum;
     }
+}
+
+
+static double euclid_norm(double *b, int n)
+{
+    int i;
+    double res;
+
+    res = 0;
+
+    for (i = 0; i < n; i++)
+    {
+        res += b[i] * b[i];
+    }
+
+    return res;
 }
 
 
@@ -230,16 +246,62 @@ static void difference_vectors(double *x, double *y, double *z, int n)
 double lambda_sequence(double *A, double *x0, double *x, int n, int m)//1
 {
     int i;
+    int j;
+    int k;
+    double sum;
+    double rem1;
+    double rem2;
     double res;
+    double eps = 1e-17;
 
-    for (i = 0; i < m; i++)
+    for (k = 0; k < m; k++)
     {
-        matrix_multiplied_by_vector_to_vector(A, x0, x0, n, n);//here is xm
+        rem1 = 0;
+
+        for (i = 0; i < n; i++)
+        {
+            sum = 0;
+
+            for (j = 0; j < n; j++)
+            {
+                sum += A[i * n + j] * x0[j];
+            }
+
+            x[i] = sum;
+            rem1 += x0[i] * x0[i];
+        }
+
+        if (fabs(rem1) > eps)
+        {
+            for (i = 0; i < n; i++)
+            {
+                x0[i] = x[i];
+            }
+        }
+        else
+        {
+            return 0;
+        }
     }
 
-    matrix_multiplied_by_vector_to_vector(A, x0, x, n, n);
+    rem1 = 0;
+    rem2 = 0;
 
-    res = scalar_product(x, x0, n) / scalar_product(x0, x0, n);
+    for (i = 0; i < n; i++)
+    {
+        sum = 0;
+
+        for (j = 0; j < n; j++)
+        {
+            sum += A[i * n + j] * x0[j];
+        }
+
+        x[i] = sum;
+        rem1 += x0[i] * x0[i];
+        rem2 += sum * x0[i];
+    }
+
+    res = rem2 / rem1;
 
     for (i = 0; i < n; i++)
     {
@@ -250,52 +312,42 @@ double lambda_sequence(double *A, double *x0, double *x, int n, int m)//1
 }
 
 
-void sequence_2(double *A, double *x0, double *b, double *x, int n, int m, double t, double *error1, double *error2)//2
+int sequence_2(double *A, double *x0, double *b, double *x, int n, int m, double t, double *error1, double *error2)//2
 {
     int i;
     int j;
     int k;
-    double rem;
+    double sum;
 
     make_b(A, b, n);
-
-    /*for (i = 0; i < m; i++)
-    {
-        matrix_multiplied_by_vector_to_vector(A, x0, x, n, n);
-        difference_vectors(b, x, x, n);
-        multiplication_vector(x, t, n);
-        sum_vectors(x, x0, x0, n);
-    }*/
-
 
     for (k = 0; k < m; k++)
     {
         for (i = 0; i < n; i++)
         {
-            rem = 0;
+            sum = 0;
 
             for (j = 0; j < n; j++)
             {
-                rem += A[i * n + j] * x0[j];
+                sum += A[i * n + j] * x0[j];
             }
 
-            x0[i] = (b[i] - rem) * t + x0[i];
+            x[i] = (b[i] - sum) * t + x0[i];
         }
-    }
-
-    for (i = 0; i < n; i++)
-    {
-        x[i] = x0[i];
+        for (i = 0; i < n; i++)
+        {
+            x0[i] = x[i];
+        }
     }
 
     *error1 = residual_1(A, b, x, n);
     *error2 = residual_2(x, n);
+
+    return 0;
 }
 
 
-
-
-void sequence_3(double *A, double *x0, double *b, double *x, double *r, int n, int m, double *error1, double *error2)//3
+int sequence_3(double *A, double *x0, double *b, double *x, double *r, int n, int m, double *error1, double *error2)//3
 {
     int i;
     int j;
@@ -303,8 +355,14 @@ void sequence_3(double *A, double *x0, double *b, double *x, double *r, int n, i
     double sum;
     double rem1;
     double rem2;
+    double eps;
 
     make_b(A, b, n);
+    print_matrix(b, n, 1);
+    eps = euclid_norm(b, n); // TODO aff a flag to square root
+
+    eps = eps * 1e-17 * 1e-17;
+    printf("\n=======================\n");
 
     for (i = 0; i < n; i++)
     {
@@ -326,41 +384,69 @@ void sequence_3(double *A, double *x0, double *b, double *x, double *r, int n, i
         for (i = 0; i < n; i++)
         {
             sum = 0;
+
             for (j = 0; j < n; j++)
             {
                 sum += A[i * n + j] * r[j];
             }
+
             rem1 += r[i] * r[i];
             rem2 += r[i] * sum;
             x[i] = sum;
         }
 
-        if (fabs(rem1) > 0)
+        if (fabs(rem2) > eps)
         {
             for (i = 0; i < n; i++)
             {
-                x0[i] -= r[i] * rem2 / rem1;
+                x0[i] -= r[i] * rem1 / rem2;
             }
         }
         else
         {
-            return ERROR;
-        }
+            for (i = 0; i < n; i++)
+            {
+                x[i] = x0[i];
+            }
 
+            print_matrix(x, n, 1);
+
+            *error1 = residual_1(A, b, x, n);
+            *error2 = residual_2(x, n);
+
+            printf("%d\n", i);
+
+            return 0;
+        }
+        /*
+        printf("\n");
+        print_matrix(x0, n, 1);
+        printf("\n");
+        */
         for (i = 0; i < n; i++)
         {
-            x[i] = r[i] - x[i] * rem2 / rem1;
+            r[i] = r[i] - x[i] * rem1 / rem2;
         }
-
-        r = x;
     }
 
+    for (i = 0; i < n; i++)
+    {
+        x[i] = x0[i];
+    }
+
+    printf("\n");
+    printf("\n");
+    print_matrix(x, n, 1);
+    printf("\n");
+    printf("\n");
     *error1 = residual_1(A, b, x, n);
     *error2 = residual_2(x, n);
+
+    return 0;
 }
 
 
-void sequence_4(double *A, double *x0, double *b, double *x, double *r, int n, int m, double *error1, double *error2)//4
+int sequence_4(double *A, double *x0, double *b, double *x, double *r, int n, int m, double *error1, double *error2)//4
 {
     int i;
     int j;
@@ -368,8 +454,12 @@ void sequence_4(double *A, double *x0, double *b, double *x, double *r, int n, i
     double sum;
     double rem1;
     double rem2;
+    double eps;
 
     make_b(A, b, n);
+    eps = euclid_norm(b, n);
+
+    eps = eps * 1e-17 * 1e-17;
 
     for (i = 0; i < n; i++)
     {
@@ -400,7 +490,7 @@ void sequence_4(double *A, double *x0, double *b, double *x, double *r, int n, i
             x[i] = sum;
         }
 
-        if (fabs(rem1) > 0)
+        if (fabs(rem1) > eps)
         {
             for (i = 0; i < n; i++)
             {
@@ -409,7 +499,10 @@ void sequence_4(double *A, double *x0, double *b, double *x, double *r, int n, i
         }
         else
         {
-            return ERROR;
+            *error1 = residual_1(A, b, x, n);
+            *error2 = residual_2(x, n);
+
+            return 0;
         }
 
         for (i = 0; i < n; k++)
@@ -422,10 +515,12 @@ void sequence_4(double *A, double *x0, double *b, double *x, double *r, int n, i
 
     *error1 = residual_1(A, b, x, n);
     *error2 = residual_2(x, n);
+
+    return 0;
 }
 
 
-void sequence_5(double *A, double *x0, double *b, double *x, double *r, int n, int m, double *error1, double *error2)//5
+int sequence_5(double *A, double *x0, double *b, double *x, double *r, int n, int m, double *error1, double *error2)//5
 {
     int i;
     int j;
@@ -434,8 +529,12 @@ void sequence_5(double *A, double *x0, double *b, double *x, double *r, int n, i
     double sum2;
     double rem1;
     double rem2;
+    double eps;
 
     make_b(A, b, n);
+    eps = euclid_norm(b, n);
+
+    eps = eps * 1e-17 * 1e-17;
 
     for (i = 0; i < n; i++)
     {
@@ -477,7 +576,10 @@ void sequence_5(double *A, double *x0, double *b, double *x, double *r, int n, i
         }
         else
         {
-            return ERROR;
+            *error1 = residual_1(A, b, x, n);
+            *error2 = residual_2(x, n);
+
+            return 0;
         }
 
         for (i = 0; i < n; i++)
@@ -490,10 +592,12 @@ void sequence_5(double *A, double *x0, double *b, double *x, double *r, int n, i
 
     *error1 = residual_1(A, b, x, n);
     *error2 = residual_2(x, n);
+
+    return 0;
 }
 
 
-void sequence_6(double *A, double *x0, double *b, double *x, double *r, int n, int m, double *error1, double *error2)//6
+int sequence_6(double *A, double *x0, double *b, double *x, double *r, int n, int m, double *error1, double *error2)//6
 {
     int i;
     int j;
@@ -502,8 +606,12 @@ void sequence_6(double *A, double *x0, double *b, double *x, double *r, int n, i
     double sum2;
     double rem1;
     double rem2;
+    double eps;
 
     make_b(A, b, n);
+    eps = euclid_norm(b, n);
+
+    eps = eps * 1e-17 * 1e-17;
 
     for (i = 0; i < n; i++)
     {
@@ -526,11 +634,13 @@ void sequence_6(double *A, double *x0, double *b, double *x, double *r, int n, i
         {
             sum1 = 0;
             sum2 = 0;
+
             for (j = 0; j < n; j++)
             {
                 sum1 += A[i * n + j] * r[j];
                 sum2 += A[i * n + j] * r[j] / A[j * n + j];
             }
+
             rem1 += sum2 * r[i];
             rem2 += sum2 * sum2;
             x[i] = sum1;
@@ -545,7 +655,10 @@ void sequence_6(double *A, double *x0, double *b, double *x, double *r, int n, i
         }
         else
         {
-            return ERROR;
+            *error1 = residual_1(A, b, x, n);
+            *error2 = residual_2(x, n);
+
+            return 0;
         }
 
         for (i = 0; i < n; i++)
@@ -558,15 +671,19 @@ void sequence_6(double *A, double *x0, double *b, double *x, double *r, int n, i
 
     *error1 = residual_1(A, b, x, n);
     *error2 = residual_2(x, n);
+
+    return 0;
 }
 
 
-void sequence_7(double *A, double *x0, double *b, double *x, double *r, int n, int m, double t, double *error1, double *error2)//7
+int sequence_7(double *A, double *x0, double *b, double *x, double *r, int n, int m, double t, double *error1, double *error2)//7
 {
     int i;
     int j;
     int k;
     double rem;
+
+    (void) r;
 
     make_b(A, b, n);
 
@@ -581,26 +698,32 @@ void sequence_7(double *A, double *x0, double *b, double *x, double *r, int n, i
                 rem += A[i * n + j] * x0[j];
             }
 
-            x0[i] = (b[i] - rem) * t / A[i * n + i] + x0[i];
+            x[i] = (b[i] - rem) * t / A[i * n + i] + x0[i];
         }
-    }
 
-    for (i = 0; i < n; i++)
-    {
-        x[i] = x0[i];
+        for (i = 0; i < n; i++)
+        {
+            x0[i] = x[i];
+        }
+
     }
 
     *error1 = residual_1(A, b, x, n);
     *error2 = residual_2(x, n);
+
+    return 0;
 }
 
 
-void sequence_8(double *A, double *x0, double *b, double *x, double *r, double *w, int n, int m, double t, double *error1, double *error2)//8
+int sequence_8(double *A, double *x0, double *b, double *x, double *r, double *w, int n, int m, double t, double *error1, double *error2)//8
 {
     int i;
     int j;
     int k;
     double rem;
+
+    (void) r;
+    (void) w;
 
     make_b(A, b, n);
 
@@ -615,7 +738,7 @@ void sequence_8(double *A, double *x0, double *b, double *x, double *r, double *
                 rem += A[i * n + j] * x0[j];
             }
 
-            x[i] = (b[i] - rem) * t
+            x[i] = (b[i] - rem) * t;
 
             for (j = 0; j <= i; j++)//solving system
             {
@@ -638,15 +761,20 @@ void sequence_8(double *A, double *x0, double *b, double *x, double *r, double *
 
     *error1 = residual_1(A, b, x, n);
     *error2 = residual_2(x, n);
+
+    return 0;
 }
 
 
-void sequence_9(double *A, double *x0, double *b, double *x, double *r, double *w, int n, int m, double t, double *error1, double *error2)//9
+int sequence_9(double *A, double *x0, double *b, double *x, double *r, double *w, int n, int m, double t, double *error1, double *error2)//9
 {
     int i;
     int j;
     int k;
     double rem;
+
+    (void) r;
+    (void) w;
 
     make_b(A, b, n);
 
@@ -661,7 +789,7 @@ void sequence_9(double *A, double *x0, double *b, double *x, double *r, double *
                 rem += A[i * n + j] * x0[j];
             }
 
-            x[i] = (b[i] - rem) * t
+            x[i] = (b[i] - rem) * t;
 
             for (j = n - 1; j >= i; j--)//solving system
             {
@@ -684,4 +812,65 @@ void sequence_9(double *A, double *x0, double *b, double *x, double *r, double *
 
     *error1 = residual_1(A, b, x, n);
     *error2 = residual_2(x, n);
+
+    return 0;
+}
+
+
+int sequence_10(double *A, double *x0, double *b, double *x, double *r, double *w, int n, int m, double t, double *error1, double *error2)//10
+{
+    int i;
+    int j;
+    int k;
+    double rem;
+
+    (void) r;
+    (void) w;
+
+    make_b(A, b, n);
+
+    for (k = 0; k < m; i++)
+    {
+        for (i = 0; i < n; i++)
+        {
+            rem = 0;
+
+            for (j = 0; j < n; j++)
+            {
+                rem += A[i * n + j] * x0[j];
+            }
+
+            x[i] = (b[i] - rem) * t;
+
+            for (j = 1; j <= i; j++)//solving system
+            {
+                x[i] -= x[j - 1] * A[i * n + j - 1] / A[(j - 1) * n + j - 1];
+            }
+        }
+
+        for (i = n - 1; i <= 0; i--)
+        {
+            for (j = n - 1; j >= i; j--)//solving system
+            {
+                x[i] += x0[j] * A[i * n + j];
+
+                if (j < n - 1)
+                {
+                    x[i] -= x[j - 1] * A[i * n + j - 1];
+                }
+            }
+
+            x[i] /= A[i * n + i];
+        }
+
+        for (i = 0; i < n; i++)
+        {
+            x0[i] = x[i];
+        }
+    }
+
+    *error1 = residual_1(A, b, x, n);
+    *error2 = residual_2(x, n);
+
+    return 0;
 }
