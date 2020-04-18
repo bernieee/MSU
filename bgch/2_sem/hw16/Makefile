@@ -1,6 +1,5 @@
-WARNINGS = -O3 -W -Wall -Wunused -Wcast-align -Werror -pedantic -pedantic-errors -fstack-protector-all -Wfloat-equal -Wpointer-arith -Wwrite-strings -Wno-long-long -Wmissing-declarations -Werror=float-equal -Werror=unused-variable -Werror=unused-parameter -Werror=declaration-after-statement -Werror=missing-prototypes -Werror=return-type -Werror=maybe-uninitialized -Wimplicit -fsanitize=leak
-WARNINGS_C_ONLY = -Wc++-compat -Wbad-function-cast
-CFLAGS = $(WARNINGS) $(WARNINGS_C_ONLY)
+WARNINGS = -fsanitize=leak -mfpmath=sse -fstack-protector-all -W -Wall -Wextra -Wunused -Wcast-align -Werror -pedantic -pedantic-errors -Wfloat-equal -Wpointer-arith -Wformat-security -Wmissing-format-attribute -Wformat=1 -Wwrite-strings -Wcast-align -Wno-long-long -std=gnu99 -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations -Wold-style-definition -Wdeclaration-after-statement -Wbad-function-cast -Wnested-externs
+CFLAGS = $(WARNINGS)
 MFLAGS = -lm
 all: hw16.o a01.out a02.out a03.out a04.out a05.out a06.out a07.out a08.out a09.out a10.out
 

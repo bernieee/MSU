@@ -59,46 +59,6 @@ void print_matrix(double *a, int m, int n)
 }
 
 
-/*static void matrix_multiplied_by_vector_to_vector(double *a, double *b, double *c, int m, int n)
-{
-    int i;
-    int j;
-    double rem;
-
-    for (i = 0; i < m; i++)
-    {
-        rem = 0;
-        for (j = 0; j < n; j++)
-        {
-            rem += a[i * n + j] * b[j];
-        }
-        c[i] = rem;
-    }
-}
-
-
-static void matrix_multiplied_by_matrix_to_matrix(double *a, double *b, double *c, int m, int n, int k)
-{
-    int i;
-    int j;
-    int t;
-    double rem;
-
-    for (t = 0; t < k; t++)
-    {
-        for (i = 0; i < m; i++)
-        {
-            rem = 0;
-            for (j = 0; j < n; j++)
-            {
-                rem += a[i * n + j] * b[k * j + t];
-            }
-            c[t + k * i] = rem;
-        }
-    }
-}*/
-
-
 static double residual_1(double *A, double *b, double *x, int n)
 {
     int i;
@@ -176,70 +136,6 @@ static double euclid_norm(double *b, int n)
 
     return res;
 }
-
-
-/*static void make_b(double *A, double *b, int n)
-{
-    int i;
-    double *x;
-
-    x = malloc(n * sizeof(double));
-
-    for (i = 0; i < n; i++)
-    {
-        x[i] = (i + 1) % 2;
-    }
-
-    matrix_multiplied_by_vector_to_vector(A, x, b, n, n);
-}
-
-
-static double scalar_product(double *x, double *y, int n)
-{
-    int i;
-    double res;
-
-    res = 0;
-
-    for (i = 0; i < n; i++)
-    {
-        res += x[i] * y[i];
-    }
-
-    return res;
-}
-
-
-static void multiplication_vector(double *x, double t, int n)
-{
-    int i;
-
-    for (i = 0; i < n; i++)
-    {
-        x[i] = x[i] * t;
-    }
-}
-
-static void sum_vectors(double *x, double *y, double *z, int n)
-{
-    int i;
-
-    for (i = 0; i < n; i++)
-    {
-        z[i] = x[i] + y[i];
-    }
-}
-
-
-static void difference_vectors(double *x, double *y, double *z, int n)
-{
-    int i;
-
-    for (i = 0; i < n; i++)
-    {
-        z[i] = x[i] - y[i];
-    }
-}*/
 
 
 double lambda_sequence(double *A, double *x0, double *x, int n, int m)//1
@@ -676,8 +572,6 @@ int sequence_6(double *A, double *x0, double *b, double *x, double *r, int n, in
         {
             r[i] = r[i] - x[i] * rem1 / rem2;
         }
-
-        //r = x;
     }
 
     for (i = 0; i < n; i++)
@@ -759,11 +653,9 @@ int sequence_8(double *A, double *x0, double *b, double *x, double *r, double *w
             for (j = 0; j <= i; j++)//solving system
             {
                 x[i] += x0[j] * A[i * n + j];
-                //printf("%d\n", k);
 
                 if (j > 0)
                 {
-                    //x[i] -= x[i - j] * A[i * n + i - j];
                     x[i] -= x[j - 1] * A[i * n + j - 1];
                 }
             }
