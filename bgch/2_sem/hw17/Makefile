@@ -1,22 +1,5 @@
-test: a01.out a02.out a03.out a04.out a05.out a06.out a07.out
-	./a01.out 50 6 test.txt test_x.txt
-	./a01.out 500 100
-	./a02.out 100 4 0.01 test.txt test_x.txt
-	./a02.out 100 4 0.01  
-	./a03.out 50 6 test.txt test_x.txt
-	./a03.out 500 100
-	./a04.out 50 6 test.txt test_x.txt
-	./a04.out 500 100
-	./a05.out 5 2
-	./a05.out 10 3
-	./a06.out 5 2
-	./a05.out 10 3
-	./a07.out 500 5 0.01
-	./a07.out 500 3 0.001 test.txt test_x.txt
-
-WARNINGS = -O3 -W -Wall -Wunused -Wcast-align -Werror -pedantic -pedantic-errors -fstack-protector-all -Wfloat-equal -Wpointer-arith -Wwrite-strings -Wno-long-long -Wmissing-declarations -Werror=float-equal -Werror=unused-variable -Werror=unused-parameter -Werror=declaration-after-statement -Werror=missing-prototypes -Werror=return-type -Werror=maybe-uninitialized -Wimplicit
-WARNINGS_C_ONLY = -O3 -fsanitize=leak -mfpmath=sse -fstack-protector-all -W -Wall -Wextra -Wunused -Wcast-align -Werror -pedantic -pedantic-errors -Wfloat-equal -Wpointer-arith -Wformat-security -Wmissing-format-attribute -Wformat=1 -Wwrite-strings -Wcast-align -Wno-long-long -std=gnu99 -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations -Wold-style-definition -Wdeclaration-after-statement -Wbad-function-cast -Wnested-externs
-CFLAGS = $(WARNINGS_C_ONLY)
+WARNINGS = -O3 -fsanitize=leak -mfpmath=sse -fstack-protector-all -W -Wall -Wextra -Wunused -Wcast-align -Werror -pedantic -pedantic-errors -Wfloat-equal -Wpointer-arith -Wformat-security -Wmissing-format-attribute -Wformat=1 -Wwrite-strings -Wcast-align -Wno-long-long -std=gnu99 -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations -Wold-style-definition -Wdeclaration-after-statement -Wbad-function-cast -Wnested-externs
+CFLAGS = $(WARNINGS)
 MFLAGS = -lm
 all: hw17.o a01.out a02.out a03.out a04.out a05.out a06.out a07.out a08.out a09.out a10.out
 

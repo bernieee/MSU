@@ -115,8 +115,9 @@ int main(int argc, char *argv[])
     lambda = lambda_sequence(A, x0, x, n, m);
     T = clock() - T;
 
-    //print_matrix(x, n, 1);
-    //printf("\n");
+    printf("\n");
+    print_matrix(x, 1, n);
+    printf("\n");
 
     if (fabs(lambda) > 0)
     {
@@ -126,7 +127,7 @@ int main(int argc, char *argv[])
     {
         printf("Error\n");
     }
-    printf("Elapsed = %.2f\n", T / CLOCKS_PER_SEC);
+    printf("Elapsed = %.2f\n\n", T / CLOCKS_PER_SEC);
 
     free(A);
     free(x);

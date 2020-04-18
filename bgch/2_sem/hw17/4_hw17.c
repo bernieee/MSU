@@ -141,18 +141,19 @@ int main(int argc, char *argv[])
     ans = sequence_4(A, x0, b, x, r, n, m, &error1, &error2);
     T = clock() - T;
 
-    //print_matrix(x, n, 1);
-    //printf("\n");
+    printf("\n");
+    print_matrix(x, 1, n);
+    printf("\n");
 
     if (ans == 0)
     {
-        printf("Residual1 = %e\nResidual2 = %e\n", error1, error2);
+        printf("Residual_b = %e\nResidual_x = %e\n", error1, error2);
     }
     else
     {
         printf("Error\n");
     }
-    printf("Elapsed = %.2f\n", T / CLOCKS_PER_SEC);
+    printf("Elapsed = %.2f\n\n", T / CLOCKS_PER_SEC);
 
     free(A);
     free(x);
