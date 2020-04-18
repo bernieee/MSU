@@ -147,11 +147,10 @@ static void make_b(double *A, double *b, int n)
     double sum;
     double *pi;
 
-    sum = 0;
-
     for (i = 0; i < n; i++)
     {
         pi = A + i * n;
+        sum = 0;
 
         for (j = 0; j < (n + 1) / 2; j++)
         {
@@ -461,6 +460,10 @@ int sequence_4(double *A, double *x0, double *b, double *x, double *r, int n, in
 
     eps = eps * 1e-17 * 1e-17;
 
+    //print_matrix(b, n, 1);
+    //printf("%e\n=================\n", eps);
+
+
     for (i = 0; i < n; i++)
     {
         sum = 0;
@@ -481,36 +484,53 @@ int sequence_4(double *A, double *x0, double *b, double *x, double *r, int n, in
         for (i = 0; i < n; i++)
         {
             sum = 0;
+
             for (j = 0; j < n; j++)
             {
                 sum += A[i * n + j] * r[j];
             }
+
             rem1 += r[i] * sum;
             rem2 += sum * sum;
             x[i] = sum;
         }
 
-        if (fabs(rem1) > eps)
+        if (fabs(rem2) > eps)
         {
             for (i = 0; i < n; i++)
             {
-                x0[i] -= r[i] * rem2 / rem1;
+                x0[i] -= r[i] * rem1 / rem2;
             }
         }
         else
         {
+            for (i = 0; i < n; i++)
+            {
+                x[i] = x0[i];
+            }
+
             *error1 = residual_1(A, b, x, n);
             *error2 = residual_2(x, n);
 
             return 0;
         }
 
+        print_matrix(x0, n, 1);
+        printf("111\n");
+
         for (i = 0; i < n; k++)
         {
-            x[i] = r[i] - x[i] * rem2 / rem1;
+            r[i] = r[i] - x[i] * rem1 / rem2;
         }
 
-        r = x;
+        //r = x;
+    }
+
+    printf("111\n");
+
+    for (i = 0; i < n; i++)
+    {
+        x[i] = x0[i];
     }
 
     *error1 = residual_1(A, b, x, n);
@@ -567,15 +587,20 @@ int sequence_5(double *A, double *x0, double *b, double *x, double *r, int n, in
             x[i] = sum1;
         }
 
-        if (fabs(rem1) > 0)
+        if (fabs(rem2) > 0)
         {
             for (i = 0; i < n; i++)
             {
-                x0[i] -= r[i] * rem2 / rem1;
+                x0[i] -= r[i] * rem1 / rem2;
             }
         }
         else
         {
+            for (i = 0; i < n; i++)
+            {
+                x[i] = x0[i];
+            }
+
             *error1 = residual_1(A, b, x, n);
             *error2 = residual_2(x, n);
 
@@ -584,10 +609,15 @@ int sequence_5(double *A, double *x0, double *b, double *x, double *r, int n, in
 
         for (i = 0; i < n; i++)
         {
-            x[i] = r[i] - x[i] * rem2 / rem1;
+            r[i] = r[i] - x[i] * rem1 / rem2;
         }
 
-        r = x;
+        //r = x;
+    }
+
+    for (i = 0; i < n; i++)
+    {
+        x[i] = x0[i];
     }
 
     *error1 = residual_1(A, b, x, n);
@@ -655,6 +685,11 @@ int sequence_6(double *A, double *x0, double *b, double *x, double *r, int n, in
         }
         else
         {
+            for (i = 0; i < n; i++)
+            {
+                x[i] = x0[i];
+            }
+
             *error1 = residual_1(A, b, x, n);
             *error2 = residual_2(x, n);
 
@@ -663,10 +698,15 @@ int sequence_6(double *A, double *x0, double *b, double *x, double *r, int n, in
 
         for (i = 0; i < n; i++)
         {
-            x[i] = r[i] - x[i] * rem2 / rem1;
+            r[i] = r[i] - x[i] * rem2 / rem1;
         }
 
-        r = x;
+        //r = x;
+    }
+
+    for (i = 0; i < n; i++)
+    {
+        x[i] = x0[i];
     }
 
     *error1 = residual_1(A, b, x, n);
