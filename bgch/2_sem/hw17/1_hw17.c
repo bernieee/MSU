@@ -115,18 +115,19 @@ int main(int argc, char *argv[])
     lambda = lambda_sequence(A, x0, x, n, m);
     T = clock() - T;
 
-    printf("\n");
-    print_matrix(x, 1, n);
-    printf("\n");
-
     if (fabs(lambda) > 0)
     {
+        printf("\n");
+        print_matrix(x, 1, n);
+        printf("\n");
+
         printf("Lambda = %lf\n", lambda);
     }
     else
     {
         printf("Error\n");
     }
+
     printf("Elapsed = %.2f\n\n", T / CLOCKS_PER_SEC);
 
     free(A);

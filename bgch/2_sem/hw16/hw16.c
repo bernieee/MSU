@@ -53,7 +53,7 @@ void print_matrix(double *a, int m, int n)
     for (i = 0; i < m_max; i++)
     {
         for (j = 0; j < n_max; j++)
-            printf(" %lf", a[i * n + j]);
+            printf("%10lf", a[i * n + j]);
         printf("\n");
     }
 }
@@ -234,6 +234,7 @@ static int min_dispersion_line(double *a, int m, int n)
             min_d = fmin(d, min_d);
             index = i;
         }
+        printf("%d  %d\n", index, i);
     }
 
     return index;
@@ -289,17 +290,13 @@ static void find_min_elem(double *a, int m, int n, int *res_i, int *res_j)
     int j;
     double res;
 
+    res = fabs(a[0]);
+
     for (i = 0; i < m; i++)
     {
         for (j = 0; j < n; j++)
         {
-            if (i == 0)
-            {
-                res = fabs(a[i * n + j]);
-                *res_i = i;
-                *res_j = j;
-            }
-            else if (fabs(a[i * n + j]) < res)
+            if (fabs(a[i * n + j]) < res)
             {
                 res = fabs(a[i * n + j]);
                 *res_i = i;
@@ -504,7 +501,7 @@ void delete_column_with_max_sum_minus_main_elem(double *a, int m, int n)//6
 }
 
 
-void delete_column_with_min_dispersion(double *a, int n, int m)//7
+void delete_column_with_min_dispersion(double *a, int m, int n)//7
 {
     int res_j;
 
@@ -539,7 +536,7 @@ void delete_column_and_line_with_max_sum_minus_intersection(double *a, int m, in
 }
 
 
-void delete_column_and_line_with_min_dispersion(double *a, int n, int m)//10
+void delete_column_and_line_with_min_dispersion(double *a, int m, int n)//10
 {
     int res_i;
     int res_j;
