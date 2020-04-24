@@ -96,8 +96,8 @@ int main(int argc, char *argv[])
     print_matrix(A, n, n, m);
     printf("\n");
 
-    print_matrix(b, n, 1, m);
-    printf("\n");
+    //print_matrix(b, n, 1, m);
+    //printf("\n");
 
     T = clock();
     er = reflection_method_24(A, b, x, n);

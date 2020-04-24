@@ -9,7 +9,7 @@
 #define ERROR_READ -2
 #define ERROR -3
 
-#define EPS 1e-17
+#define EPS 1e-20
 
 void init_matrix(double *a, int m, int n, int k);
 int read_matrix(double *a, int m, int n, const char *fname);

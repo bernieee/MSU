@@ -707,7 +707,7 @@ int sequence_9(double *A, double *x0, double *b, double *x, double *r, double *w
 
                 if (j < n - 1)
                 {
-                    x[i] -= x[j - 1] * A[i * n + j - 1];
+                    x[i] -= x[j + 1] * A[i * n + j + 1];
                 }
             }
 
@@ -766,7 +766,7 @@ int sequence_10(double *A, double *x0, double *b, double *x, double *r, double *
 
                 if (j < n - 1)
                 {
-                    x[i] -= x[j - 1] * A[i * n + j - 1];
+                    x[i] -= x[j + 1] * A[i * n + j + 1];
                 }
             }
 

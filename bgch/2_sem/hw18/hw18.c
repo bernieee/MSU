@@ -1,4 +1,4 @@
-#include "hw18.h"
+#include "solve_hw18.h"
 
 
 static double formula(int n, int i, int j, int k)//func for formula
@@ -166,22 +166,23 @@ int make_x_k(double *A_k, double *x_k, int n, int k)
 
     for (j = k + 1; j < n; j++)
     {
-        s_k += A_k[j * n] * A_k[j * n];
-        x_k[j - k] = A_k[j * n];
+        s_k += A_k[j * n + k] * A_k[j * n + k];
+        x_k[j - k] = A_k[j * n + k];
     }
 
     a_norm = sqrt(A_k[k * n + k] * A_k[k * n + k] + s_k);
     x_k[0] = A_k[k * n + k] - a_norm;
     x_k_norm = sqrt(x_k[0] * x_k[0] + s_k);
 
-    printf("a_norm = %e\n", a_norm);
-    printf("x_k_norm = %e\n", x_k_norm);
+    /*printf("k = %d\n", k);
+    printf("a_norm = %e\n", a_norm);*/
+    printf("x_k_norm = %e\n\n", x_k_norm);
 
-    for (j = k; j < n; j++)
+    /*for (j = k; j < n; j++)
     {
         printf("%e ", x_k[j - k]);
     }
-    printf("\n");
+    printf("\n\n");*/
 
 
     if (x_k_norm > EPS)
@@ -191,11 +192,11 @@ int make_x_k(double *A_k, double *x_k, int n, int k)
             x_k[j - k] /= x_k_norm;
         }
 
-        for (j = k; j < n; j++)
+        /*for (j = k; j < n; j++)
         {
             printf("%e ", x_k[j - k]);
         }
-        printf("\n");
+        printf("\n\n\n");*/
 
         A_k[k * n + k] = a_norm;
         return SUCCESS;
@@ -226,7 +227,7 @@ int make_A_k(double *A_k, double *x_k, int n, int k)
 
         alpha *= 2;
 
-        printf("alpha_A = %e\n", alpha);
+        //printf("alpha_A = %e\n", alpha);
 
         for (i = k; i < n; i++)
         {
@@ -252,7 +253,7 @@ int make_b_k(double *b_k, double *x_k, int n, int k)
 
     alpha *= 2;
 
-    printf("alpha_b = %e\n", alpha);
+    //printf("alpha_b = %e\n\n", alpha);
 
     for (i = k; i < n; i++)
     {
@@ -268,6 +269,8 @@ int gauss_up_diagonal_method(double *A, double *b, double *x, int n)
     int i;
     int j;
 
+
+    //printf("%e\n", A[n * (n - 1) + n - 1]);
     if (fabs(A[n * (n - 1) + n - 1]) > EPS)
     {
         x[n - 1] = b[n - 1] / A[n * (n - 1) + n - 1];
@@ -283,7 +286,7 @@ int gauss_up_diagonal_method(double *A, double *b, double *x, int n)
 
         for (j = n - 2; j >= i; j--)
         {
-            x[i] -= x[j - 1] * A[i * n + j - 1];
+            x[i] -= x[j + 1] * A[i * n + j + 1];
         }
 
         if (fabs(A[i * n + i]) > EPS)
@@ -317,10 +320,10 @@ int reflection_method_24(double *A, double *b, double *x, int n)
         make_A_k(A, x, n, k);
         make_b_k(b, x, n, k);
 
-        print_matrix(A, n, n, n);
+        /*print_matrix(A, n, n, 5);
         printf("\n");
-        print_matrix(b, n, 1, n);
-        printf("\n");
+        print_matrix(b, n, 1, 5);
+        printf("\n");*/
     }
 
     /*er = make_x_k(A, x, n, k);
