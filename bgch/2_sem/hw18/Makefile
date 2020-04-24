@@ -6,9 +6,9 @@ all: hw18.o a.out
 hw18.o: hw18.c hw18.h
 	gcc -c $(CFLAGS) hw18.c
 
-a01.out: main_hw18.o hw18.o
-	gcc main_hw18.o hw18.o $(MFLAGS) -o a01.out
-main_hw18.o: 1_hw18.c hw18.h
+a.out: main_hw18.o hw18.o
+	gcc main_hw18.o hw18.o $(MFLAGS) -o a.out
+main_hw18.o: main_hw18.c hw18.h
 	gcc -c $(CFLAGS) main_hw18.c
 hw18.o: hw18.c hw18.h
 
