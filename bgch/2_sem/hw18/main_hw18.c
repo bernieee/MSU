@@ -1,4 +1,5 @@
-#include "hw18.h"
+#include "io_hw18.h"
+#include "solve_hw18.h"
 
 
 int main(int argc, char *argv[])
@@ -23,7 +24,7 @@ int main(int argc, char *argv[])
 
     k = atoi(argv[3]);
 
-    if (k < 0 || k > 4)
+    if (argc == 4 && (k < 1 || k > 4))
     {
         printf("Wrong Input!\n");
         return 2;

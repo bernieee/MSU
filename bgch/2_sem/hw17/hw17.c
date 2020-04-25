@@ -690,7 +690,7 @@ int sequence_9(double *A, double *x0, double *b, double *x, double *r, double *w
 
     for (k = 0; k < m; k++)
     {
-        for (i = n - 1; i <= 0; i--)
+        for (i = n - 1; i >= 0; i--)
         {
             rem = 0;
 
@@ -758,7 +758,7 @@ int sequence_10(double *A, double *x0, double *b, double *x, double *r, double *
             }
         }
 
-        for (i = n - 1; i <= 0; i--)
+        for (i = n - 1; i >= 0; i--)
         {
             for (j = n - 1; j >= i; j--)//solving system
             {

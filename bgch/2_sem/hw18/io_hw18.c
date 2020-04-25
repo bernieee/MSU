@@ -30,6 +30,7 @@ void init_matrix(double *a, int m, int n, int k)//for formula
 {
     int i;
     int j;
+
     for (i = 0; i < m; i++)
     {
         for (j = 0; j < n; j++)
@@ -37,6 +38,30 @@ void init_matrix(double *a, int m, int n, int k)//for formula
             a[i * n + j] = formula(n, i + 1, j + 1, k);
         }
     }
+}
+
+
+int read_matrix(double *a, int m, int n, const char *fname)
+{
+    FILE *f;
+    int i;
+    int len;
+
+    len = n * m;
+
+    if (!(f = fopen(fname, "r")))
+        return ERROR_OPEN;
+
+    for (i = 0; i < len; i++)
+        if (fscanf(f, "%lf", a + i) != 1)
+        {
+            fclose(f);
+            return ERROR_READ;
+        }
+
+    fclose(f);
+
+    return SUCCESS;
 }
 
 
