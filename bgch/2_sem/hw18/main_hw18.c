@@ -14,6 +14,7 @@ int main(int argc, char *argv[])
     double error1;
     double error2;
     double T;
+    double A_norm;
     const char *fname = 0;
 
     if (!((argc == 4 || argc == 5) && (n = atoi(argv[1])) > 0 && (m = atoi(argv[2])) > 0))
@@ -97,11 +98,13 @@ int main(int argc, char *argv[])
     print_matrix(A, n, n, m);
     printf("\n");
 
+    A_norm = L1_matrix_norm(A, n);
+
     //print_matrix(b, n, 1, m);
     //printf("\n");
 
     T = clock();
-    er = reflection_method_24(A, b, x, n);
+    er = reflection_method_24(A, b, x, A_norm, n);
     T = clock() - T;
 
     if (er == ERROR)
@@ -124,7 +127,7 @@ int main(int argc, char *argv[])
 
     make_b(A, b, n);
 
-    error1 = residual_1(A, b, x, n);
+    error1 = residual_1(A, b, x, A_norm, n);
     error2 = residual_2(x, n);
 
     printf("Residual b = %10.10e\n", error1);

@@ -4,7 +4,7 @@ static double formula(int n, int i, int j, int k)//func for formula
 {
     if (k == 1)
     {
-        return n - fmax(i, j) + 1;
+        return (n - fmax(i, j) + 1);
     }
 
     if (k == 2)
@@ -14,7 +14,7 @@ static double formula(int n, int i, int j, int k)//func for formula
 
     if (k == 3)
     {
-        return fabs(i - j);
+        return abs(i - j);
     }
 
     if (k == 4)
