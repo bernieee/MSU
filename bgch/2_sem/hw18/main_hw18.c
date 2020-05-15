@@ -110,6 +110,9 @@ int main(int argc, char *argv[])
     if (er == ERROR)
     {
         printf("Division by zero!\n");
+        free(A);
+        free(x);
+        free(b);
         return 2;
     }
 

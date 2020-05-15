@@ -100,99 +100,116 @@ void make_b(double *A, double *b, int n)
 }
 
 
-int make_x_k(double *A_k, double *x_k, double A_norm, int n, int k)
+static double sign(double x)
 {
+    if (x > EPS)
+        return 1;
+    else
+        return -1;
+}
+
+
+int reflection_method_24(double *A, double *b, double *x, double A_norm, int n)
+{
+    int k;
+    int er;
+    int i;
     int j;
     double s_k;
     double a_norm;
     double x_k_norm;
-
-    s_k = 0;
-    a_norm = 0;
-    x_k_norm = 0;
-
-    for (j = k + 1; j < n; j++)
-    {
-        s_k += A_k[j * n + k] * A_k[j * n + k];
-        x_k[j - k] = A_k[j * n + k];
-    }
-
-    a_norm = sqrt(A_k[k * n + k] * A_k[k * n + k] + s_k);
-    x_k[0] = A_k[k * n + k] - a_norm;
-    x_k_norm = sqrt(x_k[0] * x_k[0] + s_k);
-
-    if (x_k_norm > EPS * A_norm)
-    {
-        for (j = k; j < n; j++)
-        {
-            x_k[j - k] /= x_k_norm;
-        }
-
-        A_k[k * n + k] = a_norm;
-
-        return SUCCESS;
-    }
-    else
-    {
-        return ERROR;
-    }
-}
-
-
-int make_A_k(double *A_k, double *x_k, int n, int k)
-{
-    int i;
-    int j;
     double alpha;
 
-    for (j = k + 1; j < n; j++)// U(x_k) * A[j] -- умножение на столбец
+    //printf("%10.3e\n", A_norm);
+
+    for (k = 0; k < n - 1; k++)
     {
+        //er = make_x_k(A, x, A_norm, n, k);
+        s_k = 0;
+        a_norm = 0;
+        x_k_norm = 0;
+
+        for (j = k + 1; j < n; j++)
+        {
+            s_k += A[j * n + k] * A[j * n + k];
+            x[j - k] = A[j * n + k];
+        }
+
+        a_norm = sqrt(A[k * n + k] * A[k * n + k] + s_k);
+
+        /*if (a_norm > EPS * A_norm)
+        {
+            for (j = k; j < n; j++)
+            {
+                A[j * n + k] /= a_norm;
+            }
+        }
+        else
+        {
+            return ERROR;
+        }*/
+
+        /*for (j = k + 1; j < n; j++)
+        {
+            x[j - k] = A[j * n + k];
+        }*/
+
+        x[0] = A[k * n + k] - a_norm;
+        //x[0] = A[k * n + k] + sign(A[k * n + k]);
+        x_k_norm = sqrt(x[0] * x[0] + s_k);
+
+        A[k * n + k] = a_norm;
+
+        if (x_k_norm > EPS * A_norm)
+        {
+            for (j = k; j < n; j++)
+            {
+                x[j - k] /= x_k_norm;
+            }
+        }
+        else
+        {
+            return ERROR;
+        }
+
+        //make_A_k(A, x, n, k);
+        //make_b_k(b, x, n, k);
+
+
+        for (j = k + 1; j < n; j++)// U(x_k) * A[j] -- умножение на столбец
+        {
+            alpha = 0;
+
+            for (i = k; i < n; i++)
+            {
+                alpha += A[i * n + j] * x[i - k];
+            }
+
+            alpha *= 2;
+
+            for (i = k; i < n; i++)
+            {
+                A[i * n + j] -= alpha * x[i - k];
+            }
+        }
+
         alpha = 0;
 
         for (i = k; i < n; i++)
         {
-            alpha += A_k[i * n + j] * x_k[i - k];
+            alpha += b[i] * x[i - k];
         }
 
         alpha *= 2;
 
         for (i = k; i < n; i++)
         {
-            A_k[i * n + j] -= alpha * x_k[i - k];
+            b[i] -= alpha * x[i - k];
         }
+
     }
 
-    return SUCCESS;
-}
-
-
-int make_b_k(double *b_k, double *x_k, int n, int k)
-{
-    int i;
-    double alpha;
-
-    alpha = 0;
-
-    for (i = k; i < n; i++)
-    {
-        alpha += b_k[i] * x_k[i - k];
-    }
-
-    alpha *= 2;
-
-    for (i = k; i < n; i++)
-    {
-        b_k[i] = b_k[i] - alpha * x_k[i - k];
-    }
-
-    return SUCCESS;
-}
-
-
-int gauss_up_diagonal_method(double *A, double *b, double *x, double A_norm, int n)
-{
-    int i;
-    int j;
+    //er = gauss_up_diagonal_method(A, b, x, A_norm, n);
 
     if (fabs(A[n * (n - 1) + n - 1]) > EPS * A_norm)
     {
@@ -220,44 +237,6 @@ int gauss_up_diagonal_method(double *A, double *b, double *x, double A_norm, int
         {
             return ERROR;
         }
-    }
-
-    return SUCCESS;
-}
-
-
-int reflection_method_24(double *A, double *b, double *x, double A_norm, int n)
-{
-    int k;
-    int er;
-    double t;
-    double res;
-
-    res = 0;
-
-    for (k = 0; k < n - 1; k++)
-    {
-        er = make_x_k(A, x, A_norm, n, k);
-
-        if (er == ERROR)
-        {
-            return ERROR;
-        }
-
-        t = clock();
-        make_A_k(A, x, n, k);
-        t = clock() - t;
-        res += t;
-        make_b_k(b, x, n, k);
-    }
-
-    er = gauss_up_diagonal_method(A, b, x, A_norm, n);
-
-    printf("%.5lf\n", res / CLOCKS_PER_SEC);
-
-    if (er == ERROR)
-    {
-        return ERROR;
     }
 
     return SUCCESS;
