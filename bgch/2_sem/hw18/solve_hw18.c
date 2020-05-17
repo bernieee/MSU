@@ -98,169 +98,16 @@ void make_b(double *A, double *b, int n)
 
         b[i] = sum;
     }
-
-    //print_matrix(b, 1, n, 5);
 }
 
 
-/*int make_x_k(double *A_k, double A_norm, int n, int k)
+static double sign(double x)
 {
-    int j;
-    double s_k;
-    double a_norm;
-    double x_k_norm;
-
-    s_k = 0;
-    a_norm = 0;
-    x_k_norm = 0;
-
-    for (j = k + 1; j < n; j++)
-    {
-        s_k += A_k[j + k * n] * A_k[j + k * n];
-        //x_k[j - k] = A_k[j + k * n];
-    }
-
-    a_norm = sqrt(A_k[k * n + k] * A_k[k * n + k] + s_k);
-    //x_k[0] = A_k[k * n + k] - a_norm;
-    A_k[k * n + k] -= a_norm;
-    x_k_norm = sqrt(A_k[k * n + k] * A_k[k * n + k] + s_k);
-
-    A_k[k * n + k] = a_norm;
-
-    if (x_k_norm > EPS * A_norm)
-    {
-        for (j = k; j < n; j++)
-        {
-            x_k[j - k] /= x_k_norm;
-        }
-
-        return SUCCESS;
-    }
+    if (x < 0)
+        return -1;
     else
-    {
-        //printf("11) %11.3e\n", x_k_norm / A_norm);
-        return ERROR;
-    }
-
-    return SUCCESS;
+        return 1;
 }
-
-
-int make_A_k(double *A_k, int n, int k)
-{
-    int i;
-    int j;
-    double alpha;
-
-    for (j = k + 1; j < n; j++)// U(x_k) * A[j] -- умножение на столбец
-    {
-        alpha = 0;
-
-        for (i = k; i < n; i++)
-        {
-            alpha += A_k[i + j * n] * A_k[i + (j - 1) * n];
-        }
-
-        alpha *= 2;
-
-        for (i = k; i < n; i++)
-        {
-            A_k[i +  j * n] -= alpha * A_k[i + (j - 1) * n];
-        }
-    }
-
-    return SUCCESS;
-}
-
-
-int make_b_k(double *A_k, double *b_k, int n, int k)
-{
-    int i;
-    double alpha;
-
-    alpha = 0;
-
-    for (i = k; i < n; i++)
-    {
-        alpha += b_k[i] * A_k[i + (j - 1) * n];
-    }
-
-    alpha *= 2;
-
-    for (i = k; i < n; i++)
-    {
-        b_k[i] = b_k[i] - alpha * A_k[i + (j - 1) * n];
-    }
-
-    return SUCCESS;
-}
-
-
-int gauss_up_diagonal_method(double *A, double *b, double A_norm, int n)
-{
-    int i;
-    int j;
-
-    if (fabs(A[n * (n - 1) + n - 1]) > EPS * A_norm)
-    {
-        x[n - 1] = b[n - 1] / A[n * (n - 1) + n - 1];
-    }
-    else
-    {
-        return ERROR;
-    }
-
-
-    for (i = n - 2; i >= 0; i--)
-    {
-        x[i] = b[i];
-
-        for (j = n - 2; j >= i; j--)
-        {
-            x[i] -= x[j + 1] * A[i * n + j + 1];
-        }
-
-        if (fabs(A[i * n + i]) > EPS * A_norm)
-        {
-            x[i] /= A[i * n + i];
-        }
-        else
-        {
-            return ERROR;
-        }
-    }
-
-    return SUCCESS;
-}*/
-
-
-/*int reflection_method_24(double *A, double *b, double A_norm, int n)
-{
-    int k;
-    int er;
-
-    for (k = 0; k < n - 1; k++)
-    {
-        er = make_x_k(A, A_norm, n, k);
-
-        if (er == ERROR)
-        {
-            return ERROR;
-        }
-
-        make_A_k(A, n, k);
-        make_b_k(b, n, k);
-    }
-
-    er = gauss_up_diagonal_method(A, b, A_norm, n);
-
-    if (er == ERROR)
-    {
-        return ERROR;
-    }
-
-    return SUCCESS;
-}*/
 
 
 int reflection_method_24(double *A, double *b, double *x, double A_norm, int n)
@@ -275,9 +122,6 @@ int reflection_method_24(double *A, double *b, double *x, double A_norm, int n)
     int k;
     int er;
 
-
-    //printf("%10.3e\n\n", A_norm);
-
     for (k = 0; k < n - 1; k++)
     {
         //x
@@ -290,28 +134,21 @@ int reflection_method_24(double *A, double *b, double *x, double A_norm, int n)
             s_k += A[j + k * n] * A[j + k * n];
         }
 
+        //a_norm = (-1) * sign(A[k * n + k]) * sqrt(A[k * n + k] * A[k * n + k] + s_k);
         a_norm = sqrt(A[k * n + k] * A[k * n + k] + s_k);
         A[k * n + k] -= a_norm;
 
-        if (s_k > EPS * A_norm)
+        x_k_norm = sqrt(A[k * n + k] * A[k * n + k] + s_k);
+
+        //if (x_k_norm > 1e-20)//EPS * A_norm)
+        //if (fabs(s_k) > EPS)
+        if (fabs(s_k) > 1e-20)
         {
-            x_k_norm = sqrt(A[k * n + k] * A[k * n + k] + s_k);
-
-            if (x_k_norm > EPS * A_norm)
+            for (j = k; j < n; j++)
             {
-                for (j = k; j < n; j++)
-                {
-                    A[j + k * n] /= x_k_norm;
-                }
+                A[j + k * n] /= x_k_norm;
             }
-            else
-            {
-                //printf("1\n");
-                return ERROR;
-            }
-
-            //print_matrix(A, n, n, 5);
-            //printf("\n");
+            //printf("%10.3e\n", s_k);
         }
 
         //A
@@ -332,9 +169,6 @@ int reflection_method_24(double *A, double *b, double *x, double A_norm, int n)
             }
         }
 
-        //print_matrix(A, n, n, 5);
-        //printf("\n");
-
         //b
         alpha = 0;
 
@@ -345,31 +179,24 @@ int reflection_method_24(double *A, double *b, double *x, double A_norm, int n)
 
         alpha *= 2;
 
-        //printf("%10.3e\n", alpha);
-
         for (i = k; i < n; i++)
         {
             b[i] -= alpha * A[i + k * n];
         }
 
-        //print_matrix(b, 1, n, 5);
-        //printf("\n");
-
         A[k + k * n] = a_norm;
     }
 
 
-    if (fabs(A[n * (n - 1) + n - 1])  > EPS * A_norm)
+    if (fabs(A[n * (n - 1) + n - 1]) > EPS * A_norm)
     {
         A[n * (n - 1) + n - 1] = b[n - 1] / A[n * (n - 1) + n - 1];
     }
     else
     {
-        //printf("2\n");
+        printf("2 %10.3e\n", A[n * (n - 1) + n - 1]);
         return ERROR;
     }
-
-    //printf("%10.3e\n", A[n * (n - 1) + n - 1]);
 
     for (i = n - 2; i >= 0; i--)
     {
@@ -386,7 +213,7 @@ int reflection_method_24(double *A, double *b, double *x, double A_norm, int n)
         }
         else
         {
-            //printf("3\n");
+            printf("3 %10.3e\n", A[i * n + i]);
             return ERROR;
         }
     }
@@ -395,7 +222,6 @@ int reflection_method_24(double *A, double *b, double *x, double A_norm, int n)
     {
         x[i] = A[i * n + (n - 1)];
     }
-
 
     return SUCCESS;
 }
