@@ -17,9 +17,9 @@ double residual_1(double *A, double *b, double *x, double A_norm, int n);//L1 no
 double residual_2(double *x, int n);//L1 norm;
 
 void make_b(double *A, double *b, int n);
-int make_x_k(double *A_k, double *x_k, double A_norm, int n, int k);
-int make_A_k(double *A_k, double *x_k, int n, int k);
-int make_b_k(double *b_k, double *x_k, int n, int k);
-int gauss_up_diagonal_method(double *A, double *b, double *x, double A_norm, int n);
+//int make_x_k(double *A_k, double *x_k, double A_norm, int n, int k);
+//int make_A_k(double *A_k, double *x_k, int n, int k);
+//int make_b_k(double *b_k, double *x_k, int n, int k);
+//int gauss_up_diagonal_method(double *A, double *b, double *x, double A_norm, int n);
 
 int reflection_method_24(double *A, double *b, double *x, double A_norm, int n);
