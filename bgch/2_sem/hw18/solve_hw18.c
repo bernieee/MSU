@@ -140,15 +140,13 @@ int reflection_method_24(double *A, double *b, double *x, double A_norm, int n)
 
         x_k_norm = sqrt(A[k * n + k] * A[k * n + k] + s_k);
 
-        //if (x_k_norm > 1e-20)//EPS * A_norm)
-        //if (fabs(s_k) > EPS)
-        if (fabs(s_k) > 1e-20)
+        if (fabs(s_k) > EPS * A_norm)
+        //if (fabs(x_k_norm) > EPS * A_norm)
         {
             for (j = k; j < n; j++)
             {
                 A[j + k * n] /= x_k_norm;
             }
-            //printf("%10.3e\n", s_k);
         }
 
         //A
@@ -187,14 +185,12 @@ int reflection_method_24(double *A, double *b, double *x, double A_norm, int n)
         A[k + k * n] = a_norm;
     }
 
-
     if (fabs(A[n * (n - 1) + n - 1]) > EPS * A_norm)
     {
         A[n * (n - 1) + n - 1] = b[n - 1] / A[n * (n - 1) + n - 1];
     }
     else
     {
-        printf("2 %10.3e\n", A[n * (n - 1) + n - 1]);
         return ERROR;
     }
 
@@ -213,7 +209,6 @@ int reflection_method_24(double *A, double *b, double *x, double A_norm, int n)
         }
         else
         {
-            printf("3 %10.3e\n", A[i * n + i]);
             return ERROR;
         }
     }

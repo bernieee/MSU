@@ -9,9 +9,9 @@
 #define ERROR_READ -2
 #define ERROR -3
 
-#define EPS 9.181147276828874e-16
+//#define EPS 9.181147276828874e-16
 //#define EPS 1.981147276828874e-15
-//#define EPS 1.181147276828874e-15
+#define EPS 1.181147276828874e-15
 //#define EPS 5e-17
 
 double L1_matrix_norm(double *A, int n);//L1 norm
