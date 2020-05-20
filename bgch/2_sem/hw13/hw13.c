@@ -90,9 +90,7 @@ static int divided_difference(int n, int k, double *x, double *y)
     {
         if ((x[i - 1 - k] - x[i]) >= 0 && (x[i - 1 - k] - x[i]) <= 0 )
             return ERROR;
-        //printf("%lf  %lf  %lf  %lf\n", y[i - 1], y[i], x[i - 1 - k], x[i]);
         y[i] = (y[i - 1] - y[i]) / (x[i - 1 - k] - x[i]);
-        //printf("%lf\n", y[i]);
     }
 
     return 0;

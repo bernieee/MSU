@@ -53,7 +53,7 @@ void print_matrix(double *a, int m, int n)
     for (i = 0; i < m_max; i++)
     {
         for (j = 0; j < n_max; j++)
-            printf(" %lf", a[i * n + j]);
+            printf("%10lf", a[i * n + j]);
         printf("\n");
     }
 }
@@ -92,39 +92,6 @@ static int min_sum_lines(double *a, int m, int n)
 
     return index;
 }
-
-
-/*static int max_sum_lines(double *a, int m, int n)
-{
-    int i;
-    int j;
-    int index;
-    double sum;
-    double max_sum;
-    double *pi;
-
-    index = -1;
-    max_sum = -1;
-
-    for (i = 0; i < m; i++)
-    {
-        pi = a + i * n;
-        sum = 0;
-
-        for (j = 0; j < n; j++)
-        {
-            if (j != i)
-                sum += fabs(pi[j]);
-        }
-
-        max_sum = fmax(sum, max_sum);
-
-        if (!(max_sum > sum))
-            index = i;
-    }
-
-    return index;
-}*/
 
 
 static int min_sum_columns(double *a, int m, int n)
@@ -236,7 +203,7 @@ static int min_dispersion_line(double *a, int m, int n)
     int i;
     int j;
     int index;
-    double rem;
+    double sum_q;
     double sum;
     double d;
     double min_d;
@@ -249,20 +216,16 @@ static int min_dispersion_line(double *a, int m, int n)
     {
         pi = a + i * n;
         sum = 0;
+        sum_q = 0;
         d = 0;
 
         for (j = 0; j < n; j++)
         {
             sum += pi[j];
+            sum_q += pi[j] * pi[j];
         }
 
-        sum /= n;
-
-        for (j = 0; j < n; j++)
-        {
-            rem = pi[j] - sum;
-            d += rem * rem;
-        }
+        d = sum_q - sum * sum / m;
 
         if (i == 0)
             min_d = d;
@@ -271,6 +234,7 @@ static int min_dispersion_line(double *a, int m, int n)
             min_d = fmin(d, min_d);
             index = i;
         }
+        printf("%d  %d\n", index, i);
     }
 
     return index;
@@ -283,7 +247,7 @@ static int min_dispersion_column(double *a, int m, int n)
     int i;
     int j;
     int index;
-    double rem;
+    double sum_q;
     double sum;
     double d;
     double min_d;
@@ -296,20 +260,16 @@ static int min_dispersion_column(double *a, int m, int n)
     {
         pj = a + j;
         sum = 0;
+        sum_q = 0;
         d = 0;
 
         for (i = 0; i < m; i++)
         {
             sum += pj[i * n];
+            sum_q += pj[i * n] * pj[i * n];
         }
 
-        sum /= m;
-
-        for (i = 0; i < m; i++)
-        {
-            rem = pj[i * n] - sum;
-            d += rem * rem;
-        }
+        d = sum_q - sum * sum / m;
 
         if (j == 0)
             min_d = d;
@@ -330,17 +290,13 @@ static void find_min_elem(double *a, int m, int n, int *res_i, int *res_j)
     int j;
     double res;
 
+    res = fabs(a[0]);
+
     for (i = 0; i < m; i++)
     {
         for (j = 0; j < n; j++)
         {
-            if (i == 0)
-            {
-                res = fabs(a[i * n + j]);
-                *res_i = i;
-                *res_j = j;
-            }
-            else if (fabs(a[i * n + j]) < res)
+            if (fabs(a[i * n + j]) < res)
             {
                 res = fabs(a[i * n + j]);
                 *res_i = i;
@@ -385,7 +341,7 @@ static void max_sum_line_and_column(double *a, int m, int n, int *res_i, int *re
                 sum_j += fabs(pj[k * n]);
             }
 
-            sum = sum_i + sum_j - 2 * pj[0];
+            sum = sum_i + sum_j - 2 * fabs(pi[j]);
 
             if (sum > max_sum)
             {
@@ -447,36 +403,6 @@ static void max_sum_line_and_column_minus_intersection(double *a, int m, int n, 
 }
 
 
-
-/*static void delete_column(double *a, int m, int n, int res_j)
-{
-    int i;
-    int j;
-    int move;
-    double *pi;
-
-    move = 1;
-
-    for (i = 0; i < m - 1; i++)
-    {
-        pi = a + i * n + res_j;
-
-        for (j = 0; j < n - 1; j++)
-        {
-            pi[j - move + 1] = pi[j + 1];
-        }
-
-        move++;
-    }
-
-    pi = a + (m - 1) * n + res_j;
-
-    for (j = 0; j < n - res_j - 1; j++)
-    {
-        pi[j - move + 1] = pi[j + 1];
-    }
-}*/
-
 //if delete only column : res_i == -1
 static void delete_(double *a, int m, int n, int res_i, int res_j)
 {
@@ -507,7 +433,6 @@ static void delete_(double *a, int m, int n, int res_i, int res_j)
 
             pi[j - move] = pi[j];
         }
-
     }
 }
 
@@ -575,7 +500,8 @@ void delete_column_with_max_sum_minus_main_elem(double *a, int m, int n)//6
     delete_(a, m, n, -1, res_j);
 }
 
-void delete_column_with_min_dispersion(double *a, int n, int m)//7
+
+void delete_column_with_min_dispersion(double *a, int m, int n)//7
 {
     int res_j;
 
@@ -610,8 +536,7 @@ void delete_column_and_line_with_max_sum_minus_intersection(double *a, int m, in
 }
 
 
-
-void delete_column_and_line_with_min_dispersion(double *a, int n, int m)//10
+void delete_column_and_line_with_min_dispersion(double *a, int m, int n)//10
 {
     int res_i;
     int res_j;

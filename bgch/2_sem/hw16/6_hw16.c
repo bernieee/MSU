@@ -60,6 +60,7 @@ int main(int argc, char *argv[])
     if (m < n)
     {
         printf("No such element as a[j][j]\n");
+        free(a);
         return 3;
     }
 
