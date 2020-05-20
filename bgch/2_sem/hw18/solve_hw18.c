@@ -120,7 +120,6 @@ int reflection_method_24(double *A, double *b, double *x, double A_norm, int n)
     int i;
     int j;
     int k;
-    int er;
 
     for (k = 0; k < n - 1; k++)
     {
@@ -131,17 +130,17 @@ int reflection_method_24(double *A, double *b, double *x, double A_norm, int n)
 
         for (j = k + 1; j < n; j++)
         {
-            s_k += A[j + k * n] * A[j + k * n];
+            s_k += 500 * A[j + k * n] * A[j + k * n];
         }
 
-        //a_norm = (-1) * sign(A[k * n + k]) * sqrt(A[k * n + k] * A[k * n + k] + s_k);
-        a_norm = sqrt(A[k * n + k] * A[k * n + k] + s_k);
+        s_k /= 500;
+
+        a_norm = (-1) * sign(A[k * n + k]) * sqrt(A[k * n + k] * A[k * n + k] + s_k);
         A[k * n + k] -= a_norm;
 
         x_k_norm = sqrt(A[k * n + k] * A[k * n + k] + s_k);
 
-        if (fabs(s_k) > EPS * A_norm)
-        //if (fabs(x_k_norm) > EPS * A_norm)
+        if (fabs(x_k_norm) > EPS * A_norm)
         {
             for (j = k; j < n; j++)
             {
