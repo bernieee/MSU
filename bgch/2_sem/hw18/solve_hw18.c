@@ -120,7 +120,6 @@ int reflection_method_24(double *A, double *b, double *x, double A_norm, int n)
     int i;
     int j;
     int k;
-    int er;
 
     for (k = 0; k < n - 1; k++)
     {
