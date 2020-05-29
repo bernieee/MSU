@@ -3,6 +3,7 @@
 
 int read_list(const char *fname, list **p_head)
 {
+    int i;
     FILE *f;
     char buf[LEN];
     list *head;
@@ -18,20 +19,28 @@ int read_list(const char *fname, list **p_head)
     {
         if (!(feof(f)))
         {
+            fclose(f);
             return READ_ERROR;
         }
-        else
-        {
-            head = NULL;
-            return READ_ERROR;
-        }
+        fclose(f);
+        return READ_ERROR;
     }
 
     head = (list *) malloc(sizeof(list));
 
     if (!head)
     {
+        fclose(f);
         return MEMORY_ERROR;
+    }
+
+    for (i = 0; buf[i]; i++)
+    {
+        if (buf[i] == '\n')
+        {
+            buf[i] = '\0';
+            break;
+        }
     }
 
     head -> string = (char *) malloc(strlen(buf) + 1);
@@ -58,11 +67,21 @@ int read_list(const char *fname, list **p_head)
             return MEMORY_ERROR;
         }
 
+        for (i = 0; buf[i]; i++)
+        {
+            if (buf[i] == '\n')
+            {
+                buf[i] = '\0';
+                break;
+            }
+        }
+
         curr -> string = (char *) malloc(strlen(buf) + 1);
 
         if (!curr -> string)
         {
             delete_list(head);
+            free(curr);
             fclose(f);
             return MEMORY_ERROR;
         }
@@ -109,7 +128,7 @@ void print_list(list *head)
 
     for (i = 0, curr = head; i < 12 && curr; i++, curr = curr -> next)
     {
-        printf("%s", curr -> string);
+        printf("%s\n", curr -> string);
     }
 
     printf("\n");

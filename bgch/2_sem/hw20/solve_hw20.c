@@ -237,12 +237,9 @@ int maxlen_between_const_seqence(list *head) //7 strictly
 
     while (curr1->next && res != 0)//find first
     {
-        //curr1 = curr1->next;
         res = strcmp(curr1->string, curr1->next->string);
         curr1 = curr1->next;
     }
-
-    //printf("1\n");
 
     for (curr = curr1; curr->next; curr = curr->next)
     {
@@ -274,25 +271,31 @@ list *list_without_elems_not_greater_then_next(list *head) //8
     int res;
     list *curr;
     list *prev;
-    list *head1;
 
-    prev = NULL;
-    head1 = head;
+    if (!head->next)
+    {
+        return head;
+    }
 
-    for (curr = head; curr->next; curr = curr->next)
+    res = 0;
+
+    while (head->next && strcmp(head->string, head->next->string) >= 0)
+    {
+        curr = head;
+        head = head->next;
+        free(curr->string);
+        free(curr);
+    }
+
+    prev = head;
+
+    for (curr = head; curr && curr->next; curr = prev->next)
     {
         res = strcmp(curr->string, curr->next->string);
 
         if (res >= 0)
         {
-            if (prev != NULL)
-            {
-                prev->next = curr->next;
-            }
-            else
-            {
-                head1 = curr->next;
-            }
+            prev->next = curr->next;
 
             free(curr->string);
             free(curr);
@@ -303,7 +306,7 @@ list *list_without_elems_not_greater_then_next(list *head) //8
         }
     }
 
-    return head1;
+    return head;
 }
 
 
@@ -323,7 +326,7 @@ list *list_without_elems_not_greater_then_neighbours(list *head) //9
 
     res1 = strcmp(head->string, head->next->string);
 
-    for (curr = head->next; curr->next; curr = curr->next)
+    for (curr = head->next; curr && curr->next; curr = prev->next)
     {
         res2 = strcmp(curr->string, curr->next->string);
 
@@ -352,7 +355,6 @@ list *list_without_down_sequences(list *head) //10 not strictly
     int res2;
     list *curr;
     list *prev;
-    list *head1;
 
     if (!head->next)
     {
@@ -360,43 +362,30 @@ list *list_without_down_sequences(list *head) //10 not strictly
     }
 
     prev = NULL;
-    head1 = head;
 
     res1 = res2 = strcmp(head->string, head->next->string);
 
-    //printf("%d\n", res1);
-
-    if (res1 >= 0)
+    while (head->next->next && res1 >= 0)
     {
-        head1 = head->next;
-
-        free(head->string);
-        free(head);
-    }
-    else
-    {
-        prev = head;
+        res1 = strcmp(head->next->string, head->next->next->string);
+        curr = head;
+        head = head->next;
+        free(curr->string);
+        free(curr);
     }
 
-    for (curr = head->next; curr->next; curr = curr->next)
+    prev = head;
+
+    for (curr = head->next; curr && curr->next; curr = prev->next)
     {
         res2 = strcmp(curr->string, curr->next->string);
 
         if (res1 >= 0 || res2 >= 0)
-        //if (res1 >= 0)
         {
-            if (prev != NULL)
-            {
-                prev->next = curr->next;
-            }
-            else
-            {
-                head1 = curr->next;
-            }
+            prev->next = curr->next;
 
             free(curr->string);
             free(curr);
-
         }
         else
         {
@@ -406,21 +395,14 @@ list *list_without_down_sequences(list *head) //10 not strictly
         res1 = res2;
     }
 
-    if (res2 >= 0)
+    if (res1 >= 0 || res2 >= 0)
     {
-        if (prev != NULL)
-        {
-            prev->next = curr->next;
-        }
-        else
-        {
-            head1 = curr->next;
-        }
+        prev->next = curr->next;
 
         free(curr->string);
         free(curr);
     }
 
-    return head1;
+    return head;
 }
 

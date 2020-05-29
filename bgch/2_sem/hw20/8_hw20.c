@@ -34,8 +34,8 @@ int main (int argc, char *argv[])
                 break;
             default:
                 printf("Unknown error!\n");
-
         }
+
         return -2;
     }
 
@@ -49,5 +49,6 @@ int main (int argc, char *argv[])
 
     printf("Elapsed = %.2f\n", t / CLOCKS_PER_SEC);
 
+    delete_list(head1);
     return 0;
 }

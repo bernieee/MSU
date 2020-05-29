@@ -48,5 +48,6 @@ int main (int argc, char *argv[])
     printf("Answer = %d\n", ans);
     printf("Elapsed = %.2f\n", t / CLOCKS_PER_SEC);
 
+    delete_list(head);
     return 0;
 }
