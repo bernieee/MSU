@@ -20,6 +20,7 @@ int readStudent(const char *fname, int size, student *obj)
         obj[i].read(f);
     }
 
+    fclose(f);
     return SUCCESS;
 }
 
@@ -30,11 +31,13 @@ int student::read(FILE *f)
 
     if (!name)
     {
+        fclose(f);
         return MEMORY_ERROR;
     }
 
     if (!fscanf(f, "%s%d", name, &val))
     {
+        fclose(f);
         return READ_ERROR;
     }
 
@@ -60,7 +63,7 @@ student::student(const char *new_name, int new_val)
 }
 
 
-student::student(const student &x)
+student::student(const student &x) // copy-constructor
 {
     val = x.val;
     name = new char[strlen(x.name) + 1];
@@ -69,12 +72,12 @@ student::student(const student &x)
 }
 
 
-student::student(student &&x)
+student::student(student &&x) // move-constructor
 {
     val = x.val;
-    name = new char[strlen(x.name) + 1];
+    name = x.name;
 
-    strcpy(name, x.name);
+    x.name = nullptr;
 }
 
 
@@ -98,10 +101,10 @@ student &student::operator=(student &&x)
     if (this != &x)
     {
         delete [] name;
-        name = new char[strlen(x.name) + 1];
-
-        strcpy(name, x.name);
+        name = x.name;
         val = x.val;
+
+        x.name = nullptr;
     }
 
     return *this;

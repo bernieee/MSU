@@ -1,7 +1,5 @@
 #include"student.h"
 
-using namespace std;
-
 int main(int argc, char *argv[])
 {
     char *fname = 0;
@@ -21,16 +19,6 @@ int main(int argc, char *argv[])
 
 
     obj = new student[size];
-
-    /*try
-    {
-        obj = new student[size];
-    }
-    catch (std::bad_alloc e)
-    {
-        printf("Can not allocate memory!\n");
-        return -1;
-    }*/
 
     ret = readStudent(fname, size, obj);
 
