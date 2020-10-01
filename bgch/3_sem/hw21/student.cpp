@@ -1,14 +1,10 @@
 #include"student.h"
 
-//student(const char *name=nullptr, int val=0); // constuctor
-//student(const student &x); // copy-constructor
-//student(student &&x); // move-constructor
-//~student(); // destructor
-
 
 int readStudent(const char *fname, int size, student *obj)
 {
     FILE *f;
+    int ret;
 
     if (!(f = fopen(fname, "r")))
     {
@@ -17,7 +13,17 @@ int readStudent(const char *fname, int size, student *obj)
 
     for (int i = 0; i < size; i++)
     {
-        obj[i].read(f);
+        if (feof(f))
+        {
+            fclose(f);
+            return READ_ERROR;
+        }
+        ret = obj[i].read(f);
+        if (ret < 0)
+        {
+            fclose(f);
+            return READ_ERROR;
+        }
     }
 
     fclose(f);
@@ -31,13 +37,11 @@ int student::read(FILE *f)
 
     if (!name)
     {
-        fclose(f);
         return MEMORY_ERROR;
     }
 
     if (!fscanf(f, "%s%d", name, &val))
     {
-        fclose(f);
         return READ_ERROR;
     }
 
@@ -51,24 +55,50 @@ void student::print() const
 }
 
 
-student::student(const char *new_name, int new_val)
+int student::init(const char *new_name, int new_val)
 {
+    val = new_val;
+
     if (new_name != nullptr)
     {
-        val = new_val;
         name = new char[strlen(new_name) + 1];
+
+        if (!name)
+        {
+            return MEMORY_ERROR;
+        }
 
         strcpy(name, new_name);
     }
+    else
+    {
+        name = nullptr;
+    }
+
+    return SUCCESS;
+}
+
+
+student::student(const char *new_name, int new_val)
+{
+    init(new_name, new_val);
+}
+
+
+student::~student()
+{
+    if (name != nullptr)
+    {
+        delete [] name;
+        name = nullptr;
+    }
+    val = 0;
 }
 
 
 student::student(const student &x) // copy-constructor
 {
-    val = x.val;
-    name = new char[strlen(x.name) + 1];
-
-    strcpy(name, x.name);
+    init(x.name, x.val);
 }
 
 
@@ -77,6 +107,7 @@ student::student(student &&x) // move-constructor
     val = x.val;
     name = x.name;
 
+    x.val = 0;
     x.name = nullptr;
 }
 
@@ -109,5 +140,3 @@ student &student::operator=(student &&x)
 
     return *this;
 }
-
-

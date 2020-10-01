@@ -8,7 +8,7 @@ int main(int argc, char *argv[])
     int max_print;
     student *obj;
 
-    if (argc != 3)
+    if ((argc != 3) || ((atoi(argv[1])) <= 0))
     {
         printf("Usage %s size [file]\n", argv[0]);
         return -1;
@@ -17,8 +17,11 @@ int main(int argc, char *argv[])
     size = atoi(argv[1]);
     fname = argv[2];
 
-
-    obj = new student[size];
+    if (!(obj = new student[size]))
+    {
+        printf("Can not read an element!\n");
+        return -1;
+    }
 
     ret = readStudent(fname, size, obj);
 
@@ -45,9 +48,9 @@ int main(int argc, char *argv[])
 
     max_print = size;
 
-    if (size > 20)
+    if (size > 10)
     {
-        max_print = 20;
+        max_print = 10;
     }
 
     for (int i = 0; i < max_print; i++)
