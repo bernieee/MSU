@@ -485,7 +485,7 @@ int HeapSort(char **a, int n, int (*Sift) (char *x, char *y))//10
        k = i;
        while (k > j)
        {
-           (a[k], a[(k - 1) / 2]);
+           a[k] = a[(k - 1) / 2];
            k = (k - 1) / 2;
        }
        a[j] = c;

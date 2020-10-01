@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
         PrintArray(a, n);
     printf("\n");
     time = clock();
-    MinSort(a, n, SiftDown);
+    MinSort(a, n, SiftUp);
     time = clock() - time;
     printf("Time = %lf\n", (double)time / CLOCKS_PER_SEC);
     if (n > 20)
