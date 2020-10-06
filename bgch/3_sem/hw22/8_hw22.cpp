@@ -7,18 +7,31 @@ int main(int argc, char *argv[])
     int size;
     int ret;
     int max_print;
+    int formula;
     time_t time;
     student *obj_a;
     student *obj_b;
 
-    if ((argc != 3) || ((atoi(argv[2])) <= 0))
+    if (((argc != 4) && (argc != 5)) || (atoi(argv[1]) <= 0) || (atoi(argv[2]) < 0) || (atoi(argv[3]) < 0) || (atoi(argv[3]) > 4))
     {
-        printf("Usage %s [file] size\n", argv[0]);
+        printf("Usage %s size max_print formula [file]\n", argv[0]);
         return -1;
     }
 
-    size = atoi(argv[2]);
-    fname = argv[1];
+    if (argc == 5)
+    {
+        fname = argv[4];
+    }
+
+    size = atoi(argv[1]);
+    max_print = atoi(argv[2]);
+    formula = atoi(argv[3]);
+
+    if (max_print > size)
+    {
+        max_print = size;
+    }
+
 
     if (!(obj_a = new student[size]))
     {
@@ -33,7 +46,15 @@ int main(int argc, char *argv[])
         return -1;
     }
 
-    ret = readStudent(fname, size, obj_a);
+
+    if (formula == 0)
+    {
+        ret = readFile(fname, size, obj_a);
+    }
+    else
+    {
+        ret = readFormula(formula, size, obj_a);
+    }
 
     if (ret != student::SUCCESS)
     {

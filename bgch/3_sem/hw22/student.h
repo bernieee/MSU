@@ -48,11 +48,13 @@ class student
         int operator<(const student &x) const;
         int operator>(const student &x) const;
         void swap(student &x);
-        int read(FILE *f);
+        int readFileStudent(FILE *f);
+        int readFormulaStudent(int formula, int size, int i);
         void print() const;
 };
 
 
-int readStudent(const char *fname, int size, student *obj);
+int readFile(const char *fname, int size, student *obj);
+int readFormula(int formula, int size, student *obj);
 
 #endif

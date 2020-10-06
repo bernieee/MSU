@@ -24,62 +24,6 @@ int siftDown(student x, student y)
 }
 
 
-/*int InitArray(const char *fname, char **array, int n)
-{
-    FILE *f;
-    int i = 0;
-    int j = 0;
-    int k = 0;
-    char buf[LEN];
-
-    f = fopen(fname, "r");
-    if (!f)
-    {
-        return -1;
-    }
-    if (!array)
-    {
-        fclose(f);
-        return -2;
-    }
-    while ((fgets(buf, LEN, f)) && (i < n))
-    {
-        for (j = 0; buf[j]; j++)
-        {
-            if (buf[j] == '\n')
-            {
-                buf[j] = '\0';
-                break;
-            }
-        }//j -- len of str
-
-        array[i] = (char *)malloc(j + 1);
-
-        if (!array[i])
-        {
-            for (j = 0; j < i; j++)
-                free(array[j]);
-            fclose(f);
-            return -2;
-        }
-
-        for (k = 0; k <= j; k++)
-        {
-            array[i][k] = buf[k];
-        }
-        i++;
-    }
-
-    if (i != n)
-    {
-        fclose(f);
-        return -3;
-    }
-    fclose(f);
-    return n;
-}*/
-
-
 void printObjects(student *obj, int n)
 {
     for (int i = 0; i < n; i++)
@@ -166,30 +110,32 @@ int findX(student *obj, student x, int n, int (*Sift) (student x, student y))//3
     i = 0;
     j = n - 1;
 
-    while (i <= j)
+    while (i < j)
     {
         while ((i < n) && ((*Sift)(obj[i], x) < 0))
         {
             i++;
         }
 
-        while ((j >= 0) && ((*Sift)(obj[j], x) >= 0))
+        while ((j > 0) && ((*Sift)(obj[j], x) >= 0))
+        //while ((j > i) && ((*Sift)(obj[j], x) >= 0))
         {
             j--;
         }
 
         if (i < j)
         {
-            /*tmp_obj = obj[i];
-            obj[i] = obj[j];
-            obj[j] = tmp_o bj*/
             obj[i].swap(obj[j]);
             i++;
             j--;
         }
+        else
+        {
+            return i;
+        }
     }
 
-    return i;
+    return n - 1;
 }
 
 
@@ -347,71 +293,6 @@ void mergeS(student *obj_a, student *obj_b, int left, int mid, int right, int (*
 }
 
 
-/*int MergeSort(char **a, char **b, int n, int (*Sift) (char *x, char *y))//8
-{
-    char *A; char **buf;
-    int i1;
-    int i2;
-    int shag = 1;
-    A = a;
-    while (shag < n)
-    {
-        int j = 0;
-        int left = 0;
-        int seredina = left + shag;
-        int right = left + shag *2;
-        while (left < n)
-        {
-            if (seredina > n)
-            seredina = n - 1;
-
-            if (right > n)
-            right = n - 1;
-
-            i1 = left;
-            i2 = seredina;
-            for (; i1 < seredina && i2 < right; )
-            {
-                if (Sift(a[i1], a[i2]) < 0)
-                {
-                    b[j++] = a[i1++];
-                }
-                else
-                {
-                    b[j++] = a[i2++];
-                }
-            }
-
-            while (i1 < seredina)
-            {
-                b[j] = a[i1];
-                j++;
-                i1++;
-            }
-            while (i2 < right)
-            {
-                b[j] = a[i2];
-                j++;
-                i2++;
-            }
-            left = left+shag *2;
-            seredina = seredina + shag *2;
-            right = right + shag *2;
-        }
-        buf=a;
-        a=b;
-        b=buf;
-        shag = shag*2;
-   }
-        if (A!=a)
-            for (int i = 0; i < n; i++)
-            {
-                a[i] = b[i];
-            }
-    return 0;
-}*/
-
-
 void quickSort(student *obj, int n, int (*Sift) (student x, student y))//9
 {
     int i;
@@ -448,23 +329,6 @@ void quickSort(student *obj, int n, int (*Sift) (student x, student y))//9
     }
 }
 
-
-/*void QuickSort(char **a, int n, int (*Sift) (char *x, char *y))//9
-{
-    int i;
-    char x;
-    (x, a[(n - 1) / 2]);
-    i = FindX(a, n, x, Sift);
-
-    if (i - 1 > 0)
-    {
-        QuickSort(a, i, Sift);
-    }
-    if (i < n)
-    {
-        QuickSort(a + i, n - i, Sift);
-    }
-}*/
 
 
 void heapSort(student *obj, int n, int (*Sift) (student x, student y))//10

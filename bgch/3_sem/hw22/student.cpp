@@ -1,7 +1,7 @@
 #include "student.h"
 
 
-int readStudent(const char *fname, int size, student *obj)
+int readFile(const char *fname, int size, student *obj)
 {
     FILE *f;
     int ret;
@@ -18,7 +18,9 @@ int readStudent(const char *fname, int size, student *obj)
             fclose(f);
             return student::READ_ERROR;
         }
-        ret = obj[i].read(f);
+
+        ret = obj[i].readFileStudent(f);
+
         if (ret < 0)
         {
             fclose(f);
@@ -31,18 +33,78 @@ int readStudent(const char *fname, int size, student *obj)
 }
 
 
-int student::read(FILE *f)
+int student::readFileStudent(FILE *f)
 {
-    name = new char[256];
+    char new_name[256];
+    int new_val;
 
-    if (!name)
+    if (!new_name)
     {
         return student::MEMORY_ERROR;
     }
 
-    if (!fscanf(f, "%s%d", name, &val))
+    if (!fscanf(f, "%s%d", new_name, &new_val))
     {
         return student::READ_ERROR;
+    }
+
+    if (init(new_name, new_val) != student::SUCCESS)
+    {
+        return student::MEMORY_ERROR;
+    }
+
+    return student::SUCCESS;
+}
+
+
+int readFormula(int formula, int size, student *obj)
+{
+    int ret;
+
+    for (int i = 0; i < size; i++)
+    {
+        ret = obj[i].readFormulaStudent(formula, size, i);
+
+        if (ret < 0)
+        {
+            printf("%d\n", ret);
+            return student::READ_ERROR;
+        }
+    }
+
+    return student::SUCCESS;
+}
+
+
+int student::readFormulaStudent(int formula, int size, int i)
+{
+    int new_val;
+
+    new_val = 0;
+
+    if (formula == 1)
+    {
+        new_val = i;
+    }
+
+    if (formula == 2)
+    {
+        new_val = size - i;
+    }
+
+    if (formula == 3)
+    {
+        new_val = i / 2;
+    }
+
+    if (formula == 4)
+    {
+        new_val = size - i / 2;
+    }
+
+    if (init("Student", new_val) != student::SUCCESS)
+    {
+        return student::MEMORY_ERROR;
     }
 
     return student::SUCCESS;
