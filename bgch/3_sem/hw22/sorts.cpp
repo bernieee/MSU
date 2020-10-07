@@ -61,7 +61,7 @@ int binSearch(student *obj, student x, int n, int (*Sift) (student x, student y)
 }
 
 
-int merge(student *obj_a, student *obj_b, student *obj_c, int n, int m)//2
+int merge(student *obj_a, student *obj_b, student *obj_c, int n, int m, int (*Sift) (student x, student y))//2
 {
     int i;
     int j;
@@ -71,14 +71,15 @@ int merge(student *obj_a, student *obj_b, student *obj_c, int n, int m)//2
 
     while ((i < n) && (j < m))
     {
-        if (obj_a[i] < obj_b[j])
+        //if (obj_a[i] < obj_b[j])
+        if (Sift(obj_a[i], obj_b[j]) < 0)
         {
-            obj_c[k] = obj_a[i];
+            obj_c[k].swap(obj_a[i]);
             i++;
         }
         else
         {
-            obj_c[k] = obj_b[j];
+            obj_c[k].swap(obj_b[j]);
             j++;
         }
         k++;
@@ -86,14 +87,14 @@ int merge(student *obj_a, student *obj_b, student *obj_c, int n, int m)//2
 
     while (j < m)
     {
-        obj_c[k] = obj_b[j];
+        obj_c[k].swap(obj_b[j]);
         j++;
         k++;
     }
 
     while (i < n)
     {
-        obj_c[k] = obj_a[i];
+        obj_c[k].swap(obj_a[i]);
         i++;
         k++;
     }

@@ -5,20 +5,21 @@ int main(int argc, char *argv[])
 {
     char *fname1 = 0;
     char *fname2 = 0;
-    int ans;
-    int size1;
-    int size2;
-    int ret;
+    int size1 = 0;
+    int size2 = 0;
+    int ret1 = 0;
+    int ret2 = 0;
     int max_print;
-    int formula1;
-    int formula2;
+    int formula1 = 0;
+    int formula2 = 0;
     time_t time;
     student *obj_a;
     student *obj_b;
+    student *obj_c;
 
     if (((argc != 6) && (argc != 8)) || (atoi(argv[1]) <= 0) || (atoi(argv[2]) <= 0) || (atoi(argv[3]) < 0)
-        || (atoi(argv[3]) > 4) || (argc == 6 && atoi(argv[4]) <= 0) || (argc == 8 && atoi(argv[5] <= 0))
-        || (argc == 6 && atoi(argv[5]) <= 0) || (argc == 8 && atoi(argv[6] <= 0)))
+        || (atoi(argv[3]) > 4) || (argc == 6 && atoi(argv[4]) <= 0) || (argc == 8 && atoi(argv[5]) <= 0)
+        || (argc == 6 && atoi(argv[5]) <= 0) || (argc == 8 && atoi(argv[6]) <= 0))
     {
         printf("Usage %s max_print size1 formula1 [file1] size2 formula2 [file2]\n", argv[0]);
         return -1;
@@ -29,7 +30,6 @@ int main(int argc, char *argv[])
         size2 = atoi(argv[4]);
         formula2 = atoi(argv[5]);
     }
-
 
     if (argc == 8)
     {
@@ -43,26 +43,37 @@ int main(int argc, char *argv[])
     size1 = atoi(argv[2]);
     formula1 = atoi(argv[3]);
 
-    student x(new_name, new_val);
-
-    if (max_print > size)
+    if (max_print > size1)
     {
-        max_print = size;
+        max_print = size1;
     }
 
-    if (!(obj_a = new student[size]))
+    if (max_print > size2)
+    {
+        max_print = size2;
+    }
+
+
+    if (!(obj_a = new student[size1]))
     {
         printf("Can not read an element!\n");
         return -1;
     }
 
-    if (!(obj_b = new student[size]))
+    if (!(obj_b = new student[size2]))
     {
         printf("Can not read an element!\n");
         delete [] obj_a;
         return -1;
     }
 
+    if (!(obj_c = new student[size1 + size2]))
+    {
+        printf("Can not read an element!\n");
+        delete [] obj_a;
+        delete [] obj_b;
+        return -1;
+    }
 
     if (formula1 == 0)
     {
@@ -72,6 +83,7 @@ int main(int argc, char *argv[])
     {
         ret1 = readFormula(formula1, size1, obj_a);
     }
+
 
     if (formula2 == 0)
     {
@@ -85,6 +97,11 @@ int main(int argc, char *argv[])
 
     if (ret1 != student::SUCCESS || ret2 != student::SUCCESS)
     {
+        if (ret2 < ret1)
+        {
+            ret1 = ret2;
+        }
+
         switch(ret1)
         {
             case student::OPEN_ERROR:
@@ -100,20 +117,25 @@ int main(int argc, char *argv[])
                 printf("Unknown error!\n");
 
         }
-        delete [] obj;
+        delete [] obj_a;
+        delete [] obj_b;
+        delete [] obj_c;
         return -1;
     }
 
-    printObjects(obj, max_print);
+    printObjects(obj_a, max_print);
+    printObjects(obj_b, max_print);
 
     time = clock();
-    ans = binSearch(obj, x, size, siftUp);
+    merge(obj_a, obj_b, obj_c, size1, size2, siftUp);
     time = clock() - time;
 
-    printf("Answer = %d\n", ans);
+    printObjects(obj_c, max_print);
 
     printf("Time = %lf\n", (double)time / CLOCKS_PER_SEC);
 
-    delete [] obj;
+    delete [] obj_a;
+    delete [] obj_b;
+    delete [] obj_c;
     return 0;
 }
