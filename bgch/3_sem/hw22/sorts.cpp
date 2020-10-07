@@ -118,7 +118,6 @@ int findX(student *obj, student x, int n, int (*Sift) (student x, student y))//3
         }
 
         while ((j > 0) && ((*Sift)(obj[j], x) >= 0))
-        //while ((j > i) && ((*Sift)(obj[j], x) >= 0))
         {
             j--;
         }
@@ -135,7 +134,7 @@ int findX(student *obj, student x, int n, int (*Sift) (student x, student y))//3
         }
     }
 
-    return n - 1;
+    return n;
 }
 
 
@@ -264,31 +263,31 @@ void mergeS(student *obj_a, student *obj_b, int left, int mid, int right, int (*
     {
         if ((*Sift)(obj_a[left + i], obj_a[mid + j]) < 0)
         {
-            obj_b[i + j] = obj_a[left + i];
+            obj_b[i + j].swap(obj_a[left + i]);
             i++;
         }
         else
         {
-            obj_b[i + j] = obj_a[mid + j];
+            obj_b[i + j].swap(obj_a[mid + j]);
             j++;
         }
     }
 
     while (left + i < mid)
     {
-        obj_b[i + j] = obj_a[left + i];
+        obj_b[i + j].swap(obj_a[left + i]);
         i++;
     }
 
     while (mid + j < right)
     {
-        obj_b[i + j] = obj_a[mid + j];
+        obj_b[i + j].swap(obj_a[mid + j]);
         j++;
     }
 
     for (int c = 0; c < i + j; c++)
     {
-        obj_a[left + c] = obj_b[c];
+        obj_a[left + c].swap(obj_b[c]);
     }
 }
 

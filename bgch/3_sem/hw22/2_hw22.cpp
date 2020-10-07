@@ -3,33 +3,45 @@
 
 int main(int argc, char *argv[])
 {
-    char *fname = 0;
+    char *fname1 = 0;
+    char *fname2 = 0;
     int ans;
-    int size;
+    int size1;
+    int size2;
     int ret;
     int max_print;
-    int formula;
-    char new_name[256];
-    int new_val;
+    int formula1;
+    int formula2;
     time_t time;
-    student *obj;
+    student *obj_a;
+    student *obj_b;
 
-    if (((argc != 6) && (argc != 7)) || (atoi(argv[1]) <= 0) || (atoi(argv[2]) < 0) || (atoi(argv[3]) < 0)
-        || (atoi(argv[3]) > 4) || !(sscanf(argv[4], "%s", new_name)))
+    if (((argc != 6) && (argc != 8)) || (atoi(argv[1]) <= 0) || (atoi(argv[2]) <= 0) || (atoi(argv[3]) < 0)
+        || (atoi(argv[3]) > 4) || (argc == 6 && atoi(argv[4]) <= 0) || (argc == 8 && atoi(argv[5] <= 0))
+        || (argc == 6 && atoi(argv[5]) <= 0) || (argc == 8 && atoi(argv[6] <= 0)))
     {
-        printf("Usage %s size max_print formula new_name new_val [file]\n", argv[0]);
+        printf("Usage %s max_print size1 formula1 [file1] size2 formula2 [file2]\n", argv[0]);
         return -1;
     }
 
-    if (argc == 7)
+    if (argc == 6)
     {
-        fname = argv[6];
+        size2 = atoi(argv[4]);
+        formula2 = atoi(argv[5]);
     }
 
-    size = atoi(argv[1]);
-    max_print = atoi(argv[2]);
-    formula = atoi(argv[3]);
-    new_val = atoi(argv[5]);
+
+    if (argc == 8)
+    {
+        size2 = atoi(argv[5]);
+        formula2 = atoi(argv[6]);
+        fname1 = argv[4];
+        fname2 = argv[7];
+    }
+
+    max_print = atoi(argv[1]);
+    size1 = atoi(argv[2]);
+    formula1 = atoi(argv[3]);
 
     student x(new_name, new_val);
 
@@ -38,24 +50,42 @@ int main(int argc, char *argv[])
         max_print = size;
     }
 
-    if (!(obj = new student[size]))
+    if (!(obj_a = new student[size]))
     {
         printf("Can not read an element!\n");
         return -1;
     }
 
-    if (formula == 0)
+    if (!(obj_b = new student[size]))
     {
-        ret = readFile(fname, size, obj);
+        printf("Can not read an element!\n");
+        delete [] obj_a;
+        return -1;
+    }
+
+
+    if (formula1 == 0)
+    {
+        ret1 = readFile(fname1, size1, obj_a);
     }
     else
     {
-        ret = readFormula(formula, size, obj);
+        ret1 = readFormula(formula1, size1, obj_a);
     }
 
-    if (ret != student::SUCCESS)
+    if (formula2 == 0)
     {
-        switch(ret)
+        ret2 = readFile(fname2, size2, obj_b);
+    }
+    else
+    {
+        ret2 = readFormula(formula2, size2, obj_b);
+    }
+
+
+    if (ret1 != student::SUCCESS || ret2 != student::SUCCESS)
+    {
+        switch(ret1)
         {
             case student::OPEN_ERROR:
                 printf("Can not open file!\n");

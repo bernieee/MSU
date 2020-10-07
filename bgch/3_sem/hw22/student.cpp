@@ -205,6 +205,12 @@ student &student::operator=(student &&x)
 int student::operator<(const student &x) const
 {
     int cmp;
+
+    if (x.name == nullptr)
+    {
+        return -1;
+    }
+
     cmp = strcmp(name, x.name);
 
     if (cmp == 0)
@@ -221,6 +227,12 @@ int student::operator<(const student &x) const
 int student::operator>(const student &x) const
 {
     int cmp;
+
+    if (x.name == nullptr)
+    {
+        return 1;
+    }
+
     cmp = strcmp(name, x.name);
 
     if (cmp == 0)

@@ -14,22 +14,27 @@ int main(int argc, char *argv[])
     time_t time;
     student *obj;
 
-    if (((argc != 6) && (argc != 7)) || (atoi(argv[1]) <= 0) || (atoi(argv[2]) < 0) || (atoi(argv[3]) < 0)
-        || (atoi(argv[3]) > 4) || !(sscanf(argv[4], "%s", new_name)))
+    if (((argc != 6) && (argc != 7)) || (atoi(argv[1]) <= 0) || (atoi(argv[2]) <= 0) || (atoi(argv[3]) < 0)
+        || (atoi(argv[3]) > 4) || (!(sscanf(argv[4], "%s", new_name)) && !(sscanf(argv[5], "%s", new_name))))
     {
-        printf("Usage %s size max_print formula new_name new_val [file]\n", argv[0]);
+        printf("Usage %s size max_print formula [file] new_name new_val\n", argv[0]);
         return -1;
+    }
+
+    if (argc == 6)
+    {
+        new_val = atoi(argv[5]);
     }
 
     if (argc == 7)
     {
-        fname = argv[6];
+        fname = argv[4];
+        new_val = atoi(argv[6]);
     }
 
     size = atoi(argv[1]);
     max_print = atoi(argv[2]);
     formula = atoi(argv[3]);
-    new_val = atoi(argv[5]);
 
     student x(new_name, new_val);
 

@@ -11,7 +11,7 @@ int main(int argc, char *argv[])
     time_t time;
     student *obj;
 
-    if (((argc != 4) && (argc != 5)) || (atoi(argv[1]) <= 0) || (atoi(argv[2]) < 0) || (atoi(argv[3]) < 0) || (atoi(argv[3]) > 4))
+    if (((argc != 4) && (argc != 5)) || (atoi(argv[1]) <= 0) || (atoi(argv[2]) <= 0) || (atoi(argv[3]) < 0) || (atoi(argv[3]) > 4))
     {
         printf("Usage %s size max_print formula [file]\n", argv[0]);
         return -1;
