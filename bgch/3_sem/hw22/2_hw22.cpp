@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
 
     if (((argc != 6) && (argc != 8)) || (atoi(argv[1]) <= 0) || (atoi(argv[2]) <= 0) || (atoi(argv[3]) < 0)
         || (atoi(argv[3]) > 4) || (argc == 6 && atoi(argv[4]) <= 0) || (argc == 8 && atoi(argv[5]) <= 0)
-        || (argc == 6 && atoi(argv[5]) <= 0) || (argc == 8 && atoi(argv[6]) <= 0))
+        || (argc == 6 && ((atoi(argv[5]) < 0) || (atoi(argv[5]) > 4))) || (argc == 8 && ((atoi(argv[6]) < 0) || (atoi(argv[6]) > 4))))
     {
         printf("Usage %s max_print size1 formula1 [file1] size2 formula2 [file2]\n", argv[0]);
         return -1;
@@ -127,7 +127,7 @@ int main(int argc, char *argv[])
     printObjects(obj_b, max_print);
 
     time = clock();
-    merge(obj_a, obj_b, obj_c, size1, size2, siftUp);
+    merge(obj_a, obj_b, obj_c, size1, size2);
     time = clock() - time;
 
     printObjects(obj_c, max_print);

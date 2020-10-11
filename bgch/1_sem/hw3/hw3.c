@@ -189,7 +189,7 @@ int sequence_what(const char *fname)//5
         len++;
     }
 
-     if (feof(f) == 0) 
+     if (feof(f) == 0)
         return -2;
 
     fclose(f);

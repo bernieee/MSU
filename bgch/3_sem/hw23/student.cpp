@@ -57,60 +57,6 @@ int student::readFileStudent(FILE *f)
 }
 
 
-int readFormula(int formula, int size, student *obj)
-{
-    int ret;
-
-    for (int i = 0; i < size; i++)
-    {
-        ret = obj[i].readFormulaStudent(formula, size, i);
-
-        if (ret < 0)
-        {
-            printf("%d\n", ret);
-            return student::READ_ERROR;
-        }
-    }
-
-    return student::SUCCESS;
-}
-
-
-int student::readFormulaStudent(int formula, int size, int i)
-{
-    int new_val;
-
-    new_val = 0;
-
-    if (formula == 1)
-    {
-        new_val = i;
-    }
-
-    if (formula == 2)
-    {
-        new_val = size - i;
-    }
-
-    if (formula == 3)
-    {
-        new_val = i / 2;
-    }
-
-    if (formula == 4)
-    {
-        new_val = size - i / 2;
-    }
-
-    if (init("Student", new_val) != student::SUCCESS)
-    {
-        return student::MEMORY_ERROR;
-    }
-
-    return student::SUCCESS;
-}
-
-
 void student::print() const
 {
     printf("%s %d\n", name, val);
@@ -121,7 +67,7 @@ int student::init(const char *new_name, int new_val)
 {
     val = new_val;
 
-    if (new_name != nullptr)
+    if (new_name)
     {
         name = new char[strlen(new_name) + 1];
 
@@ -141,6 +87,17 @@ int student::init(const char *new_name, int new_val)
 }
 
 
+void student::remove()
+{
+    if (name != nullptr)
+    {
+        delete [] name;
+        name = nullptr;
+    }
+    val = 0;
+}
+
+
 student::student(const char *new_name, int new_val)
 {
     init(new_name, new_val);
@@ -149,12 +106,7 @@ student::student(const char *new_name, int new_val)
 
 student::~student()
 {
-    if (name != nullptr)
-    {
-        delete [] name;
-        name = nullptr;
-    }
-    val = 0;
+    remove();
 }
 
 
@@ -178,11 +130,7 @@ student &student::operator=(const student &x)
 {
     if (this != &x)
     {
-        if (name != nullptr)
-        {
-            delete [] name;
-            name = nullptr;
-        }
+        remove();
         init(x.name, x.val);
     }
 
@@ -216,10 +164,18 @@ int student::operator<(const student &x) const
     if (cmp == 0)
     {
         return val < x.val;
+        /*if (val < x.val)
+            return 1;
+        else
+            return 0;*/
     }
     else
     {
         return cmp < 0;
+        /*if (cmp < 0)
+            return 1;
+        else
+            return 0;*/
     }
 }
 
@@ -238,10 +194,19 @@ int student::operator>(const student &x) const
     if (cmp == 0)
     {
         return val > x.val;
+        /*if (val > x.val)
+            return 1;
+        else
+            return 0;*/
+
     }
     else
     {
         return cmp > 0;
+        /*if (cmp > 0)
+            return 1;
+        else
+            return 0;*/
     }
 }
 
