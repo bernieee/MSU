@@ -49,7 +49,7 @@ int main(int argc, char *argv[])
     printList(head, max_print);
 
     time = clock();
-    ans = maxlenBetweenConstSeqence(head);
+    ans = numOfConstSeqence(head);
     time = clock() - time;
 
     printf("Answer = %d\n", ans);

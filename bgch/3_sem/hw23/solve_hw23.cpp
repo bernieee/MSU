@@ -5,6 +5,7 @@
 int numOfMaxElems(list *head) //1
 {
     int ans;
+    int res;
     list *curr;
     list *max;
 
@@ -14,18 +15,20 @@ int numOfMaxElems(list *head) //1
 
     for (curr = head; curr; curr = curr->getNext())
     {
-        if (!(*max > *curr) && !(*max < *curr))
+        res = (*max < *curr);
+
+        if (res == 0)//(!(*max > *curr) && !(*max < *curr))
         {
             ans++;
         }
-        else if (*max < *curr)
+        else if (res == 1)//(*max < *curr)
         {
             ans = 1;
             max = curr;
         }
     }
 
-    printf("3%s\n", max->getName());
+    //printf("3%s\n", max->getName());
 
     return ans;
 }
@@ -34,13 +37,16 @@ int numOfMaxElems(list *head) //1
 int numOfElemsGreaterThanPrevious(list *head) //2
 {
     int ans;
+    int res;
     list *curr;
 
     ans = 0;
 
     for (curr = head; curr->getNext(); curr = curr->getNext())
     {
-        if (*curr->getNext() > *curr)
+        res = (*curr < *curr->getNext());
+
+        if (res == 1)//(*curr->getNext() > *curr)
         {
             //printf("%s  %s\n", curr->getNext()->getName(), curr->getName());
             ans++;
@@ -65,23 +71,23 @@ int numberOfLocalMax(list *head) //3 not strictly
         return 1;
     }
 
-    res1 = !(*head < *head->getNext());
+    res1 = (*head < *head->getNext());//!(*head < *head->getNext());
 
-    if (res1 >= 0)// >=
+    if (res1 <= 0)//(res1 >= 0)// >=
     {
         ans++;
     }
 
     for (curr = head->getNext(); curr->getNext(); curr = curr->getNext())
     {
-        res2 = !(*curr < *curr->getNext());
+        res2 = (*curr < *curr->getNext()); //!(*curr < *curr->getNext());
 
-        if (res1 <= 0 && res2 >= 0)
+        if (res1 >= 0 && res2 <= 0)//(res1 <= 0 && res2 >= 0)
         {
             ans++;
         }
 
-        if ((curr->getNext())->getNext() == nullptr && res2 <= 0)
+        if ((curr->getNext())->getNext() == nullptr && res2 >= 0)//res2 <= 0)
         {
             ans++;
         }
@@ -100,6 +106,7 @@ int whatSequence(list *head)
     int up;
     int down;
     int no;
+    int res;
 
     if (!head->getNext())
     {
@@ -111,11 +118,13 @@ int whatSequence(list *head)
 
     for(curr = head->getNext(); curr; curr = curr->getNext())
     {
-        if (*prev < *curr)
+        res = (*prev < *curr);
+
+        if (res == 1)//(*prev < *curr)
         {
             up++;
         }
-        else if (*prev > *curr)
+        else if (res == -1)//(*prev > *curr)
         {
             down++;
         }
@@ -156,9 +165,9 @@ int maxlenUpSeqence(list *head) //5 strictly
 
     for (curr = head; curr->getNext(); curr = curr->getNext())
     {
-        res = *curr < *curr->getNext();
+        res = (*curr < *curr->getNext());
 
-        if (res < 0)
+        if (res == 1)//(res < 0)??
         {
             len++;
         }
@@ -186,7 +195,8 @@ int numOfConstSeqence(list *head) //6 strictly
 
     for (curr = head; curr->getNext(); curr = curr->getNext())
     {
-        res = (!(*curr > *curr->getNext()) && (!(*curr < *curr->getNext())));
+        res = (*curr < *curr->getNext());
+        //(!(*curr > *curr->getNext()) && (!(*curr < *curr->getNext())));
 
         if (res == 0)
         {
@@ -199,7 +209,7 @@ int numOfConstSeqence(list *head) //6 strictly
         }
     }
 
-    return ans;
+    return ans + 1;
 }
 
 
@@ -221,19 +231,22 @@ int maxlenBetweenConstSeqence(list *head) //7 strictly
     len = 0;
     max_len = -1;
 
-    res = (!(*head < *head->getNext()) && !(*head > *head->getNext()));
+    res = (*head < *head->getNext());
+    //res = (!(*head < *head->getNext()) && !(*head > *head->getNext()));
 
     curr1 = head->getNext();
 
     while (curr1->getNext() && res != 0)//find first
     {
-        res = (!(*curr1 < *curr1->getNext()) && !(*curr1 > *curr1->getNext()));
+        res = (*curr1 < *curr1->getNext());
+        //res = (!(*curr1 < *curr1->getNext()) && !(*curr1 > *curr1->getNext()));
         curr1 = curr1->getNext();
     }
 
     for (curr = curr1; curr->getNext(); curr = curr->getNext())
     {
-        res = (!(*curr < *curr->getNext()) && !(*curr > *curr->getNext())) ;
+        res = (*curr < *curr->getNext());
+        //res = (!(*curr < *curr->getNext()) && !(*curr > *curr->getNext())) ;
 
         if (res == 0)
         {
@@ -258,49 +271,69 @@ int maxlenBetweenConstSeqence(list *head) //7 strictly
 
 int maxlenMonotonSeqence(list *head) //8 not strictly
 {
-    int res1;
-    int res2;
+    int res;
     int len;
     int max_len;
     int flag; //0 - up, 1, down
+    int flag_const;
+    int len_const;
     list *curr;
 
     len = 0;
     flag = -1;
+    flag_const = 0;
+    len_const = 0;
     max_len = 0;
 
     for (curr = head; curr->getNext(); curr = curr->getNext())
     {
-        res1 = *curr < *curr->getNext();//down
-        res2 = *curr > *curr->getNext();//up
+        res = *curr < *curr->getNext();
 
-        if (res1 == 0)
+        if (res < 0)//down
         {
             if (flag != 1)
             {
-                flag = 1;//down
-                if (len != 0)
+                if (len + len_const != 1)
                 {
-                    max_len = fmax(len + 1, max_len);
-                    len = 0;
-
+                    max_len = fmax(len + len_const + 1, max_len);
+                    len = 1;
                 }
+
+                if (flag == -1)
+                {
+                    flag_const = 0;
+                }
+                flag = 1;//down
             }
             len++;
         }
-        else if (res2 == 0)
+        else if (res > 0)//up
         {
             if (flag != 0)
             {
-                flag = 0;//up
-                if (len != 0)
+                if (len + len_const  != 1)
                 {
-                    max_len = fmax(len + 1, max_len);
-                    len = 0;
-
+                    max_len = fmax(len + len_const + 1, max_len);
+                    len = 1;
                 }
-            len++;
+
+                if (flag == -1)
+                {
+                    flag_const = 0;
+                }
+
+                flag = 0;//up
             }
+            len++;
+        }
+        else
+        {
+            if (flag_const == 0)
+            {
+                len_const = 0;
+                flag_const = 1;
+            }
+            len_const++;
         }
     }
 

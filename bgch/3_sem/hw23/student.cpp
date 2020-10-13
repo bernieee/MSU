@@ -163,19 +163,23 @@ int student::operator<(const student &x) const
 
     if (cmp == 0)
     {
-        return val < x.val;
-        /*if (val < x.val)
+        //return val < x.val;
+        if (val < x.val)
             return 1;
+        else if (val > x.val)
+            return -1;
         else
-            return 0;*/
+            return 0;
     }
     else
     {
-        return cmp < 0;
-        /*if (cmp < 0)
+        //return cmp < 0;
+        if (cmp < 0)
             return 1;
+        else if (cmp > 0)
+            return -1;
         else
-            return 0;*/
+            return 0;
     }
 }
 
