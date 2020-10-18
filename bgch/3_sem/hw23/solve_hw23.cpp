@@ -17,18 +17,16 @@ int numOfMaxElems(list *head) //1
     {
         res = (*max < *curr);
 
-        if (res == 0)//(!(*max > *curr) && !(*max < *curr))
+        if (res == 0)
         {
             ans++;
         }
-        else if (res == 1)//(*max < *curr)
+        else if (res == 1)
         {
             ans = 1;
             max = curr;
         }
     }
-
-    //printf("3%s\n", max->getName());
 
     return ans;
 }
@@ -46,9 +44,8 @@ int numOfElemsGreaterThanPrevious(list *head) //2
     {
         res = (*curr < *curr->getNext());
 
-        if (res == 1)//(*curr->getNext() > *curr)
+        if (res == 1)
         {
-            //printf("%s  %s\n", curr->getNext()->getName(), curr->getName());
             ans++;
         }
     }
@@ -71,23 +68,23 @@ int numberOfLocalMax(list *head) //3 not strictly
         return 1;
     }
 
-    res1 = (*head < *head->getNext());//!(*head < *head->getNext());
+    res1 = (*head < *head->getNext());
 
-    if (res1 <= 0)//(res1 >= 0)// >=
+    if (res1 <= 0)// >=
     {
         ans++;
     }
 
     for (curr = head->getNext(); curr->getNext(); curr = curr->getNext())
     {
-        res2 = (*curr < *curr->getNext()); //!(*curr < *curr->getNext());
+        res2 = (*curr < *curr->getNext());
 
-        if (res1 >= 0 && res2 <= 0)//(res1 <= 0 && res2 >= 0)
+        if (res1 >= 0 && res2 <= 0)
         {
             ans++;
         }
 
-        if ((curr->getNext())->getNext() == nullptr && res2 >= 0)//res2 <= 0)
+        if ((curr->getNext())->getNext() == nullptr && res2 >= 0)
         {
             ans++;
         }
@@ -120,11 +117,11 @@ int whatSequence(list *head)
     {
         res = (*prev < *curr);
 
-        if (res == 1)//(*prev < *curr)
+        if (res == 1)
         {
             up++;
         }
-        else if (res == -1)//(*prev > *curr)
+        else if (res == -1)
         {
             down++;
         }
@@ -167,7 +164,7 @@ int maxlenUpSeqence(list *head) //5 strictly
     {
         res = (*curr < *curr->getNext());
 
-        if (res == 1)//(res < 0)??
+        if (res == 1)
         {
             len++;
         }
@@ -188,7 +185,10 @@ int numOfConstSeqence(list *head) //6 strictly
     int ans;
     int res;
     int len;
+    int flag;
     list *curr;
+
+    flag = 0;
 
     ans = 0;
     len = 0;
@@ -196,10 +196,10 @@ int numOfConstSeqence(list *head) //6 strictly
     for (curr = head; curr->getNext(); curr = curr->getNext())
     {
         res = (*curr < *curr->getNext());
-        //(!(*curr > *curr->getNext()) && (!(*curr < *curr->getNext())));
 
         if (res == 0)
         {
+            flag++;
             len++;
         }
         else if (len != 0)
@@ -209,7 +209,12 @@ int numOfConstSeqence(list *head) //6 strictly
         }
     }
 
-    return ans + 1;
+    if (flag == 0)
+    {
+        return 0;
+    }
+
+    return ans;
 }
 
 
@@ -232,21 +237,18 @@ int maxlenBetweenConstSeqence(list *head) //7 strictly
     max_len = -1;
 
     res = (*head < *head->getNext());
-    //res = (!(*head < *head->getNext()) && !(*head > *head->getNext()));
 
     curr1 = head->getNext();
 
     while (curr1->getNext() && res != 0)//find first
     {
         res = (*curr1 < *curr1->getNext());
-        //res = (!(*curr1 < *curr1->getNext()) && !(*curr1 > *curr1->getNext()));
         curr1 = curr1->getNext();
     }
 
     for (curr = curr1; curr->getNext(); curr = curr->getNext())
     {
         res = (*curr < *curr->getNext());
-        //res = (!(*curr < *curr->getNext()) && !(*curr > *curr->getNext())) ;
 
         if (res == 0)
         {
@@ -293,37 +295,54 @@ int maxlenMonotonSeqence(list *head) //8 not strictly
         {
             if (flag != 1)
             {
-                if (len + len_const != 1)
+                if (len + len_const != 0)
                 {
-                    max_len = fmax(len + len_const + 1, max_len);
-                    len = 1;
+                    max_len = fmax(len + len_const, max_len);
+                    len = 0;
+                }
+
+                if (flag_const == 1)
+                {
+                    len = len_const;
+                    len_const = 0;
                 }
 
                 if (flag == -1)
                 {
-                    flag_const = 0;
+                    len_const = 0;
                 }
+
                 flag = 1;//down
             }
+
+            flag_const = 0;
             len++;
         }
         else if (res > 0)//up
         {
             if (flag != 0)
             {
-                if (len + len_const  != 1)
+                if (len + len_const != 0)
                 {
-                    max_len = fmax(len + len_const + 1, max_len);
-                    len = 1;
+                    max_len = fmax(len + len_const, max_len);
+                    len = 0;
+                }
+
+                if (flag_const == 1)
+                {
+                    len = len_const;
+                    len_const = 0;
                 }
 
                 if (flag == -1)
                 {
-                    flag_const = 0;
+                    len_const = 0;
                 }
 
                 flag = 0;//up
             }
+
+            flag_const = 0;
             len++;
         }
         else
@@ -333,11 +352,22 @@ int maxlenMonotonSeqence(list *head) //8 not strictly
                 len_const = 0;
                 flag_const = 1;
             }
+
             len_const++;
         }
+
+        //printf("%d  %d  %d  %d\n", len, max_len, len_const, flag);
     }
 
-    return max_len;
+    if (len + len_const != 0)
+    {
+        max_len = fmax(len + len_const, max_len);
+    }
+
+    if (len == 0)
+    {
+        return len_const;
+    }
+
+    return max_len + 1;
 }
-
-

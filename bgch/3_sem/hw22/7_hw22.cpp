@@ -78,7 +78,7 @@ int main(int argc, char *argv[])
     printObjects(obj, max_print);
 
     time = clock();
-    binSort(obj, size, siftUp);
+    binSort(obj, size);
     time = clock() - time;
 
     printObjects(obj, max_print);

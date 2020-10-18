@@ -6,12 +6,15 @@
 #ifndef STUDENT_H
 #define STUDENT_H
 
+
+
 class student
 {
     private:
         char *name = nullptr;
         int val = 0;
         int init(const char *new_name, int new_val);
+
     public:
         enum ERRORS
         {
@@ -39,11 +42,12 @@ class student
         student &operator=(const student &x);
         student &operator=(student &&x);
         int operator<(const student &x) const;
-        int operator>(const student &x) const;
+        //int operator>(const student &x) const;
         void swap(student &x);
         int readFileStudent(FILE *f);
         int readFormulaStudent(int formula, int size, int i);
         void print() const;
+        void remove();
 };
 
 
