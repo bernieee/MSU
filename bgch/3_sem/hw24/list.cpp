@@ -22,6 +22,7 @@ int list::read(const char *fname)
     }
 
     head->setNext(nullptr);
+    head->setPrev(nullptr);
     end = head;
 
     while(!feof(f))
@@ -37,6 +38,7 @@ int list::read(const char *fname)
         }
 
         curr->setNext(nullptr);
+        curr->setPrev(end);
         end->setNext(curr);
         end = curr;
     }
@@ -75,12 +77,28 @@ void list::print(int max_print)
 }
 
 
+int list::getLength()
+{
+    list_node *curr;
+    int len;
+
+    len = 0;
+
+    for (curr = head; curr; curr = curr->getNext())
+    {
+        len++;
+    }
+
+    return len;
+}
+
+
 list_node* list::getElement(int j)
 {
     int i;
     list_node *curr;
 
-    for (i = 0, curr = head; i <= j && curr; i++, curr = curr->getNext())
+    for (i = 0, curr = head; i < j && curr; i++, curr = curr->getNext())
     {
         continue;
     }
@@ -171,49 +189,70 @@ void list::cycle(int k)// to the right 1
 void list::removeElemsGreaterThanAnyOfKPrevious(int k)// 2
 {
     int i;
-    list_node *tmp;
-    list_node *prev;
+    int j;
+    int len;
+    list_node *prev;;
     list_node *next;
     list_node *curr_i;
     list_node *curr_j;
     list_node *min;
+    list_node *end;
 
-    min = head;
-    tmp = head;
+    len = getLength();
 
-    for (i = 0, curr_i = head; i < k && curr_i; i++, curr_i = curr_i->getNext())
+    if (k == 0 || k >= len)
+        return;
+
+    for (curr_i = head; curr_i->getNext(); curr_i = curr_i->getNext())
     {
-        if (*curr_i < *min)
+        continue;
+    }
+
+    end = curr_i;
+    next = nullptr;
+    min = end->getPrev();
+
+    for (i = 0, curr_i = end->getPrev(); i < k && curr_i; i++, curr_i = curr_i->getPrev())
+    {
+        if ((*curr_i < *min) == 1)
         {
             min = curr_i;
         }
     }
 
-    prev = curr_i;
-
-    for (curr_j = curr_i->getNext(); curr_j; curr_j = next)
+    for (j = 0, curr_j = end; j < len - k && curr_j; j++, curr_j = prev)
     {
-        next = curr_j->getNext();
-        tmp = tmp->getNext();
+        prev = curr_j->getPrev();
 
-        if (*curr_j < *min)
+        if ((*curr_j < *min) == 1)
         {
-            prev = min = curr_j;
+            next = curr_j;
         }
         else
         {
-            for (i = 0, curr_i = tmp; i < k && curr_i; i++, curr_i = curr_i->getNext())
+            if (next != nullptr)
             {
-                if (*curr_i < *min)
-                {
-                    min = curr_i;
-                }
+                next->setPrev(prev);
+                prev->setNext(next);
             }
-
-            prev->setNext(next);
+            else
+            {
+                end = prev;
+                end->setNext(nullptr);
+            }
 
             curr_j->remove();
             delete curr_j;
+        }
+
+        min = prev->getPrev();
+
+        for (i = 0, curr_i = prev->getPrev(); i < k && curr_i; i++, curr_i = curr_i->getPrev())
+        {
+            if ((*curr_i < *min) == 1)
+            {
+                min = curr_i;
+            }
         }
     }
 }
@@ -230,13 +269,16 @@ void list::removeElemsGreaterThanAnyOfKNext(int k)// 3
     list_node *curr_j;
     list_node *min;
 
-    min = head;
+    min = head->getNext();
 
     len = getLength();
 
+    if (k == 0 || k >= len)
+        return;
+
     for (i = 0, curr_i = head->getNext(); i < k && curr_i; i++, curr_i = curr_i->getNext())
     {
-        if (*curr_i < *min)
+        if ((*curr_i < *min) == 1)
         {
             min = curr_i;
         }
@@ -248,31 +290,35 @@ void list::removeElemsGreaterThanAnyOfKNext(int k)// 3
     {
         next = curr_j->getNext();
 
-        if (*curr_j < *min)
+        if ((*curr_j < *min) == 1)
         {
             prev = curr_j;
         }
         else
         {
-            for (i = 0, curr_i = next->getNext(); i < k && curr_i; i++, curr_i = curr_i->getNext())
-            {
-                if (*curr_i < *min)
-                {
-                    min = curr_i;
-                }
-            }
-
             if (prev != nullptr)
             {
                 prev->setNext(next);
+                next->setPrev(prev);
             }
             else
             {
                 head = next;
+                next->setPrev(nullptr);
             }
 
             curr_j->remove();
             delete curr_j;
+        }
+
+        min = next->getNext();
+
+        for (i = 0, curr_i = next->getNext(); i < k && curr_i; i++, curr_i = curr_i->getNext())
+        {
+            if ((*curr_i < *min) == 1)
+            {
+                min = curr_i;
+            }
         }
     }
 }
@@ -305,9 +351,11 @@ void list::removeConstSeq(int k)// not strictly; len not less than k; 5
     list_node *curr;
     list_node *start;
     list_node *next;
+    list_node *prev;
 
     len = 0;
     start = nullptr;
+    prev = nullptr;
 
     for (curr = head; curr->getNext(); curr = next)
     {
@@ -319,20 +367,47 @@ void list::removeConstSeq(int k)// not strictly; len not less than k; 5
             {
                 start = curr;
             }
+
             len++;
         }
         else
         {
             if (len >= k)
             {
+                if (prev != nullptr)
+                {
+                    prev->setNext(next);
+                    next->setPrev(next);
+                }
+                else
+                {
+                    head = next;
+                }
+
                 deleteSeq(start, len);
+            }
+            else
+            {
+                prev = curr;
             }
 
             len = 0;
         }
     }
 
-    deleteSeq(start, len);
+    if (len >= k)
+    {
+        if (prev != nullptr)
+        {
+            prev->setNext(nullptr);
+        }
+        else
+        {
+            head = nullptr;
+        }
+
+        deleteSeq(start, len);
+    }
 }
 
 
@@ -342,9 +417,11 @@ void list::removeDownSeq(int k)// not strictly; len not less than k; 6
     list_node *curr;
     list_node *start;
     list_node *next;
+    list_node *prev;
 
     len = 0;
     start = nullptr;
+    prev = nullptr;
 
     for (curr = head; curr->getNext(); curr = next)
     {
@@ -356,20 +433,47 @@ void list::removeDownSeq(int k)// not strictly; len not less than k; 6
             {
                 start = curr;
             }
+
             len++;
         }
         else
         {
             if (len >= k)
             {
+                if (prev != nullptr)
+                {
+                    prev->setNext(next);
+                    next->setPrev(prev);
+                }
+                else
+                {
+                    head = next;
+                }
+
                 deleteSeq(start, len);
+            }
+            else
+            {
+                prev = curr;
             }
 
             len = 0;
         }
     }
 
-    deleteSeq(start, len);
+    if (len >= k)
+    {
+        if (prev != nullptr)
+        {
+            prev->setNext(nullptr);
+        }
+        else
+        {
+            head = nullptr;
+        }
+
+        deleteSeq(start, len);
+    }
 }
 
 
@@ -379,9 +483,11 @@ void list::removeSeqBetweenConstSeq(int k)// len not less than k; 7
     list_node *curr;
     list_node *start;
     list_node *next;
+    list_node *prev;
 
     len = 0;
     start = nullptr;
+    prev = nullptr;
 
     for (curr = head; curr->getNext(); curr = next)
     {
@@ -391,23 +497,51 @@ void list::removeSeqBetweenConstSeq(int k)// len not less than k; 7
         {
             if (len >= k)
             {
-                deleteSeq(start, len);
+                if (prev != nullptr)
+                {
+                    prev->setNext(curr);
+                    curr->setPrev(prev);
+                }
+                else
+                {
+                    head = next;
+                }
+
+                deleteSeq(start, len - 2);
+            }
+            else
+            {
+                prev = curr;
             }
 
             len = 0;
+
         }
         else
         {
             if (len == 0)
             {
-                start = curr;
+                prev = curr;
+                start = next;
             }
 
             len++;
         }
     }
 
-    deleteSeq(start, len);
+    if (len >= k)
+    {
+        if (prev != nullptr)
+        {
+            prev->setNext(nullptr);
+        }
+        else
+        {
+            head = nullptr;
+        }
+
+        deleteSeq(start, len - 2);
+    }
 }
 
 
@@ -417,9 +551,11 @@ void list::removeSeqBetweenUpSeq(int k)// not strictly; len not less than k; 8
     list_node *curr;
     list_node *start;
     list_node *next;
+    list_node *prev;
 
     len = 0;
     start = nullptr;
+    prev = nullptr;
 
     for (curr = head; curr->getNext(); curr = next)
     {
@@ -429,24 +565,50 @@ void list::removeSeqBetweenUpSeq(int k)// not strictly; len not less than k; 8
         {
             if (len >= k)
             {
-                deleteSeq(start, len);
+                if (prev != nullptr)
+                {
+                    prev->setNext(curr);
+                    curr->setPrev(prev);
+                }
+                else
+                {
+                    head = next;
+                }
+
+                deleteSeq(start, len - 2);
+            }
+            else
+            {
+                prev = curr;
             }
 
             len = 0;
+
         }
         else
         {
             if (len == 0)
             {
-                start = curr;
+                prev = curr;
+                start = next;
             }
 
             len++;
         }
     }
 
-    deleteSeq(start, len);
+    if (len >= k)
+    {
+        if (prev != nullptr)
+        {
+            prev->setNext(nullptr);
+        }
+        else
+        {
+            head = nullptr;
+        }
+
+        deleteSeq(start, len - 2);
+    }
 }
-
-
 

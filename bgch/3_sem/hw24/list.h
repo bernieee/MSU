@@ -1,5 +1,6 @@
 #include "student.h"
 #include "list_node.h"
+#include <time.h>
 
 class list
 {

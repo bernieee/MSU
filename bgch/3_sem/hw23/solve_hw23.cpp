@@ -9,6 +9,8 @@ int numOfMaxElems(list *head) //1
     list *curr;
     list *max;
 
+    max = nullptr;
+
     max = head;
 
     ans = 0;
