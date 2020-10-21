@@ -56,11 +56,17 @@ int main(int argc, char *argv[])
 
     head->print(max_print);
 
+    printf("Len = %d\n\n", len);
+
+
     time = clock();
     head->removeElemsGreaterThanAnyOfKPrevious(k);
     time = clock() - time;
 
     head->print(max_print);
+    len = head->getLength();
+
+    printf("Len = %d\n\n", len);
 
     printf("Time = %lf\n", (double)time / CLOCKS_PER_SEC);
 

@@ -11,7 +11,7 @@ int main(int argc, char *argv[])
     time_t time;
     list *head;
 
-    if (argc != 4 || atoi(argv[1]) <= 0 || atoi(argv[3]) < 0)
+    if (argc != 4 || atoi(argv[1]) <= 0)
     {
         printf("Usage %s max_print [file] k\n", argv[0]);
         return -1;
@@ -56,11 +56,16 @@ int main(int argc, char *argv[])
 
     head->print(max_print);
 
+    printf("Len = %d\n\n", len);
+
     time = clock();
     head->cycle(k);
     time = clock() - time;
 
     head->print(max_print);
+    len = head->getLength();
+
+    printf("Len = %d\n\n", len);
 
     printf("Time = %lf\n", (double)time / CLOCKS_PER_SEC);
 

@@ -150,6 +150,12 @@ void list::cycle(int k)// to the right 1
     int steps;
 
     n = getLength();
+
+    if (k < 0)
+    {
+        k = n + k;
+    }
+
     i = 0;
     k = (k % n);
     gcd_res = gcd(n, abs(k));
@@ -224,7 +230,7 @@ void list::removeElemsGreaterThanAnyOfKPrevious(int k)// 2
     {
         prev = curr_j->getPrev();
 
-        if ((*curr_j < *min) == 1)
+        if ((*curr_j < *min) >= 0)
         {
             next = curr_j;
         }
@@ -290,7 +296,7 @@ void list::removeElemsGreaterThanAnyOfKNext(int k)// 3
     {
         next = curr_j->getNext();
 
-        if ((*curr_j < *min) == 1)
+        if ((*curr_j < *min) >= 0)
         {
             prev = curr_j;
         }
@@ -324,7 +330,86 @@ void list::removeElemsGreaterThanAnyOfKNext(int k)// 3
 }
 
 
-//void list::removeLocalMax(int k)// k on the right and on the left; 4
+void list::removeLocalMax(int k)// k on the right and on the left; 4
+{
+    list_node *curr;
+    list_node *next;
+    list_node *prev;
+    int i;
+    int up;
+    int down;
+    int res1;
+    int res2;
+    int len;
+    int *buf;
+    int rem;
+
+    len = getLength();
+
+    buf = new int[len];
+
+    for (i = 0; i < len; i++)
+    {
+        buf[i] = 0;
+    }
+
+    rem = up = down = 0;
+
+    res1 = (*head->getNext() < *head);
+
+    for (i = 1, curr = head->getNext(); i < len && curr->getNext(); i++, curr = curr->getNext())
+    {
+        res2 = (*curr < *curr->getNext());
+
+        if (res1 <= 0 && res2 <= 0)
+        {
+            if (up + 1 >= k)
+            {
+                buf[i] = 1;
+                rem = i;
+            }
+
+        }
+        else if (res1 <= 0)
+        {
+            if (up + 1 >= k && down + 1 >= k)
+            {
+                up = down = 0;
+            }
+
+            if (down + 1 < k)
+            {
+                buf[rem] = 0;
+                up = down = 0;
+            }
+
+            up++;
+        }
+        else if (res2 <= 0)
+        {
+            down++;
+        }
+
+        res1 = res2;
+    }
+
+    for (i = 1, curr = head->getNext(); i < len && curr; i++, curr = next)
+    {
+        next = curr->getNext();
+        prev = curr->getPrev();
+
+        if (buf[i] == 1)
+        {
+            prev->setNext(next);
+            next->setPrev(prev);
+
+            curr->remove();
+            delete curr;
+        }
+    }
+
+    delete [] buf;
+}
 
 
 
@@ -372,7 +457,7 @@ void list::removeConstSeq(int k)// not strictly; len not less than k; 5
         }
         else
         {
-            if (len >= k)
+            if (len + 1 >= k)
             {
                 if (prev != nullptr)
                 {
@@ -382,6 +467,7 @@ void list::removeConstSeq(int k)// not strictly; len not less than k; 5
                 else
                 {
                     head = next;
+                    next->setPrev(nullptr);
                 }
 
                 deleteSeq(start, len);
@@ -395,7 +481,7 @@ void list::removeConstSeq(int k)// not strictly; len not less than k; 5
         }
     }
 
-    if (len >= k)
+    if (len + 1 >= k)
     {
         if (prev != nullptr)
         {
@@ -438,7 +524,7 @@ void list::removeDownSeq(int k)// not strictly; len not less than k; 6
         }
         else
         {
-            if (len >= k)
+            if (len + 1 >= k)
             {
                 if (prev != nullptr)
                 {
@@ -461,7 +547,7 @@ void list::removeDownSeq(int k)// not strictly; len not less than k; 6
         }
     }
 
-    if (len >= k)
+    if (len + 1 >= k)
     {
         if (prev != nullptr)
         {
@@ -477,15 +563,17 @@ void list::removeDownSeq(int k)// not strictly; len not less than k; 6
 }
 
 
-void list::removeSeqBetweenConstSeq(int k)// len not less than k; 7
+/*void list::removeSeqBetweenConstSeq(int k)// len not less than k; 7
 {
     int len;
+    int flag;
     list_node *curr;
     list_node *start;
     list_node *next;
     list_node *prev;
 
     len = 0;
+    flag = 0;
     start = nullptr;
     prev = nullptr;
 
@@ -495,7 +583,7 @@ void list::removeSeqBetweenConstSeq(int k)// len not less than k; 7
 
         if ((*curr < *next) == 0)
         {
-            if (len >= k)
+            if (len >= k && flag == 1)
             {
                 if (prev != nullptr)
                 {
@@ -514,8 +602,8 @@ void list::removeSeqBetweenConstSeq(int k)// len not less than k; 7
                 prev = curr;
             }
 
+            flag = 1;
             len = 0;
-
         }
         else
         {
@@ -528,17 +616,79 @@ void list::removeSeqBetweenConstSeq(int k)// len not less than k; 7
             len++;
         }
     }
+}*/
 
-    if (len >= k)
+
+void list::removeSeqBetweenConstSeq(int k)// len not less than k; 7
+{
+    int len;
+    int len_const1;
+    int len_const2;
+    int flag;
+    list_node *curr;
+    list_node *start;
+    list_node *next;
+    list_node *next1;
+    list_node *prev;
+
+    len = len_const1 = len_const2 = 0;
+    flag = 0;
+    start = nullptr;
+    prev = nullptr;
+    next1 = nullptr;
+
+    for (curr = head; curr->getNext(); curr = next)
     {
-        if (prev != nullptr)
+        next = curr->getNext();
+
+        if ((*curr < *next) == 0)
         {
-            prev->setNext(nullptr);
+            if (len == 0 && flag == 0)
+            {
+                len_const1++;
+            }
+            else
+            {
+                if (len_const2 == 0)
+                {
+                    next1 = curr;
+                }
+                flag = 1;
+                len_const2++;
+            }
         }
         else
         {
-            head = nullptr;
+            if (len_const1 + 1 >= k && len_const2 + 1 >= k)
+            {
+                prev->setNext(next1);
+                next1->setPrev(prev);
+
+                deleteSeq(start, len - 2);
+            }
+
+            if (len_const1 != 0 && len_const2 != 0)
+            {
+                len_const1 = len_const2;
+                len_const2 = 0;
+
+                len = 0;
+            }
+
+            if (len == 0)
+            {
+                prev = curr;
+                start = next;
+            }
+
+            len++;
         }
+    }
+
+    if (len_const1 + 1 >= k && len_const2 + 1 >= k)
+    {
+        prev->setNext(next1);
+        next1->setPrev(prev);
 
         deleteSeq(start, len - 2);
     }
@@ -548,6 +698,7 @@ void list::removeSeqBetweenConstSeq(int k)// len not less than k; 7
 void list::removeSeqBetweenUpSeq(int k)// not strictly; len not less than k; 8
 {
     int len;
+    int flag;
     list_node *curr;
     list_node *start;
     list_node *next;
@@ -561,9 +712,9 @@ void list::removeSeqBetweenUpSeq(int k)// not strictly; len not less than k; 8
     {
         next = curr->getNext();
 
-        if ((*curr < *next) >= 0)
+        if ((*curr < *next) >= 0 && flag == 1)
         {
-            if (len >= k)
+            if (len > k)
             {
                 if (prev != nullptr)
                 {
@@ -573,6 +724,7 @@ void list::removeSeqBetweenUpSeq(int k)// not strictly; len not less than k; 8
                 else
                 {
                     head = next;
+                    next->setPrev(nullptr);
                 }
 
                 deleteSeq(start, len - 2);
@@ -581,6 +733,8 @@ void list::removeSeqBetweenUpSeq(int k)// not strictly; len not less than k; 8
             {
                 prev = curr;
             }
+
+            flag = 1;
 
             len = 0;
 
@@ -595,20 +749,6 @@ void list::removeSeqBetweenUpSeq(int k)// not strictly; len not less than k; 8
 
             len++;
         }
-    }
-
-    if (len >= k)
-    {
-        if (prev != nullptr)
-        {
-            prev->setNext(nullptr);
-        }
-        else
-        {
-            head = nullptr;
-        }
-
-        deleteSeq(start, len - 2);
     }
 }
 
