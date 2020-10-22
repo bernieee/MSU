@@ -1,14 +1,18 @@
 #include "list.h"
 
+
 int readList(const char *fname, list **new_head)
 {
     FILE *f;
     int size;
+    int res;
     list *head;
     list *end;
     list *curr;
+    list tmp;
 
     size = 0;
+    curr = nullptr;
     head = new list();
 
     if (!(f = fopen(fname, "r")))
@@ -27,28 +31,33 @@ int readList(const char *fname, list **new_head)
     head->setNext(nullptr);
     end = head;
 
-    while(!feof(f))
+    while((res = tmp.readFileStudent(f)) == student::SUCCESS)
     {
         curr = new list();
 
-        if (curr->readFileStudent(f) != student::SUCCESS)
-        {
-            delete curr;
-            delList(head);
-            fclose(f);
-            return student::READ_ERROR;
-        }
-
+        curr->swap(tmp);
         curr->setNext(nullptr);
         end->setNext(curr);
         end = curr;
         size++;
     }
 
-    *new_head = head;
+    if (feof(f))
+    {
+        *new_head = head;
 
-    fclose(f);
-    return size;
+        fclose(f);
+        return size;
+    }
+
+    if (res != student::SUCCESS)
+    {
+        delList(head);
+        fclose(f);
+        return student::READ_ERROR;
+    }
+
+    return student::SUCCESS;
 }
 
 

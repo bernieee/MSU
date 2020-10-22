@@ -3,8 +3,10 @@
 int list::read(const char *fname)
 {
     FILE *f;
+    int res;
     list_node *end;
     list_node *curr;
+    list_node tmp;
 
     head = new list_node();
 
@@ -25,25 +27,30 @@ int list::read(const char *fname)
     head->setPrev(nullptr);
     end = head;
 
-    while(!feof(f))
+    while((res = tmp.readFileStudent(f)) == student::SUCCESS)
     {
         curr = new list_node();
 
-        if (curr->readFileStudent(f) != student::SUCCESS)
-        {
-            delete curr;
-            del();
-            fclose(f);
-            return student::READ_ERROR;
-        }
-
+        curr->swap(tmp);
         curr->setNext(nullptr);
         curr->setPrev(end);
         end->setNext(curr);
         end = curr;
     }
 
-    fclose(f);
+    if (feof(f))
+    {
+        fclose(f);
+        return student::SUCCESS;
+    }
+
+    if (res != student::SUCCESS)
+    {
+        del();
+        fclose(f);
+        return student::READ_ERROR;
+    }
+
     return student::SUCCESS;
 }
 
