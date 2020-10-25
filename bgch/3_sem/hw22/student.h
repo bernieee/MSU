@@ -4,14 +4,7 @@
 #include <new>
 
 #ifndef STUDENT_H
-
 #define STUDENT_H
-/*#define SUCCESS 0
-#define OPEN_ERROR -1
-#define READ_ERROR -2
-#define MEMORY_ERROR -3
-*/
-
 
 class student
 {

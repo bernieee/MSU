@@ -88,7 +88,7 @@ int main(int argc, char *argv[])
     printObjects(obj_a, max_print);
 
     time = clock();
-    mergeSort(obj_a, obj_b, size, siftUp);
+    mergeSort(obj_a, obj_b, size);
     time = clock() - time;
 
     printObjects(obj_a, max_print);

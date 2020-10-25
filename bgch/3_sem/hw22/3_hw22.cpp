@@ -83,7 +83,7 @@ int main(int argc, char *argv[])
     printObjects(obj, max_print);
 
     time = clock();
-    ans = findX(obj, x, size, siftUp);
+    ans = findX(obj, x, size);
     time = clock() - time;
 
     printObjects(obj, max_print);
