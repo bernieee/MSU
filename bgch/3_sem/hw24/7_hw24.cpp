@@ -11,7 +11,7 @@ int main(int argc, char *argv[])
     time_t time;
     list *head;
 
-    if (argc != 4 || atoi(argv[1]) <= 0 || atoi(argv[3]) < 0)
+    if (argc != 4 || atoi(argv[1]) <= 0 || atoi(argv[3]) < 2)
     {
         printf("Usage %s max_print [file] k\n", argv[0]);
         return -1;
