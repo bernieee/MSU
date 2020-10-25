@@ -78,7 +78,10 @@ int main(int argc, char *argv[])
     printObjects(obj, max_print);
 
     time = clock();
-    insertSort(obj, size, siftUp);
+    if (formula % 2 == 0)
+        insertSort2(obj, size);
+    else
+        insertSort1(obj, size);
     time = clock() - time;
 
     printObjects(obj, max_print);

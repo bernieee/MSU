@@ -43,7 +43,7 @@ int student::readFileStudent(FILE *f)
         return student::MEMORY_ERROR;
     }
 
-    if (!fscanf(f, "%s%d", new_name, &new_val))
+    if (fscanf(f, "%s%d", new_name, &new_val) != 2)
     {
         return student::READ_ERROR;
     }

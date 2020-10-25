@@ -2,28 +2,6 @@
 #include "student.h"
 
 
-int siftUp(student x, student y)
-{
-    if (x > y)
-        return 1;
-    else if (x < y)
-        return -1;
-    else
-        return 0;
-}
-
-
-int siftDown(student x, student y)
-{
-    if (x < y)
-        return 1;
-    else if (x > y)
-        return -1;
-    else
-        return 0;
-}
-
-
 void printObjects(student *obj, int n)
 {
     for (int i = 0; i < n; i++)
@@ -35,7 +13,7 @@ void printObjects(student *obj, int n)
 }
 
 
-int binSearch(student *obj, student x, int n, int (*Sift) (student x, student y))//1
+int binSearch(student *obj, student &x, int n)//1
 {
     int left;
     int right;
@@ -48,7 +26,7 @@ int binSearch(student *obj, student x, int n, int (*Sift) (student x, student y)
     {
         mid = (left + right) / 2;
 
-        if ((*Sift)(obj[mid], x) < 0)
+        if (obj[mid] < x)
         {
             left = mid + 1;
         }
@@ -61,7 +39,7 @@ int binSearch(student *obj, student x, int n, int (*Sift) (student x, student y)
 }
 
 
-int merge(student *obj_a, student *obj_b, student *obj_c, int n, int m, int (*Sift) (student x, student y))//2
+int merge(student *obj_a, student *obj_b, student *obj_c, int n, int m)//2
 {
     int i;
     int j;
@@ -71,8 +49,7 @@ int merge(student *obj_a, student *obj_b, student *obj_c, int n, int m, int (*Si
 
     while ((i < n) && (j < m))
     {
-        //if (obj_a[i] < obj_b[j])
-        if (Sift(obj_a[i], obj_b[j]) < 0)
+        if (obj_a[i] < obj_b[j])
         {
             obj_c[k].swap(obj_a[i]);
             i++;
@@ -103,7 +80,7 @@ int merge(student *obj_a, student *obj_b, student *obj_c, int n, int m, int (*Si
 }
 
 
-int findX(student *obj, student x, int n, int (*Sift) (student x, student y))//3
+int findX(student *obj, student &x, int n)//3
 {
     int i;
     int j;
@@ -113,12 +90,12 @@ int findX(student *obj, student x, int n, int (*Sift) (student x, student y))//3
 
     while (i < j)
     {
-        while ((i < n) && ((*Sift)(obj[i], x) < 0))
+        while ((i < n) && (obj[i] < x))
         {
             i++;
         }
 
-        while ((j > 0) && ((*Sift)(obj[j], x) >= 0))
+        while ((j > 0) && ((obj[j] < x) != 1))
         {
             j--;
         }
@@ -139,7 +116,7 @@ int findX(student *obj, student x, int n, int (*Sift) (student x, student y))//3
 }
 
 
-void bubbleSort(student *obj, int n, int (*Sift) (student x, student y))//4
+void bubbleSort(student *obj, int n)//4
 {
     int flag;
 
@@ -149,7 +126,7 @@ void bubbleSort(student *obj, int n, int (*Sift) (student x, student y))//4
 
         for (int j = 0; j < n - i - 1; j++)
         {
-            if ((*Sift)(obj[j], obj[j + 1]) > 0)
+            if (obj[j] > obj[j + 1])
             {
                 obj[j].swap(obj[j + 1]);
                 flag = 1;
@@ -164,7 +141,7 @@ void bubbleSort(student *obj, int n, int (*Sift) (student x, student y))//4
 }
 
 
-void minSort(student *obj, int n, int (*Sift) (student x, student y))//5
+void minSort(student *obj, int n)//5
 {
     int min;
 
@@ -174,7 +151,7 @@ void minSort(student *obj, int n, int (*Sift) (student x, student y))//5
 
         for (int j = i + 1; j < n; j++)
         {
-            if ((*Sift)(obj[j], obj[min]) < 0)
+            if (obj[j] < obj[min])
             {
                 min = j;
             }
@@ -186,61 +163,84 @@ void minSort(student *obj, int n, int (*Sift) (student x, student y))//5
 
 
 
-void insertSort(student *obj, int n, int (*Sift) (student x, student y))//6
+void insertSort1(student *obj, int n)//6 increase
 {
     int j;
     student tmp_obj;
 
     for (int i = 1; i < n; i++)
     {
-        tmp_obj = obj[i];
+        tmp_obj.swap(obj[i]);
+
+        for (j = i - 1; j >= 0; j--)
+        {
+            if (tmp_obj > obj[j])
+                break;
+
+            obj[j + 1].swap(obj[j]);
+        }
+
+        obj[j + 1].swap(tmp_obj);
+    }
+}
+
+
+void insertSort2(student *obj, int n)//6 decrease
+{
+    int j;
+    student tmp_obj;
+
+    for (int i = 1; i < n; i++)
+    {
+        tmp_obj.swap(obj[i]);
 
         for (j = 0; j < i; j++)
         {
-            if ((*Sift)(tmp_obj, obj[j]) < 0)
+            if (tmp_obj < obj[j])
                 break;
         }
 
         for (int k = i; k > j; k--)
         {
-            obj[k] = obj[k - 1];
+            obj[k].swap(obj[k - 1]);
         }
 
-        obj[j] = tmp_obj;
+        obj[j].swap(tmp_obj);
     }
 }
 
 
-void binSort(student *obj, int n, int (*Sift) (student x, student y))//7
+
+void binSort(student *obj, int n)//7
 {
     int change;
     student tmp_obj;
 
     for (int i = 1; i < n; i++)
     {
-        if ((*Sift)(obj[i], obj[i - 1]) < 0)
+        if (obj[i] < obj[i - 1])
         {
-            change = binSearch(obj, obj[i], i, Sift);
-            tmp_obj = obj[i];
+            change = binSearch(obj, obj[i], i);
+            tmp_obj.swap(obj[i]);
 
             for (int j = i; j > change; j--)//move
             {
-                obj[j] = obj[j - 1];
+                obj[j].swap(obj[j - 1]);
             }
 
-            obj[change] = tmp_obj;
+            obj[change].swap(tmp_obj);
         }
     }
 }
 
 
-void mergeSort(student *obj_a, student *obj_b, int n, int (*Sift) (student x, student y))//8
+void mergeSort(student *obj_a, student *obj_b, int n)//8
 {
     for (int i = 1; i < n; i *= 2)
     {
         for (int j = 0; j < n - i; j += 2 * i)
         {
-            mergeS(obj_a, obj_b, j, j + i, min(j + 2 * i, n), Sift);
+            mergeS(obj_a, obj_b, j, j + i, min(j + 2 * i, n));
         }
     }
 }
@@ -255,14 +255,14 @@ int min(int a, int b)//8
 }
 
 
-void mergeS(student *obj_a, student *obj_b, int left, int mid, int right, int (*Sift) (student x, student y))//8
+void mergeS(student *obj_a, student *obj_b, int left, int mid, int right)//8
 {
     int i = 0;
     int j = 0;
 
     while ((left + i < mid) && (mid + j < right))
     {
-        if ((*Sift)(obj_a[left + i], obj_a[mid + j]) < 0)
+        if (obj_a[left + i] < obj_a[mid + j])
         {
             obj_b[i + j].swap(obj_a[left + i]);
             i++;
@@ -293,10 +293,9 @@ void mergeS(student *obj_a, student *obj_b, int left, int mid, int right, int (*
 }
 
 
-void quickSort(student *obj, int n, int (*Sift) (student x, student y))//9
+void quickSort(student *obj, int n)//9
 {
     int i;
-    student x;
 
     if (n <= 1)
     {
@@ -305,8 +304,7 @@ void quickSort(student *obj, int n, int (*Sift) (student x, student y))//9
 
     while (n > 1)
     {
-        x = obj[(n - 1) / 2];
-        i = findX(obj, x, n, Sift);
+        i = findX(obj, obj[(n - 1) / 2], n);
 
         if (i == 0)
         {
@@ -316,22 +314,21 @@ void quickSort(student *obj, int n, int (*Sift) (student x, student y))//9
 
         if (i < n - i)
         {
-            quickSort(obj, i, Sift);
+            quickSort(obj, i);
             obj += i;
             n -= i;
         }
 
         else
         {
-            quickSort(obj + i, n - i, Sift);
+            quickSort(obj + i, n - i);
             n = i;
         }
     }
 }
 
 
-
-void heapSort(student *obj, int n, int (*Sift) (student x, student y))//10
+void heapSort(student *obj, int n)//10
 {
    int k;
    int j;
@@ -339,10 +336,10 @@ void heapSort(student *obj, int n, int (*Sift) (student x, student y))//10
 
    for (int i = 1; i < n; i++)
    {
-       tmp_obj = obj[i];
+       tmp_obj.swap(obj[i]);
        j = i;
 
-       while ((j > 0) && (Sift(tmp_obj, obj[(j - 1) / 2]) > 0))
+       while ((j > 0) && (tmp_obj > obj[(j - 1) / 2]))
        {
            j = (j - 1) / 2;
        }
@@ -351,11 +348,11 @@ void heapSort(student *obj, int n, int (*Sift) (student x, student y))//10
 
        while (k > j)
        {
-           obj[k] = obj[(k - 1) / 2];
+           obj[k].swap(obj[(k - 1) / 2]);
            k = (k - 1) / 2;
        }
 
-       obj[j] = tmp_obj;
+       obj[j].swap(tmp_obj);
    }
 
    for (int i = n - 1; i > 0; i--)
@@ -367,12 +364,12 @@ void heapSort(student *obj, int n, int (*Sift) (student x, student y))//10
        {
            k = j;
 
-           if ((2 * k + 1 < i) && (Sift(obj[k], obj[2 * k + 1]) < 0))
+           if ((2 * k + 1 < i) && (obj[k] < obj[2 * k + 1]))
            {
                j = 2 * k + 1;
            }
 
-           if ((2 * k + 2 < i) && (Sift(obj[k], obj[2 * k + 2]) < 0) && (Sift(obj[2 * k + 2], obj[2 * k + 1]) > 0))
+           if ((2 * k + 2 < i) && (obj[k] < obj[2 * k + 2]) && (obj[2 * k + 2] > obj[2 * k + 1]))
            {
                j = 2 * k + 2;
            }

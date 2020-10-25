@@ -79,7 +79,7 @@ int main(int argc, char *argv[])
     printObjects(obj, max_print);
 
     time = clock();
-    minSort(obj, size, siftUp);
+    minSort(obj, size);
     time = clock() - time;
 
     printObjects(obj, max_print);

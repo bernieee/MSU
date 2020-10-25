@@ -14,8 +14,11 @@ int main(int argc, char *argv[])
     time_t time;
     student *obj;
 
-    if (((argc != 6) && (argc != 7)) || (atoi(argv[1]) <= 0) || (atoi(argv[2]) <= 0) || (atoi(argv[3]) < 0)
-        || (atoi(argv[3]) > 4) || (!(sscanf(argv[4], "%s", new_name)) && !(sscanf(argv[5], "%s", new_name))))
+    if (((argc != 6) || (atoi(argv[1]) <= 0) || (atoi(argv[2]) <= 0) || (atoi(argv[3]) < 0)
+        || (atoi(argv[3]) > 4) || (sscanf(argv[4], "%s", new_name)) != 1)
+        && ((argc != 7) || (atoi(argv[1]) <= 0) || (atoi(argv[2]) <= 0) || (atoi(argv[3]) != 0)
+        || (sscanf(argv[5], "%s", new_name)) != 1))
+
     {
         printf("Usage %s size max_print formula [file] new_name new_val\n", argv[0]);
         return -1;
@@ -82,7 +85,7 @@ int main(int argc, char *argv[])
     printObjects(obj, max_print);
 
     time = clock();
-    ans = binSearch(obj, x, size, siftUp);
+    ans = binSearch(obj, x, size);
     time = clock() - time;
 
     printf("Answer = %d\n", ans);
