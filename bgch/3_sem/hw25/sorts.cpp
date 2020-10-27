@@ -35,27 +35,21 @@ void list::bubbleSort()
             swap(curr, next);
 
             new_head = next;
-            //printf("0 %d  %d\n", new_head->getVal(), new_head->getNext()->getVal());
             flag = 1;
         }
 
         prev = new_head;
         curr = new_head->getNext();
 
-        //printf("1 %d  %d  %d\n", prev->getVal(), curr->getVal(), curr->getNext()->getVal());
-
         for (curr = curr; curr->getNext(); curr = next)
         {
             next = curr->getNext();
-
-            //printf("2 %d  %d  %d\n", prev->getVal(), curr->getVal(), next->getVal());
 
             if ((*next < *curr) == 1)
             {
                 swap(curr, next);
 
                 prev->setNext(next);
-                //next = curr->getNext();
                 flag = 1;
             }
 
@@ -78,54 +72,67 @@ void list::bubbleSort()
     }
 }
 
-/*void bubbleSort(student *obj, int n)//4
+
+void list::minSort()
 {
-    int flag;
+    list_node *new_head;
+    list_node *end;
 
-    for (int i = 0; i <= n; i++)
+    list_node *curr;
+    list_node *next;
+    list_node *prev;
+    list_node *min_next;
+    list_node *min_prev;
+    list_node *min;
+
+    new_head = head;
+    head = end = nullptr;
+
+    while (new_head)
     {
-        flag = 0;
+        prev = nullptr;
+        min_prev = nullptr;
+        min_next = new_head->getNext();
+        min = new_head;
 
-        for (int j = 0; j < n - i - 1; j++)
+        for (curr = new_head; curr; curr = next)
         {
-            if (obj[j] > obj[j + 1])
+            next = curr->getNext();
+
+            if ((*curr < *min) == 1)
             {
-                obj[j].swap(obj[j + 1]);
-                flag = 1;
+                min = curr;
+                min_prev = prev;
+                min_next = next;
             }
+
+            prev = curr;
         }
 
-        if (flag == 0)
+        if (head == nullptr)
         {
-            return;
+            head = min;
+            end = head;
+        }
+        else
+        {
+            end->setNext(min);
+            end = end->getNext();
+        }
+
+        min = nullptr;
+        if (min_prev)
+        {
+            min_prev->setNext(min_next);
+        }
+        else
+        {
+            new_head = min_next;
         }
     }
 }
 
-
-void minSort(student *obj, int n)//5
-{
-    int min;
-
-    for (int i = 0; i < n; i++)
-    {
-        min = i;
-
-        for (int j = i + 1; j < n; j++)
-        {
-            if (obj[j] < obj[min])
-            {
-                min = j;
-            }
-        }
-
-        obj[i].swap(obj[min]);
-    }
-}
-
-
-
-void minSort();
+/*
 void insertSort();
 void mergeSort();
 void quickSort();
