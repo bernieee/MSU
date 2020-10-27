@@ -35,7 +35,7 @@ int main(int argc, char *argv[])
         PrintArray(a, n);
     printf("\n");
     time = clock();
-    BubbleSort(a, n, SiftDown);
+    BubbleSort(a, n, SiftUp);
     time = clock() - time;
     printf("Time = %lf\n", (double)time / CLOCKS_PER_SEC);
     if (n > 20)
