@@ -11,7 +11,7 @@ static void swap(list_node *a, list_node *b)
 }
 
 
-void list::bubbleSort()
+void list::bubbleSort() // 1
 {
     list_node *new_head;
 
@@ -73,7 +73,7 @@ void list::bubbleSort()
 }
 
 
-void list::minSort()
+void list::minSort() // 2
 {
     list_node *new_head;
     list_node *end;
@@ -132,8 +132,109 @@ void list::minSort()
     }
 }
 
+
+/*void insertSort1(student *obj, int n)//6 increase
+{
+    int j;
+    student tmp_obj;
+
+    for (int i = 1; i < n; i++)
+    {
+        tmp_obj.swap(obj[i]);
+
+        for (j = i - 1; j >= 0; j--)
+        {
+            if (tmp_obj > obj[j])
+                break;
+
+            obj[j + 1].swap(obj[j]);
+        }
+
+        obj[j + 1].swap(tmp_obj);
+    }
+}
+
+
+void insertSort2(student *obj, int n)//6 decrease
+{
+    int j;
+    student tmp_obj;
+
+    for (int i = 1; i < n; i++)
+    {
+        tmp_obj.swap(obj[i]);
+
+        for (j = 0; j < i; j++)
+        {
+            if (tmp_obj < obj[j])
+                break;
+        }
+
+        for (int k = i; k > j; k--)
+        {
+            obj[k].swap(obj[k - 1]);
+        }
+
+        obj[j].swap(tmp_obj);
+    }
+}*/
+
+
+void list::insertSort() // 3
+{
+    list_node *new_head;
+
+    list_node *curr;
+    list_node *prev;
+    list_node *tmp;
+
+    new_head = head->getNext();
+    head->setNext(nullptr);
+
+    while (new_head)
+    {
+        prev = nullptr;
+        tmp = new_head;
+        new_head = new_head->getNext();
+        tmp->setNext(nullptr);
+
+        printf("tmp = %d\n", tmp->getVal());
+
+        for (curr = head; curr; curr = curr->getNext())
+        {
+            printf("%d -> ", curr->getVal());
+
+            if ((*tmp < *curr) == 1)
+            {
+                break;
+            }
+
+            prev = curr;
+        }
+
+        if (prev)
+        {
+            printf("!!!\n");
+            printf("prev = %d\n", prev->getVal());
+            if (curr) printf("curr = %d\n", curr->getVal());
+            prev->setNext(tmp);
+            tmp->setNext(curr);
+        }
+        else
+        {
+            head = tmp;
+            head->setNext(curr);
+        }
+
+        printf("\n");
+        print(5);
+        printf("\n");
+
+    }
+}
+
+
 /*
-void insertSort();
 void mergeSort();
 void quickSort();
 */
