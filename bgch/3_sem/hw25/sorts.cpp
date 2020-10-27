@@ -1,5 +1,7 @@
 #include "list.h"
+#include <iostream>
 
+using namespace std;
 
 static void swap(list_node *a, list_node *b)
 {
@@ -133,53 +135,6 @@ void list::minSort() // 2
 }
 
 
-/*void insertSort1(student *obj, int n)//6 increase
-{
-    int j;
-    student tmp_obj;
-
-    for (int i = 1; i < n; i++)
-    {
-        tmp_obj.swap(obj[i]);
-
-        for (j = i - 1; j >= 0; j--)
-        {
-            if (tmp_obj > obj[j])
-                break;
-
-            obj[j + 1].swap(obj[j]);
-        }
-
-        obj[j + 1].swap(tmp_obj);
-    }
-}
-
-
-void insertSort2(student *obj, int n)//6 decrease
-{
-    int j;
-    student tmp_obj;
-
-    for (int i = 1; i < n; i++)
-    {
-        tmp_obj.swap(obj[i]);
-
-        for (j = 0; j < i; j++)
-        {
-            if (tmp_obj < obj[j])
-                break;
-        }
-
-        for (int k = i; k > j; k--)
-        {
-            obj[k].swap(obj[k - 1]);
-        }
-
-        obj[j].swap(tmp_obj);
-    }
-}*/
-
-
 void list::insertSort() // 3
 {
     list_node *new_head;
@@ -198,12 +153,8 @@ void list::insertSort() // 3
         new_head = new_head->getNext();
         tmp->setNext(nullptr);
 
-        printf("tmp = %d\n", tmp->getVal());
-
         for (curr = head; curr; curr = curr->getNext())
         {
-            printf("%d -> ", curr->getVal());
-
             if ((*tmp < *curr) == 1)
             {
                 break;
@@ -214,9 +165,6 @@ void list::insertSort() // 3
 
         if (prev)
         {
-            printf("!!!\n");
-            printf("prev = %d\n", prev->getVal());
-            if (curr) printf("curr = %d\n", curr->getVal());
             prev->setNext(tmp);
             tmp->setNext(curr);
         }
@@ -225,16 +173,152 @@ void list::insertSort() // 3
             head = tmp;
             head->setNext(curr);
         }
-
-        printf("\n");
-        print(5);
-        printf("\n");
-
     }
 }
 
 
+static void merge(list_node **start1, list_node **end1, list_node **start2, list_node **end2)
+{
+    list_node *curr1;
+    list_node *curr2;
+    list_node *tmp;
+
+    if ((**start1 < **start2) == -1) // check if start2's first node is higher than start1's
+    {
+        tmp = *start1;
+        *start1 = *start2;
+        *start2 = tmp;
+
+        tmp = *end1;
+        *end1 = *end2;
+        *end2 = tmp;
+    }
+
+    /*
+    printf("start1 = %d\n", (*start1)->getVal());
+    printf("end1 = %d\n", (*end1)->getVal());
+    printf("start2 = %d\n", (*start2)->getVal());
+    printf("end2 = %d\n\n", (*end2)->getVal());
+    */
+
+    curr1 = *start1;
+    curr2 = *start2;
+
+    while ((curr1 != (*end1)) && (curr2 != (*end2)->getNext()))
+    {
+        if ((*curr2 < *curr1->getNext()) == 1)
+        {
+            tmp = curr2->getNext();
+            curr2->setNext(curr1->getNext());
+            curr1->setNext(curr2);
+            curr1 = tmp;
+        }
+
+        curr1 = curr1->getNext();
+    }
+
+    if (curr1 == (*end1))
+    {
+        curr1->setNext(curr2);
+    }
+    else
+    {
+        *end2 = *end1;
+    }
+    //printf("!!\n");
+}
+
+
+void list::mergeSort() // 4
+{
+    int len;
+    int step;
+    int counter;
+    int first_in;
+    list_node *start1;
+    list_node *end1;
+    list_node *start2;
+    list_node *end2;
+    list_node *prev;
+    list_node *next;
+
+    prev = nullptr;
+
+    len = getLength();
+
+    for (step = 1; step < len; step *= 2)
+    {
+        start1 = head;
+        printf("step = %d\n", step);
+
+        while (start1)
+        {
+            first_in = 0;
+
+            if (start1 == head)
+            {
+                first_in = 1;
+            }
+
+            counter = step;
+            end1 = start1;
+
+            while (counter != 1 && end1->getNext())
+            {
+                end1 = end1->getNext();
+                counter--;
+            }
+
+            counter = step;
+            start2 = end1->getNext();
+            end2 = start2;
+
+            if (start2 == nullptr)
+            {
+                break;
+            }
+
+            while (counter != 1 && end2->getNext())
+            {
+                end2 = end2->getNext();
+                counter--;
+            }
+
+            next = end2->getNext();
+
+            /*
+            printf("start1 = %d\n", start1->getVal());
+            printf("end1 = %d\n", end1->getVal());
+            printf("start2 = %d\n", start2->getVal());
+            printf("end2 = %d\n", end2->getVal());
+            */
+
+            merge(&start1, &end1, &start2, &end2);
+
+            if (first_in == 1)
+            {
+                head = start1;
+            }
+            else
+            {
+                prev->setNext(start1);
+            }
+
+            prev = end2;
+            start1 = next;
+
+            //print(20);
+        }
+
+        prev->setNext(start1);
+    }
+}
+
+
+
+
+
+
 /*
-void mergeSort();
 void quickSort();
 */
