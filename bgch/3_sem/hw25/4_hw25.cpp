@@ -54,16 +54,14 @@ int main(int argc, char *argv[])
 
     head->print(max_print);
 
-    printf("Len = %d\n\n", len);
-
     time = clock();
     head->mergeSort();
     time = clock() - time;
 
     head->print(max_print);
-    len = head->getLength();
+    len = head->getLessThanPrevious();
 
-    printf("Len = %d\n\n", len);
+    printf("Number of elements less than previous = %d\n\n", len);
 
     printf("Time = %lf\n", (double)time / CLOCKS_PER_SEC);
 

@@ -82,6 +82,20 @@ void list::print(int max_print)
 }
 
 
+void printList(list_node *head)
+{
+    list_node *curr;
+
+    for (curr = head; curr; curr = curr->getNext())
+    {
+        curr->print();
+    }
+
+    printf("\n");
+}
+
+
+
 int list::getLength()
 {
     list_node *curr;
@@ -98,31 +112,25 @@ int list::getLength()
 }
 
 
-list_node* list::getElement(int j)
+int list::getLessThanPrevious()
 {
-    int i;
+    int ans;
+    int res;
     list_node *curr;
 
-    for (i = 0, curr = head; i < j && curr; i++, curr = curr->getNext())
+    ans = 0;
+
+    for (curr = head; curr->getNext(); curr = curr->getNext())
     {
-        continue;
+        res = (*curr->getNext() < *curr);
+
+        if (res == 1)
+        {
+            ans++;
+        }
     }
 
-    return curr;
+    return ans;
 }
 
-/*static void deleteSeq(list_node *start, int len)
-{
-    int i;
-    list_node *curr;
-    list_node *next;
 
-    for (i = 0, curr = start; i <= len && curr; i++, curr = next)
-    {
-        next = curr->getNext();
-
-        curr->remove();
-        delete curr;
-    }
-
-}*/

@@ -11,7 +11,7 @@ class list
         list() = default;
 
         int getLength();
-        list_node *getElement(int j);
+        int getLessThanPrevious();
         int read(const char *fname);
         void print(int max_print);
         void del();
@@ -22,4 +22,4 @@ class list
         void mergeSort();
         void quickSort();
 };
-
+void printList(list_node *head);

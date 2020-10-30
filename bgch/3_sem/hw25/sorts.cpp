@@ -1,7 +1,4 @@
 #include "list.h"
-#include <iostream>
-
-using namespace std;
 
 static void swap(list_node *a, list_node *b)
 {
@@ -181,6 +178,7 @@ static void merge(list_node **start1, list_node **end1, list_node **start2, list
 {
     list_node *curr1;
     list_node *curr2;
+    list_node *end;
     list_node *tmp;
 
     if ((**start1 < **start2) == -1) // check if start2's first node is higher than start1's
@@ -194,24 +192,18 @@ static void merge(list_node **start1, list_node **end1, list_node **start2, list
         *end2 = tmp;
     }
 
-    /*
-    printf("start1 = %d\n", (*start1)->getVal());
-    printf("end1 = %d\n", (*end1)->getVal());
-    printf("start2 = %d\n", (*start2)->getVal());
-    printf("end2 = %d\n\n", (*end2)->getVal());
-    */
-
     curr1 = *start1;
     curr2 = *start2;
+    end = (*end2)->getNext();
 
-    while ((curr1 != (*end1)) && (curr2 != (*end2)->getNext()))
+    while ((curr1 != (*end1)) && (curr2 != end))
     {
         if ((*curr2 < *curr1->getNext()) == 1)
         {
             tmp = curr2->getNext();
             curr2->setNext(curr1->getNext());
             curr1->setNext(curr2);
-            curr1 = tmp;
+            curr2 = tmp;
         }
 
         curr1 = curr1->getNext();
@@ -225,7 +217,6 @@ static void merge(list_node **start1, list_node **end1, list_node **start2, list
     {
         *end2 = *end1;
     }
-    //printf("!!\n");
 }
 
 
@@ -249,7 +240,6 @@ void list::mergeSort() // 4
     for (step = 1; step < len; step *= 2)
     {
         start1 = head;
-        printf("step = %d\n", step);
 
         while (start1)
         {
@@ -286,13 +276,6 @@ void list::mergeSort() // 4
 
             next = end2->getNext();
 
-            /*
-            printf("start1 = %d\n", start1->getVal());
-            printf("end1 = %d\n", end1->getVal());
-            printf("start2 = %d\n", start2->getVal());
-            printf("end2 = %d\n", end2->getVal());
-            */
-
             merge(&start1, &end1, &start2, &end2);
 
             if (first_in == 1)
@@ -306,8 +289,6 @@ void list::mergeSort() // 4
 
             prev = end2;
             start1 = next;
-
-            //print(20);
         }
 
         prev->setNext(start1);
