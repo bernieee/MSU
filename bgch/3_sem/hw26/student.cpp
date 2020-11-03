@@ -48,6 +48,8 @@ int student::readFileStudent(FILE *f)
         return student::READ_ERROR;
     }
 
+    //remove();
+
     if (init(new_name, new_val) != student::SUCCESS)
     {
         return student::MEMORY_ERROR;

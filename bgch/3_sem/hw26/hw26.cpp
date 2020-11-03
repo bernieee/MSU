@@ -7,8 +7,11 @@ int main(int argc, char *argv[])
     int max_print;
     int res;
     int ans1;
+    int ans2;
+    int ans4;
+    int ans5;
     time_t time;
-    tree *root;
+    tree root;
 
     if (argc != 3 || atoi(argv[1]) <= 0)
     {
@@ -19,9 +22,7 @@ int main(int argc, char *argv[])
     max_print = atoi(argv[1]);
     fname = argv[2];
 
-    root = new tree();
-
-    res = root->read(fname);
+    res = root.read(fname);
 
     if (res < 0)
     {
@@ -41,22 +42,37 @@ int main(int argc, char *argv[])
 
         }
 
-        delete root;
         return -1;
     }
 
-//    printf("root = %d\n", root->getVal());
-
-    root->print(max_print);
+    root.print(max_print);
+    printf("\n");
 
     time = clock();
-    ans1 = root->numOfLeafsRoot();
+    ans1 = root.numOfLeavesRoot();
     time = clock() - time;
 
-    printf("Task = %d Result = %d Elapsed = %.2f\n", 1, ans1, (double)time / CLOCKS_PER_SEC);
+    printf("Task = %d Result = %d Elapsed = %.2f\n\n", 1, ans1, (double)time / CLOCKS_PER_SEC);
 
-    //root->del();
-    delete root;
+    time = clock();
+    ans2 = root.maxLenOfBranchRoot();
+    time = clock() - time;
+
+    printf("Task = %d Result = %d Elapsed = %.2f\n\n", 2, ans2, (double)time / CLOCKS_PER_SEC);
+
+    time = clock();
+    ans4 = root.maxDifferenceBetwenDepthsRoot();
+    time = clock() - time;
+
+    printf("Task = %d Result = %d Elapsed = %.2f\n\n", 4, ans4, (double)time / CLOCKS_PER_SEC);
+
+    time = clock();
+    ans5 = root.numOfElementsWithOnlyChildRoot();
+    time = clock() - time;
+
+    printf("Task = %d Result = %d Elapsed = %.2f\n\n", 5, ans5, (double)time / CLOCKS_PER_SEC);
+
+
 
     return 0;
 }
