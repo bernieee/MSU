@@ -212,16 +212,58 @@ int tree::maxLenOfBranch(tree_node *p) // 2
 }
 
 
-/*int tree::maxNumOfElementsOnLevelRoot()
+int tree::maxNumOfElementsOnLevelRoot(int depth)
 {
-    return maxNumOfElementsOnLevel(root);
+    int *num_on_levels;
+    int max_num;
+
+    num_on_levels = new int[depth];
+
+    for (int i = 0; i < depth; i++)
+    {
+        num_on_levels[i] = 0;
+    }
+
+    max_num = 0;
+
+    maxNumOfElementsOnLevel(root, 0, num_on_levels, &max_num);
+
+    delete [] num_on_levels;
+
+    return max_num;
 }
 
 
-int tree::maxNumOfElementsOnLevel(tree_node *p) // 3
+void tree::maxNumOfElementsOnLevel(tree_node *p, int level, int *num_on_levels, int *max) // 3
 {
+    tree_node *left;
+    tree_node *right;
 
-}*/
+    left = p->getLeft();
+    right = p->getRight();
+
+    if (left)
+    {
+        num_on_levels[level]++;
+
+        if (num_on_levels[level] > *max)
+        {
+            *max = num_on_levels[level];
+        }
+        maxNumOfElementsOnLevel(left, level + 1, num_on_levels, max);
+    }
+
+    if (right)
+    {
+        num_on_levels[level]++;
+
+        if (num_on_levels[level] > *max)
+        {
+            *max = num_on_levels[level];
+        }
+        maxNumOfElementsOnLevel(right, level + 1, num_on_levels, max);
+    }
+}
 
 
 int tree::maxDifferenceBetwenDepthsRoot()
@@ -229,45 +271,67 @@ int tree::maxDifferenceBetwenDepthsRoot()
     int x;
     x = 0;
 
-    maxDifferenceBetwenDepths(root, &x);
-
-    return x;
+    return maxDifferenceBetwenDepths(root, &x);
 }
 
 
-void tree::maxDifferenceBetwenDepths(tree_node *p, int *max_depth) // 4
+int tree::maxDifferenceBetwenDepths(tree_node *p, int *depth) // 4
 {
     int left_depth;
+    int diff_left_depth;
     int right_depth;
+    int diff_right_depth;
     int diff_depth;
     tree_node *left;
     tree_node *right;
 
-    if (!p)
-    {
-        return;
-    }
-
     left = p->getLeft();
     right = p->getRight();
 
-    if (left || right)
+    left_depth = 0;
+    right_depth = 0;
+    diff_depth = 0;
+    diff_left_depth = 0;
+    diff_right_depth = 0;
+
+    if (!left && !right)
     {
-        left_depth = maxLenOfBranch(left);
-        right_depth = maxLenOfBranch(right);
-
-        diff_depth = abs(left_depth - right_depth);
-
-        //printf("p = %d diff = %d\n", p->getVal(), diff_depth);
-
-        if (diff_depth > *max_depth)
-        {
-            *max_depth = diff_depth;
-        }
-
-        maxDifferenceBetwenDepths(left, max_depth);
-        maxDifferenceBetwenDepths(right, max_depth);
+        *depth = 1;
+        return 0;
     }
+
+    if (left)
+    {
+        diff_left_depth = maxDifferenceBetwenDepths(left, &left_depth);
+    }
+
+    if (right)
+    {
+        diff_right_depth = maxDifferenceBetwenDepths(right, &right_depth);
+    }
+
+    diff_depth = abs(left_depth - right_depth);
+
+    if (left_depth > right_depth)
+    {
+        *depth = left_depth + 1;
+    }
+    else
+    {
+        *depth = right_depth + 1;
+    }
+
+    if (diff_left_depth > diff_depth)
+    {
+        diff_depth = diff_left_depth;
+    }
+
+    if (diff_right_depth > diff_depth)
+    {
+        diff_depth = diff_right_depth;
+    }
+
+    return diff_depth;
 }
 
 

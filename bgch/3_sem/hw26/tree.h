@@ -22,10 +22,10 @@ class tree
         int numOfLeaves(tree_node *p); // 1
         int maxLenOfBranchRoot();
         int maxLenOfBranch(tree_node *p); // 2
-        int maxNumOfElementsOnLevelRoot();
-        int maxNumOfElementsOnLevel(tree_node *p); // 3
-        int numOfElementsWithOnlyChildRoot();
+        int maxNumOfElementsOnLevelRoot(int depth);
+        void maxNumOfElementsOnLevel(tree_node *p, int level, int *num_on_level, int *max); // 3
         int maxDifferenceBetwenDepthsRoot();
-        void maxDifferenceBetwenDepths(tree_node *p, int *max_depth); // 4
+        int maxDifferenceBetwenDepths(tree_node *p, int *depth); // 4
+        int numOfElementsWithOnlyChildRoot();
         int numOfElementsWithOnlyChild(tree_node *p); // 5
 };

@@ -8,6 +8,7 @@ int main(int argc, char *argv[])
     int res;
     int ans1;
     int ans2;
+    int ans3;
     int ans4;
     int ans5;
     time_t time;
@@ -59,6 +60,13 @@ int main(int argc, char *argv[])
     time = clock() - time;
 
     printf("Task = %d Result = %d Elapsed = %.2f\n\n", 2, ans2, (double)time / CLOCKS_PER_SEC);
+
+    time = clock();
+    ans3 = root.maxNumOfElementsOnLevelRoot(ans2);
+    time = clock() - time;
+
+    printf("Task = %d Result = %d Elapsed = %.2f\n\n", 3, ans3, (double)time / CLOCKS_PER_SEC);
+
 
     time = clock();
     ans4 = root.maxDifferenceBetwenDepthsRoot();
