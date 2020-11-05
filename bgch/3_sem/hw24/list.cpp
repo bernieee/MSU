@@ -149,7 +149,7 @@ static int gcd(int m, int n)// 1
 }
 
 
-void list::cycle(int k)// to the right 1
+void list::cycle(int k)// to the right 1 someday need to edit cycle.....
 {
     int i;
     int n;
