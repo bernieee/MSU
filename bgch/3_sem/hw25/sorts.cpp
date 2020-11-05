@@ -1,6 +1,6 @@
 #include "list.h"
 
-static void swap(list_node *a, list_node *b)
+static inline void swap(list_node *a, list_node *b)
 {
     list_node *tmp;
 

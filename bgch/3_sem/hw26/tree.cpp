@@ -75,7 +75,7 @@ int tree::read(const char *fname)
 
     if (root->readFileStudent(f) != student::SUCCESS)
     {
-        delete root;
+        //delete root;
         fclose(f);
         return student::READ_ERROR;
     }
