@@ -1,5 +1,6 @@
 #include "list.h"
 
+
 int readList(const char *fname, list **new_head)
 {
     FILE *f;
