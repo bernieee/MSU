@@ -75,6 +75,7 @@ int tree::read(const char *fname)
 
     if (root->readFileStudent(f) != student::SUCCESS)
     {
+        //delete root;
         fclose(f);
         return student::READ_ERROR;
     }
@@ -215,30 +216,15 @@ int tree::maxNumOfElementsOnLevelRoot(int depth)
 {
     int *num_on_levels;
     int max_num;
-    int num;
 
-    max_num = 0;
     num_on_levels = new int[depth];
-
-    if (!num_on_levels)
-    {
-        for (int i = 0; i < depth; i++)
-        {
-            num = numOfNodesOnLevel(root, i, 0);
-
-            if (num > max_num)
-            {
-                max_num = num;
-            }
-        }
-
-        return max_num;
-    }
 
     for (int i = 0; i < depth; i++)
     {
         num_on_levels[i] = 0;
     }
+
+    max_num = 0;
 
     maxNumOfElementsOnLevel(root, 0, num_on_levels, &max_num);
 
@@ -277,33 +263,6 @@ void tree::maxNumOfElementsOnLevel(tree_node *p, int level, int *num_on_levels, 
         }
         maxNumOfElementsOnLevel(right, level + 1, num_on_levels, max);
     }
-}
-
-
-int tree::numOfNodesOnLevel(tree_node *p, int level, int i_level) // 3
-{
-    tree_node *left;
-    tree_node *right;
-
-    int count = 0;
-
-    if (p == nullptr)
-    {
-       return 0;
-    }
-
-    left = p->getLeft();
-    right = p->getRight();
-
-    if (i_level == level)
-    {
-       return 1;
-    }
-
-    count += numOfNodesOnLevel(left, level, i_level + 1);
-    count += numOfNodesOnLevel(right, level, i_level + 1);
-
-    return count;
 }
 
 

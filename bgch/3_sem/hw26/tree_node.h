@@ -47,7 +47,6 @@ class tree_node: public student
 
         tree_node &operator=(const tree_node &x)
         {
-            //*(student *)(this) = (const student &) x;
             *(student *)(this) = x;
             left = nullptr;
             right = nullptr;
@@ -57,7 +56,6 @@ class tree_node: public student
 
         tree_node &operator=(tree_node &&x)
         {
-            //*(student *)(this) = (student &&) x;
             *(student *)(this) = x;
 
             left = x.left;
