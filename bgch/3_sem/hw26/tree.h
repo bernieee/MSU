@@ -24,7 +24,6 @@ class tree
         int maxLenOfBranch(tree_node *p); // 2
         int maxNumOfElementsOnLevelRoot(int depth);
         void maxNumOfElementsOnLevel(tree_node *p, int level, int *num_on_level, int *max); // 3
-        int numOfNodesOnLevel(tree_node *p, int level, int i_level); // 3
         int maxDifferenceBetwenDepthsRoot();
         int maxDifferenceBetwenDepths(tree_node *p, int *depth); // 4
         int numOfElementsWithOnlyChildRoot();
