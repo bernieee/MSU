@@ -10,7 +10,7 @@ int main(int argc, char *argv[])
     int ans1;
     int ans2;
     int ans3;
-    //int ans4;
+    int ans4;
     int ans5;
     time_t time;
     tree root;
@@ -69,15 +69,11 @@ int main(int argc, char *argv[])
 
     printf("%s : Task = %d Result = %d Elapsed = %.2f\n\n", argv[0], 3, ans3, (double)time / CLOCKS_PER_SEC);
 
-
-    /*
     time = clock();
-    ans4 = root.numOfSubtreesWithNotMoreThanKElementsOnAnyLevelRoot(depth, k);
+    ans4 = root.numOfElementsInSubtreesWithNotMoreThanKElementsOnAnyLevelRoot(k);
     time = clock() - time;
 
     printf("%s : Task = %d Result = %d Elapsed = %.2f\n\n", argv[0], 4, ans4, (double)time / CLOCKS_PER_SEC);
-
-    */
 
     time = clock();
     ans5 = root.numOfElementsOnKLevelRoot(k);

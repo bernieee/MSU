@@ -265,8 +265,6 @@ int tree::numOfElementsInSubtreesWithNotMoreThanKNodes(tree_node *p, int *num, i
         (*num) += num_down + 1;
     }
 
-    //printf("p = %d  num_down = %d  num_level = %d\n", p->getVal(), num_down, num_level);
-
     return num_sum + 1;
 }
 
@@ -275,94 +273,14 @@ int tree::numOfElementsInSubtreesWithNotMoreThanKLevelsRoot(int k)
 {
     int num;
     int levels;
-    //int num_levels;
 
     num = 0;
     levels = 1;
-    //num_levels = 1;
 
-    //numOfElementsInSubtreesWithNotMoreThanKLevels(root, &num, &max_levels, 1, 1, k);
     numOfElementsInSubtreesWithNotMoreThanKLevels(root, &num, &levels, k);
 
     return num;
 }
-
-
-/*int tree::numOfElementsInSubtreesWithNotMoreThanKLevels(tree_node *p, int *num, int *max_levels, int num_levels, int levels, int k) // 3
-{
-    tree_node *down;
-    tree_node *level;
-    int num_down;
-    int num_level;
-    int num_sum;
-
-    if (!p)
-    {
-        return 0;
-    }
-
-    down = p->getDown();
-    level = p->getLevel();
-
-    num_down = numOfElementsInSubtreesWithNotMoreThanKLevels(down, num, max_levels, num_levels, *max_levels, k);
-
-    if (num_down > 0)
-    {
-        levels = levels + 1;
-        //num_levels = levels;
-
-        if (levels >= *max_levels)
-        {
-            *max_levels = levels;
-        }
-
-        //check = *levels;
-    }
-
-    if (num_down == 0)
-    {
-        (*num) += 1;
-    }
-    else if (levels <= k)
-    {
-        (*num) += num_down + 1;
-        //printf("2 p = %d  num_down = %d  check = %d  levels = %d\n", p->getVal(), num_down, check, *levels);
-    }
-
-    printf("p = %d  num_down = %d  levels = %d  max_levels = %d\n", p->getVal(), num_down + 1, levels, *max_levels);
-
-    num_level = numOfElementsInSubtreesWithNotMoreThanKLevels(level, num, max_levels, num_levels, levels, k);
-
-    num_sum = num_down + num_level;
-
-    if (num_down > 0)
-    {
-        levels = levels + 1;
-
-        if (levels >= *max_levels)
-        {
-            *max_levels = levels;
-        }
-
-        //check = *levels;
-    }
-
-    if (num_down == 0)
-    {
-        (*num) += 1;
-    }
-    else if (levels <= k)
-    {
-        (*num) += num_down + 1;
-        //printf("2 p = %d  num_down = %d  check = %d  levels = %d\n", p->getVal(), num_down, check, *levels);
-    }
-
-    printf("p = %d  num_down = %d  levels = %d  max_levels = %d\n", p->getVal(), num_down + 1, levels, *max_levels);
-    
-
-
-    return num_sum + 1;
-}*/
 
 
 int tree::numOfElementsInSubtreesWithNotMoreThanKLevels(tree_node *p, int *num, int *levels, int k) // 3
@@ -389,8 +307,6 @@ int tree::numOfElementsInSubtreesWithNotMoreThanKLevels(tree_node *p, int *num, 
         (*num) += num_down + 1;
     }
 
-    //printf("p = %d  num_down = %d  levels = %d  num = %d\n", p->getVal(), num_down, *levels, *num);
-
     max_levels = *levels;
 
     while (level)
@@ -398,7 +314,14 @@ int tree::numOfElementsInSubtreesWithNotMoreThanKLevels(tree_node *p, int *num, 
         *levels = 1;
         if (level->getDown())
         {
-            num_level += numOfElementsInSubtreesWithNotMoreThanKLevels(level, num, levels, k);
+            int num_level_count = numOfElementsInSubtreesWithNotMoreThanKLevels(level->getDown(), num, levels, k);
+            num_level += num_level_count + 1;
+
+            if (*levels <= k)
+            {
+                (*num) += num_level_count + 1;
+            }
+
 
             if (*levels > max_levels)
             {
@@ -412,24 +335,101 @@ int tree::numOfElementsInSubtreesWithNotMoreThanKLevels(tree_node *p, int *num, 
         }
 
         level = level->getLevel();
-
     }
 
     *levels = max_levels + 1;
 
     num_sum = num_down + num_level;
+    return num_sum + 1;
+}
 
-    //printf("p = %d  num_down = %d  num_level = %d  levels = %d  max_levels = %d\n", p->getVal(), num_down, num_level, *levels, max_levels);
 
-    /*if (*levels <= k)
+int tree::maxNumOfElementsOnAnyLevel(tree_node *p)
+{
+    int max_num;
+    int num;
+    int i;
+
+    max_num = 0;
+    num = -1;
+    i = 0;
+
+    if (!p)
+    {
+        return 0;
+    }
+
+    while (num != 0)
+    {
+        num = 0;
+        numOfElementsOnKLevel(p, &num, 0, i);
+
+        if (num > max_num)
+        {
+            max_num = num;
+        }
+
+        i++;
+    }
+
+    return max_num;
+}
+
+
+int tree::numOfElementsInSubtreesWithNotMoreThanKElementsOnAnyLevelRoot(int k)
+{
+    int num;
+
+    num = 0;
+
+    numOfElementsInSubtreesWithNotMoreThanKElementsOnAnyLevel(root, &num, k);
+
+    return num;
+}
+
+
+int tree::numOfElementsInSubtreesWithNotMoreThanKElementsOnAnyLevel(tree_node *p, int *num, int k) // 4
+{
+    tree_node *down;
+    tree_node *level;
+    int num_down;
+    int max_num_on_level;
+    int num_level = 0;
+    int num_sum;
+
+    if (!p)
+    {
+        return 0;
+    }
+
+    down = p->getDown();
+    level = p->getLevel();
+
+    num_down = numOfElementsInSubtreesWithNotMoreThanKElementsOnAnyLevel(down, num, k);
+
+    max_num_on_level = maxNumOfElementsOnAnyLevel(down);
+
+    if (max_num_on_level <= k)
     {
         (*num) += num_down + 1;
     }
-    else if (down_levels <= k)
-    {
-        (*num) += num_down + 1;
-    }*/
 
+    while (level)
+    {
+        if (level->getDown())
+        {
+            num_level += numOfElementsInSubtreesWithNotMoreThanKElementsOnAnyLevel(level, num, k);
+        }
+        else
+        {
+            num_level++;
+            (*num) += 1;
+        }
+
+        level = level->getLevel();
+    }
+
+    num_sum = num_down + num_level;
     return num_sum + 1;
 }
 
@@ -473,5 +473,39 @@ void tree::numOfElementsOnKLevel(tree_node *p, int *num, int i_level, int k) // 
 
     numOfElementsOnKLevel(down, num, i_level + 1, k);
     numOfElementsOnKLevel(level, num, i_level, k);
+}
+
+
+int tree::numOfElementsOnKLevelInt(tree_node *p, int i_level, int k)
+{
+    tree_node *down;
+    tree_node *level;
+
+    int count = 0;
+
+    if (!p)
+    {
+        return 0;
+    }
+
+    down = p->getDown();
+    level = p->getLevel();
+
+    if (i_level == k)
+    {
+        level = p;
+        while (level)
+        {
+            count += 1;
+            level = level->getLevel();
+        }
+
+        return count;
+    }
+
+    count += numOfElementsOnKLevelInt(down, i_level + 1, k);
+    count += numOfElementsOnKLevelInt(level, i_level, k);
+
+    return count;
 }
 
