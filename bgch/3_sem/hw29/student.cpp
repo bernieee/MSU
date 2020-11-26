@@ -27,8 +27,13 @@ int student::read(FILE *f)
 }
 
 
-void student::print() const
+void student::print(int spaces) const
 {
+    for (int i = 0; i < spaces; i++)
+    {
+        printf(" ");
+    }
+
     printf("%s %d\n", name, val);
 }
 

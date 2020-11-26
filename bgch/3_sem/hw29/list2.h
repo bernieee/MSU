@@ -26,7 +26,7 @@ class list2
 
         int getLength() const;
         int read(FILE *f);
-        void print();
+        void print(int spaces);
         void del();
         int operator<(const list2 &x);
 };

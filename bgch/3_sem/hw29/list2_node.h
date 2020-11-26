@@ -35,13 +35,13 @@ class list2_node: public student
             prev = nullptr;
         }
 
-        list2_node(const list2_node &x): student(x)
+        list2_node(const list2_node &x): student((const student &) x)
         {
             next = x.next;
             prev = x.prev;
         }
 
-        list2_node(list2_node &&x): student(x)
+        list2_node(list2_node &&x): student((student &&) x)
         {
             next = x.next;
             x.next = nullptr;
@@ -58,7 +58,7 @@ class list2_node: public student
 
         list2_node &operator=(const list2_node &x)
         {
-            *(student *)(this) = x;
+            *(student *)(this) = (const student &) x;
             next = nullptr;
             prev = nullptr;
 
@@ -67,7 +67,7 @@ class list2_node: public student
 
         list2_node &operator=(list2_node &&x)
         {
-            *(student *)(this) = x;
+            *(student *)(this) = (student &&) x;
 
             next = x.next;
             x.next = nullptr;

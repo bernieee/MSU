@@ -5,12 +5,11 @@ int list2::read(FILE *f)
     int res;
     int i;
     list2_node *end;
-    list2_node *curr;
     list2_node tmp;
 
     head = new list2_node();
 
-    if (head->read(f) != student::SUCCESS)
+    if ((res = head->read(f)) != student::SUCCESS)
     {
         return student::READ_ERROR;
     }
@@ -22,9 +21,8 @@ int list2::read(FILE *f)
 
     while ((i < m) && ((res = tmp.read(f)) == student::SUCCESS))
     {
-        curr = new list2_node();
+        list2_node *curr = new list2_node((list2_node &&) tmp);
 
-        curr->swap(tmp);
         curr->setNext(nullptr);
         curr->setPrev(end);
         end->setNext(curr);
@@ -61,17 +59,15 @@ void list2::del()
 }
 
 
-void list2::print()
+void list2::print(int spaces)
 {
     int i;
     list2_node *curr;
 
     for (i = 0, curr = head; i < r && curr; i++, curr = curr->getNext())
     {
-        curr->print();
+        curr->print(spaces);
     }
-
-    //printf("\n");
 }
 
 

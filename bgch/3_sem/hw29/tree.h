@@ -109,10 +109,7 @@ class tree
 
             while ((res = tmp.read(f)) == student::SUCCESS)
             {
-                //tree_node<T> *curr = new tree_node<T>();
                 tree_node<T> *curr = new tree_node<T>((tree_node<T> &&) tmp);
-
-                //curr->swap(tmp);
 
                 if (!curr)
                 {
@@ -145,12 +142,7 @@ class tree
                 return;
             }
 
-            for (int i = 0; i < spaces; i++)
-            {
-                printf(" ");
-            }
-
-            p->print();
+            p->print(spaces);
 
             if (p->left)
             {

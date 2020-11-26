@@ -44,7 +44,7 @@ class student
         int operator<(const student &x) const;
         void swap(student &x);
         int read(FILE *f);
-        void print() const;
+        void print(int spaces) const;
         void remove();
         int getLength() const
         {

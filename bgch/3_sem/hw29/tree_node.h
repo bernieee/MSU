@@ -26,19 +26,13 @@ class tree_node: public T
             return right;
         }
 
-        /*tree_node(const char *new_name, int new_val): student(new_name, new_val)
-        {
-            left = nullptr;
-            right = nullptr;
-        }*/
-
-        tree_node(const tree_node &x): T(x)
+        tree_node(const tree_node &x): T((const T &)x)
         {
             left = x.left;
             right = x.right;
         }
 
-        tree_node(tree_node &&x): T(x)
+        tree_node(tree_node &&x): T((T &&)x)
         {
             left = x.left;
             x.left = nullptr;
@@ -50,7 +44,6 @@ class tree_node: public T
         tree_node &operator=(const tree_node &x)
         {
             *(T *)(this) = (const T &) x;
-            //*(T *)(this) = x;
 
             left = nullptr;
             right = nullptr;
@@ -61,7 +54,6 @@ class tree_node: public T
         tree_node &operator=(tree_node &&x)
         {
             *(T *)(this) = (T &&) x;
-            //*(T *)(this) = x;
 
             left = x.left;
             x.left = nullptr;
