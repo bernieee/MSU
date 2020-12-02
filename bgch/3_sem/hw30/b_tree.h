@@ -2,16 +2,6 @@
 #include <time.h>
 
 
-/*
-    del // 44
-    addNode // 70
-    read // 98
-    printNode // 144
-    print // 176
-
-*/
-
-
 template <class T>
 class b_tree
 {
@@ -55,14 +45,12 @@ class b_tree
         }
 
 
-        int addNode(const T &x, b_tree_node<T> *&first, b_tree_node<T> *&second, T &y)
+        int addNode(T &x, b_tree_node<T> *&first, b_tree_node<T> *&second, T &y)
         {
             int index;
             b_tree_node<T> *p;
 
             index = first->search(x);
-
-            //printf("x = %s  index = %d\n", x.getName(), index);
 
             p = first->children[index];
 
@@ -76,7 +64,7 @@ class b_tree
             else
             {
                 second = nullptr;
-                y = x;
+                y = (T &&) x;
             }
 
             if (first->size < 2 * m)
@@ -88,8 +76,12 @@ class b_tree
             else
             {
                 p = new b_tree_node<T>();
-                p->init(m);
-                //TODO
+
+                if (p->init(m) != student::SUCCESS)
+                {
+                    delete p;
+                    return -3;
+                }
 
 
                 if (index > m)
@@ -102,7 +94,7 @@ class b_tree
                             first->size -= 1;
 
                         p->size += 1;
-                        p->values[i] = first->values[i + m + 1];
+                        p->values[i] = (T &&) first->values[i + m + 1];
                         p->children[i] = first->children[i + m + 1];
                     }
 
@@ -113,7 +105,7 @@ class b_tree
 
                     insertNode(y, index, p->size - 1, p, second);
 
-                    y = first->values[m];
+                    y = (T &&) first->values[m];
                     second = p;
 
                     return -1;
@@ -126,7 +118,7 @@ class b_tree
                             first->size -= 1;
 
                         p->size += 1;
-                        p->values[i] = first->values[i + m];
+                        p->values[i] = (T &&) first->values[i + m];
                         p->children[i] = first->children[i + m];
                     }
 
@@ -136,7 +128,7 @@ class b_tree
 
                     p->children[m] = first->children[2 * m];
 
-                    T rem = first->values[m - 1];
+                    T rem = (T &&) first->values[m - 1];
                     int size;
 
                     if (first == root)
@@ -150,7 +142,7 @@ class b_tree
 
                     insertNode(y, index, size, first, second);
 
-                    y = rem;
+                    y = (T &&) rem;
                     second = p;
 
                     return -2;
@@ -163,7 +155,7 @@ class b_tree
                             first->size -= 1;
 
                         p->size += 1;
-                        p->values[i] = first->values[i + m];
+                        p->values[i] = (T &&) first->values[i + m];
                         p->children[i] = first->children[i + m];
                     }
 
@@ -178,24 +170,21 @@ class b_tree
         }
 
 
-        void insertNode(const T &x, int index, int size, b_tree_node<T> *&first, b_tree_node<T> *&second)
+        void insertNode(T &x, int index, int size, b_tree_node<T> *&first, b_tree_node<T> *&second)
         {
-            //printf("x = %s  index = %d  size = %d\n", x.getName(), index, size);
             for (int i = size; i >= index; i--)
             {
-                first->values[i + 1] = first->values[i];
+                first->values[i + 1] = (T &&) first->values[i];
                 first->children[i + 2] = first->children[i + 1];
             }
 
-            //first->children[index + 1] = first->children[index];
-
-            first->values[index] = x;
+            first->values[index] = (T &&) x;
             first->children[index + 1] = second;
             first->size += 1;
         }
 
 
-        b_tree_node<T> *add(const T &x)
+        b_tree_node<T> *add(T &x)
         {
             int res;
 
@@ -204,7 +193,7 @@ class b_tree
                 root = new b_tree_node<T>();
                 root->init(m);
                 //TODO
-                root->values[0] = x;
+                root->values[0] = (T &&) x;
                 root->size = 1;
 
                 return root;
@@ -236,7 +225,7 @@ class b_tree
                     first->size -= m;
                 else
                     first->size -= (m + 1);
-                root->values[0] = y;
+                root->values[0] = (T &&) y;
                 root->children[0] = first;
                 root->children[1] = second;
                 root->size = 1;
@@ -259,10 +248,7 @@ class b_tree
 
             while ((res = x.read(f)) == student::SUCCESS)
             {
-                //printf("x = %s\n", x.getName());
                 root = add(x);
-                //print(6);
-                //printf("\n");
             }
 
             if (!feof(f))
@@ -289,7 +275,6 @@ class b_tree
 
             for (int i = 0; i < p->size; i++)
             {
-                printf("%d) ", p->size);
                 (p->values[i]).print(spaces);
 
                 if (p->children[i])
@@ -349,8 +334,6 @@ class b_tree
             {
                 (*num) += p->size;
             }
-
-            //return child_tree + 1;
         }
 
 
@@ -441,21 +424,46 @@ class b_tree
 
         int numOfSubtreesWithNotMoreThanKNodesOnAnyLevelRoot(int k)
         {
-            int num;
-            int max_nodes_on_level;
-
-            num = 0;
-            max_nodes_on_level = 0;
-
-            numOfSubtreesWithNotMoreThanKNodesOnAnyLevel(root, &num, &max_nodes_on_level, k);
-            return num;
+            return numOfSubtreesWithNotMoreThanKNodesOnAnyLevel(root, k);
         }
 
 
-        int numOfSubtreesWithNotMoreThanKNodesOnAnyLevel(b_tree_node<T> *p, int *num, int *max_nodes_on_level, int k) // task4
+        int maxNumOfNodesOnLevel(b_tree_node<T> *p, int k)
+        {
+            int max;
+            int num;
+            int res;
+            int i;
+
+            max = 0;
+            i = 0;
+            res = -1;
+
+            while (res != 0)
+            {
+                num = 0;
+                res = numOfElementsOnKLevel(p, &num, 0, i);
+
+                if (res > k)
+                {
+                    return res;
+                }
+
+                if (res > max)
+                {
+                    max = res;
+                }
+
+                i++;
+            }
+
+            return max;
+        }
+
+
+        int numOfElementsInSubtrees(b_tree_node<T> *p, int *num)
         {
             int child_tree = 0;
-            int child_max_nodes_on_level;
 
             if (!p)
             {
@@ -464,29 +472,41 @@ class b_tree
 
             for (int i = 0; i <= p->size; i++)
             {
-                child_max_nodes_on_level = 0;
-
-                child_tree += numOfSubtreesWithNotMoreThanKNodesOnAnyLevel(p->children[i], num, &child_max_nodes_on_level, k);
-                if (child_max_nodes_on_level > *max_nodes_on_level)
-                    *max_nodes_on_level = child_max_nodes_on_level;
+                child_tree += numOfElementsInSubtrees(p->children[i], num);
             }
 
-            if (*max_nodes_on_level + 1 <= k)
-            {
-                (*num) += child_tree + p->size;
-            }
-
-            *max_nodes_on_level = 1;
-
-            if ((*max_nodes_on_level) != 0)
-            {
-                if (p->size + 1 > *max_nodes_on_level)
-                    *max_nodes_on_level = p->size;
-            }
+            (*num) += child_tree + p->size;
 
             return child_tree + p->size;
         }
 
+
+        int numOfSubtreesWithNotMoreThanKNodesOnAnyLevel(b_tree_node<T> *p, int k) // task4
+        {
+            int max;
+            int child_tree = 0;
+
+            if (!p)
+            {
+                return 0;
+            }
+
+            max = maxNumOfNodesOnLevel(p, k);
+
+            if (max <= k)
+            {
+                int num = 0;
+                numOfElementsInSubtrees(p, &num);
+                return num;
+            }
+
+            for (int i = 0; i <= p->size; i++)
+            {
+                child_tree += numOfSubtreesWithNotMoreThanKNodesOnAnyLevel(p->children[i], k);
+            }
+
+            return child_tree;
+        }
 
 
         int numOfElementsOnKLevelRoot(int k)
@@ -501,24 +521,29 @@ class b_tree
         }
 
 
-        void numOfElementsOnKLevel(b_tree_node<T> *p, int *num, int i_level, int k) // task5
+        int numOfElementsOnKLevel(b_tree_node<T> *p, int *num, int i_level, int k) // task5
         {
+            int child_tree = 0;
+
             if (!p)
             {
-                return;
+                return 0;
             }
 
             if (i_level == k)
             {
                 (*num) += p->size;
-                return;
+                return 1;
             }
 
             for (int i = 0; i <= p->size; i++)
             {
-                numOfElementsOnKLevel(p->children[i], num, i_level + 1, k);
+                child_tree += numOfElementsOnKLevel(p->children[i], num, i_level + 1, k);
             }
+
+            return child_tree;
         }
+
 
         int numOfElementsInKBranchesRoot(int k)
         {
@@ -555,7 +580,6 @@ class b_tree
             if (flag == 1 && (len + 1) == k)
             {
                 (*num) += sum + p->size;
-                //printf("num = %d  p = %s\n", *num, p->values[0].getName());
                 return;
             }
         }

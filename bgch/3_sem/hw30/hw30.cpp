@@ -32,15 +32,6 @@ int main(int argc, char *argv[])
     b_tree<student> *root = new b_tree<student>();
     root->init(m);
 
-    /*if (root->init(m) != student::SUCCESS)
-    {
-        printf("Can not allocate memory!!!\n");
-
-        delete root;
-        return -1;
-    }*/
-
-
     res = root->read(fname);
 
     if (res < 0)

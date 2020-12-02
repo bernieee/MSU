@@ -13,12 +13,53 @@ class b_tree_node: public T
     public:
         b_tree_node() = default;
 
-        ~b_tree_node()
+        b_tree_node(const b_tree_node &x): T((const T &)x)
         {
-            //delete [] values;
-            //delete [] children;
-            //delete [] values;
+            values = x.values;
+            children = x.children;
+            size = x.size;
         }
+
+
+        b_tree_node(b_tree_node &&x): T((T &&)x)
+        {
+            values = x.values;
+            children = x.children;
+            size = x.size;
+
+            x.values = nullptr;
+            x.children = nullptr;
+            x.size = 0;
+        }
+
+
+        b_tree_node &operator=(const b_tree_node &x)
+        {
+            *(T *)(this) = (const T &) x;
+
+            values = nullptr;
+            children = nullptr;
+            size = 0;
+
+            return *this;
+        }
+
+
+        b_tree_node &operator=(b_tree_node &&x)
+        {
+            *(T *)(this) = (T &&) x;
+
+            values = x.values;
+            children = x.children;
+            size = x.size;
+
+            x.values = nullptr;
+            x.children = nullptr;
+            x.size = 0;
+
+            return *this;
+        }
+
 
         int init(int m)
         {
@@ -49,15 +90,10 @@ class b_tree_node: public T
             int left = 0;
             int right = size;
 
-            //printf("left = %d  right = %d\n", left, right);
-
-
             while (right - left > 0)
             {
                 int mid = left + (right - left) / 2;
                 int res = (values[mid] < x);
-
-                //printf("left = %d  right = %d  mid = %d\n", left, right, mid);
 
                 if (res == 1)
                 {
@@ -65,7 +101,6 @@ class b_tree_node: public T
                 }
                 else if (res == -1)
                 {
-                    //right = mid - 1;
                     right = mid;
                 }
                 else
@@ -73,8 +108,6 @@ class b_tree_node: public T
                     return mid;
                 }
             }
-
-            //printf("left = %d  right = %d\n", left, right);
 
             return left;
         }
