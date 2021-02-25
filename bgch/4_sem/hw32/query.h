@@ -60,7 +60,7 @@ class query
         int parse(int task_num, char *s_new, char *t_new, char *x_new);
         query_operation checkOperation(char *x);
         compare checkCompare(int cmp, query_operation operation);
-        compare applyFind(char *str);
-        int applyReplace(char *str, FILE *f);
+        compare applyFind(char *str, char *buf);
+        int applyReplace(char *str, char *buf, FILE *f);
         int processQuery(char *a_fname, char *b_fname);
 };

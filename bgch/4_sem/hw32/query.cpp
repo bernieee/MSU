@@ -111,11 +111,11 @@ compare query::checkCompare(int cmp, query_operation operation)
 }
 
 
-compare query::applyFind(char *str)
+compare query::applyFind(char *str, char *buf)
 {
     int n = strlen(str);
     //int s_len = strlen(s);
-    char *buf;
+    //char *buf;
     int count = 0;
     int cmp;
     char *found;
@@ -130,7 +130,7 @@ compare query::applyFind(char *str)
         res = compare::NOT_SATISFIES_CONDITION;
     }
 
-    buf = new char[n + 1];
+    //buf = new char[n + 1];
 
     for (int i = 0; i < n; i++)
     {
@@ -212,14 +212,14 @@ compare query::applyFind(char *str)
 
                     if (res == compare::SATISFIES_CONDITION && num_of_words == query_num_of_words::ONE_WORD)
                     {
-                        delete [] buf;
+                        //delete [] buf;
                         return compare::SATISFIES_CONDITION;
                     }
                 }
 
                 if (res == compare::NOT_SATISFIES_CONDITION && num_of_words == query_num_of_words::ALL_WORDS)
                 {
-                    delete [] buf;
+                    //delete [] buf;
                     return compare::NOT_SATISFIES_CONDITION;
                 }
 
@@ -302,42 +302,42 @@ compare query::applyFind(char *str)
 
             if (res == compare::SATISFIES_CONDITION && num_of_words == query_num_of_words::ONE_WORD)
             {
-                delete [] buf;
+                //delete [] buf;
                 return compare::SATISFIES_CONDITION;
             }
         }
 
         if (res == compare::NOT_SATISFIES_CONDITION && num_of_words == query_num_of_words::ALL_WORDS)
         {
-            delete [] buf;
+            //delete [] buf;
             return compare::NOT_SATISFIES_CONDITION;
         }
     }
 
     if (res == compare::NOT_SATISFIES_CONDITION)
     {
-        delete [] buf;
+        //delete [] buf;
         return compare::NOT_SATISFIES_CONDITION;
     }
     else
     {
-        delete [] buf;
+        //delete [] buf;
         return compare::SATISFIES_CONDITION;
     }
 }
 
 
-int query::applyReplace(char *str, FILE *f)
+int query::applyReplace(char *str, char *buf, FILE *f)
 {
     int n = strlen(str);
-    char *buf;
+    //char *buf;
     int count = 0;
     int cmp;
     int ans = 0;
     char *found;
     compare res = compare::NOT_SATISFIES_CONDITION;
 
-    buf = new char[n + 1];
+    //buf = new char[n + 1];
 
     for (int i = 0; i < n; i++)
     {
@@ -545,7 +545,7 @@ int query::applyReplace(char *str, FILE *f)
         }
     }
 
-    delete [] buf;
+    //delete [] buf;
     return ans;
 }
 
@@ -555,6 +555,7 @@ int query::processQuery(char *a_fname, char *b_fname)
     FILE *fa;
     FILE *fb;
     char buf[LEN];
+    char tmp[LEN];
     int res = 0;
     int i;
     int n = 0;
@@ -588,14 +589,14 @@ int query::processQuery(char *a_fname, char *b_fname)
         switch (type)
         {
             case query_type::FIND:
-                if (applyFind(buf) == compare::SATISFIES_CONDITION)
+                if (applyFind(buf, tmp) == compare::SATISFIES_CONDITION)
                 {
                     res++;
                     fprintf(fb, "%s\n", buf);
                 }
                 break;
             case query_type::REPLACE:
-                res += applyReplace(buf, fb);
+                res += applyReplace(buf, tmp, fb);
                 fprintf(fb, "\n");
                 break;
             default:
