@@ -52,6 +52,8 @@ class query
         query_replace replace = query_replace::NONE;
         char *s = nullptr;
         char *t = nullptr;
+        int s_len;
+        int t_len;
 
     public:
         enum ERRORS
