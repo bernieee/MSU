@@ -12,8 +12,8 @@ query::~query()
 
 int query::parse(int task_num, char *s_new, char *t_new)
 {
-    int s_len = strlen(s_new);
-    int t_len = strlen(t_new);
+    s_len = strlen(s_new);
+    t_len = strlen(t_new);
 
     switch (task_num)
     {
@@ -84,14 +84,11 @@ compare query::checkCompare(int cmp, query_operation operation)
 compare query::applyFindOneWord(char *str, char *buf)
 {
     int n = strlen(str);
-    //char *buf;
     int count = 0;
     int cmp;
     compare res = compare::NOT_SATISFIES_CONDITION;
     compare check = compare::NOT_SATISFIES_CONDITION;
     compare make;
-
-    //buf = new char[n + 1];
 
     for (int i = 0; i < n; i++)
     {
@@ -103,11 +100,8 @@ compare query::applyFindOneWord(char *str, char *buf)
                 int k = 0;
                 buf[count] = '\0';
 
-                //printf("buf = %s  s = %s\n", buf, s + j);
-
                 while (buf[k] != '\0' && s[j] != '\0')
                 {
-                    //printf("    buf[k] = %c s[j] = %c\n", buf[k], s[j]);
                     if (s[j] == '\\')
                     {
                         j++;
@@ -156,8 +150,6 @@ compare query::applyFindOneWord(char *str, char *buf)
 
                 if (res == compare::SATISFIES_CONDITION)
                 {
-                    //printf("        buf = %s s = %s\n", buf, s);
-                    //delete [] buf;
                     return compare::SATISFIES_CONDITION;
                 }
             }
@@ -177,11 +169,8 @@ compare query::applyFindOneWord(char *str, char *buf)
         int k = 0;
         buf[count] = '\0';
 
-        //printf("buf = %s  s = %s\n", buf, s + j);
-
         while (buf[k] != '\0' && s[j] != '\0')
         {
-            //printf("    buf[k] = %c s[j] = %c\n", buf[k], s[j]);
             if (s[j] == '\\')
             {
                 j++;
@@ -230,13 +219,10 @@ compare query::applyFindOneWord(char *str, char *buf)
 
         if (res == compare::SATISFIES_CONDITION)
         {
-            //printf("        buf = %s s = %s\n", buf, s);
-            //delete [] buf;
             return compare::SATISFIES_CONDITION;
         }
     }
 
-    //delete [] buf;
     return res;
 }
 
@@ -484,6 +470,72 @@ compare query::makeReplace(query_replace replace, char *str, int &i, int &j)
         }
         case query_replace::NONE_OR_MORE_SYMBOLS:
         {
+            char buf[LEN];
+            int k = 0;
+            char *found;
+
+            while (s[j] != '\0' && checkReplace(replace, j) == compare::SATISFIES_CONDITION)
+            {
+                j++;
+            }
+
+            while (s[j] != '\0' && checkReplace(replace, j) == compare::NOT_SATISFIES_CONDITION)
+            {
+                buf[k] = s[j];
+                k++;
+                j++;
+            }
+
+            buf[k] = '\0';
+
+            if ((s[j] == '\0') && k == 0)
+            {
+                while (str[i] != '\0')
+                {
+                    i++;
+                }
+
+                i--;
+                j--;
+
+                return compare::SATISFIES_CONDITION;
+            }
+
+            if ((s[j] == '\0') && k != 0)
+            {
+                while ((found = strstr(str + i, buf)))
+                {
+                    while (str + i != found)
+                    {
+                        i++;
+                    }
+
+                    i += k - 1;
+                }
+
+                i--;
+                j--;
+
+                return compare::SATISFIES_CONDITION;
+            }
+
+            found = strstr(str + i, buf);
+
+            if (!found)
+            {
+                return compare::NOT_SATISFIES_CONDITION;
+            }
+
+            while ((str + i) != found)
+            {
+                i++;
+            }
+
+            i += k - 1;
+
+            i--;
+            j--;
+
             //TODO
             // идея: взять слово, начиная со следующего элемента строки s и до пробельного/процента, и проверить
             // его вхождение в str -- начало и будет новым значением переменной i
@@ -502,7 +554,6 @@ compare query::makeReplace(query_replace replace, char *str, int &i, int &j)
 
             if ((int)str[i] >= n && (int)str[i] <= m)
             {
-                //printf("n = %c m = %c str[i] = %c\n", n, m, str[i]);
                 return compare::SATISFIES_CONDITION;
             }
             else
@@ -546,29 +597,26 @@ compare query::applyFindAllWords(char *str)
     compare check = compare::NOT_SATISFIES_CONDITION;
     compare make;
 
-    //buf = new char[n + 1];
 
-    while (str[i] != '\0' && s[j] != '\0')
+    while (str[i] != '\0' && j < s_len)//s[j] != '\0')
     {
         while (str[i] != '\0' && strchr(t, str[i]))
         {
             i++;
         }
 
-        while (s[j] != '\0' && strchr(t, s[j]))
+        while (j < s_len && strchr(t, s[j]))
         {
             j++;
         }
 
-        if (str[i] == '\0' || s[j] == '\0')
+        if (str[i] == '\0' || j >= s_len)
         {
             return res;
         }
 
         while (str[i] != '\0' && s[j] != '\0' && !(strchr(t, str[i])) && !(strchr(t, s[j])))
         {
-            //TODO
-            //проверка на сравнение с различными случаями задач
             if (s[j] == '\\')
             {
                 j++;
@@ -580,13 +628,16 @@ compare query::applyFindAllWords(char *str)
 
             if (check == compare::SATISFIES_CONDITION)
             {
-                make = makeReplace(replace, str, i, j); //TODO
+                make = makeReplace(replace, str, i, j);
                 check = compare::NOT_SATISFIES_CONDITION;
 
                 if (make == compare::NOT_SATISFIES_CONDITION)
                 {
                     return compare::NOT_SATISFIES_CONDITION;
                 }
+
+                j++;
+                i++;
 
                 continue;
             }
@@ -603,13 +654,22 @@ compare query::applyFindAllWords(char *str)
         found_str = strchr(t, str[i]);
         found_s = strchr(t, s[j]);
 
-        if (found_str && found_s)
+        if (replace == query_replace::NONE_OR_MORE_SYMBOLS)
         {
-            continue;
+            if (j < s_len && s[j] == '\0')
+            {
+                found_s = strchr(t, t[0]);
+                j++;
+            }
         }
-        else if ((str[i] == '\0' && found_s) || (s[j] == '\0' && found_str) || (str[i] == '\0' && s[j] == '\0'))
+
+        if ((str[i] == '\0' && found_s) || (s[j] == '\0' && found_str) || (str[i] == '\0' && s[j] == '\0'))
         {
             return compare::SATISFIES_CONDITION;
+        }
+        else if (found_str && found_s)
+        {
+            continue;
         }
         else
         {
@@ -617,10 +677,8 @@ compare query::applyFindAllWords(char *str)
         }
     }
 
-    //delete [] buf;
     return res;
 }
-
 
 
 int query::processQuery(char *a_fname, char *b_fname)
@@ -631,6 +689,7 @@ int query::processQuery(char *a_fname, char *b_fname)
     char tmp[LEN];
     int res = 0;
     int i;
+    int j = 0;
     int n = 0;
 
     if (!(fa = fopen(a_fname, "r")))
@@ -643,6 +702,27 @@ int query::processQuery(char *a_fname, char *b_fname)
         fclose(fa);
         return OPEN_ERROR;
     }
+
+    if (replace == query_replace::NONE_OR_MORE_SYMBOLS && num_of_words == query_num_of_words::ALL_WORDS)
+    {
+        while (j < s_len)
+        {
+            while (s[j] != '\0' && strchr(t, s[j]))
+            {
+                j++;
+            }
+
+            while (s[j] != '\0' && !(strchr(t, s[j])))
+            {
+                j++;
+            }
+
+            s[j] = '\0';
+            j++;
+        }
+    }
+
+    j = 0;
 
     while (fgets(buf, LEN, fa))
     {
@@ -659,14 +739,11 @@ int query::processQuery(char *a_fname, char *b_fname)
             }
         }
 
-        //printf("%s\n", buf);
-
         switch (num_of_words)
         {
             case query_num_of_words::ONE_WORD:
                 if (applyFindOneWord(buf, tmp) == compare::SATISFIES_CONDITION)
                 {
-                    //printf("%s\n", buf);
                     res++;
                     fprintf(fb, "%s\n", buf);
                 }
