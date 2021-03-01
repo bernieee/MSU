@@ -16,7 +16,7 @@ int query::parse(int task_num, char *s_new, char *t_new, char *x_new)
 {
     int s_len = strlen(s_new);
     int t_len = strlen(t_new);
-    int x_len = strlen(x_new);
+    int x_len;
 
     switch (task_num)
     {
@@ -34,6 +34,7 @@ int query::parse(int task_num, char *s_new, char *t_new, char *x_new)
             type = query_type::REPLACE;
             num_of_words = query_num_of_words::ALL_WORDS;
             operation = query_operation::EQUAL;
+            x_len = strlen(x_new);
             x = new char[x_len + 1];
             strcpy(x, x_new);
             x[x_len] = '\0';
@@ -59,13 +60,6 @@ int query::parse(int task_num, char *s_new, char *t_new, char *x_new)
 
     s[s_len] = '\0';
     t[t_len] = '\0';
-
-    /*int i = 0;
-    while (i <= s_len && s[i] != '\0')
-    {
-        printf("s[i] = %c\n", s[i]);
-        i++;
-    }*/
 
     return SUCCESS;
 }
@@ -114,8 +108,6 @@ compare query::checkCompare(int cmp, query_operation operation)
 compare query::applyFind(char *str, char *buf)
 {
     int n = strlen(str);
-    //int s_len = strlen(s);
-    //char *buf;
     int count = 0;
     int cmp;
     char *found;
@@ -130,8 +122,6 @@ compare query::applyFind(char *str, char *buf)
         res = compare::NOT_SATISFIES_CONDITION;
     }
 
-    //buf = new char[n + 1];
-
     for (int i = 0; i < n; i++)
     {
         if (strchr(t, str[i]))
@@ -141,7 +131,6 @@ compare query::applyFind(char *str, char *buf)
                 int j = 0;
                 buf[count] = '\0';
 
-                //cmp = strcmp(buf, s);
                 while (s[j] != '\0')
                 {
                     int k = 0;
@@ -155,8 +144,6 @@ compare query::applyFind(char *str, char *buf)
                     {
                         break;
                     }
-
-                    //printf("buf = %s  s = %s\n", buf, s + j);
 
                     while (buf[k] != '\0' && s[k + j] != '\0' && !(found = strchr(t, s[k + j])))
                     {
@@ -192,18 +179,12 @@ compare query::applyFind(char *str, char *buf)
 
                     j += k;
 
-                    //printf("j = %d\n", j);
-
                     while (s[j] != '\0' && !strchr(t, s[j]))
                     {
                         j++;
                     }
 
                     res = checkCompare(cmp, operation);
-
-                    //printf("j = %d\n", j);
-
-                    //printf("cmp = %d  res = %d\n", cmp, (int)res);
 
                     if (res == compare::SATISFIES_CONDITION && num_of_words == query_num_of_words::ALL_WORDS)
                     {
@@ -212,14 +193,12 @@ compare query::applyFind(char *str, char *buf)
 
                     if (res == compare::SATISFIES_CONDITION && num_of_words == query_num_of_words::ONE_WORD)
                     {
-                        //delete [] buf;
                         return compare::SATISFIES_CONDITION;
                     }
                 }
 
                 if (res == compare::NOT_SATISFIES_CONDITION && num_of_words == query_num_of_words::ALL_WORDS)
                 {
-                    //delete [] buf;
                     return compare::NOT_SATISFIES_CONDITION;
                 }
 
@@ -239,7 +218,6 @@ compare query::applyFind(char *str, char *buf)
         int j = 0;
         buf[count] = '\0';
 
-        //cmp = strcmp(buf, s);
         while (s[j] != '\0')
         {
             int k = 0;
@@ -302,26 +280,22 @@ compare query::applyFind(char *str, char *buf)
 
             if (res == compare::SATISFIES_CONDITION && num_of_words == query_num_of_words::ONE_WORD)
             {
-                //delete [] buf;
                 return compare::SATISFIES_CONDITION;
             }
         }
 
         if (res == compare::NOT_SATISFIES_CONDITION && num_of_words == query_num_of_words::ALL_WORDS)
         {
-            //delete [] buf;
             return compare::NOT_SATISFIES_CONDITION;
         }
     }
 
     if (res == compare::NOT_SATISFIES_CONDITION)
     {
-        //delete [] buf;
         return compare::NOT_SATISFIES_CONDITION;
     }
     else
     {
-        //delete [] buf;
         return compare::SATISFIES_CONDITION;
     }
 }
@@ -330,14 +304,11 @@ compare query::applyFind(char *str, char *buf)
 int query::applyReplace(char *str, char *buf, FILE *f)
 {
     int n = strlen(str);
-    //char *buf;
     int count = 0;
     int cmp;
     int ans = 0;
     char *found;
     compare res = compare::NOT_SATISFIES_CONDITION;
-
-    //buf = new char[n + 1];
 
     for (int i = 0; i < n; i++)
     {
@@ -350,7 +321,6 @@ int query::applyReplace(char *str, char *buf, FILE *f)
                 int x_end = 0;
                 buf[count] = '\0';
 
-                //cmp = strcmp(buf, s);
                 while (s[j] != '\0')
                 {
                     int k = 0;
@@ -376,8 +346,6 @@ int query::applyReplace(char *str, char *buf, FILE *f)
                     {
                         x_end++;
                     }
-
-                    //printf("buf = %s  s = %s\n", buf, s + j);
 
                     while (buf[k] != '\0' && s[k + j] != '\0' && !(found = strchr(t, s[k + j])))
                     {
@@ -419,10 +387,6 @@ int query::applyReplace(char *str, char *buf, FILE *f)
                     }
 
                     res = checkCompare(cmp, operation);
-                    //printf("j = %d\n", j);
-
-                    //printf("cmp = %d  res = %d\n", cmp, (int)res);
-
 
                     if (res == compare::SATISFIES_CONDITION)
                     {
@@ -545,7 +509,6 @@ int query::applyReplace(char *str, char *buf, FILE *f)
         }
     }
 
-    //delete [] buf;
     return ans;
 }
 
