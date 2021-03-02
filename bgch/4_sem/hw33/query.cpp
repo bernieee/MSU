@@ -113,7 +113,7 @@ compare query::applyFindOneWord(char *str, char *buf)
 
                     if (check == compare::SATISFIES_CONDITION)
                     {
-                        make = makeReplace(replace, buf, k, j); //TODO
+                        make = makeReplace(replace, buf, k, j);
                         check = compare::NOT_SATISFIES_CONDITION;
 
                         if (make == compare::NOT_SATISFIES_CONDITION)
@@ -182,7 +182,7 @@ compare query::applyFindOneWord(char *str, char *buf)
 
             if (check == compare::SATISFIES_CONDITION)
             {
-                make = makeReplace(replace, buf, k, j); //TODO
+                make = makeReplace(replace, buf, k, j);
                 check = compare::NOT_SATISFIES_CONDITION;
 
                 if (make == compare::NOT_SATISFIES_CONDITION)
@@ -450,18 +450,6 @@ compare query::checkReplace(query_replace replace, int j)
 
 compare query::makeReplace(query_replace replace, char *str, int &i, int &j)
 {
-    /*
-
-    abcacbacb
-
-    a%bacb%
-
-
-    0 -- 48
-    9 -- 57
-
-    */
-
     switch (replace)
     {
         case query_replace::ONE_SYMBOL:
@@ -510,7 +498,7 @@ compare query::makeReplace(query_replace replace, char *str, int &i, int &j)
                         i++;
                     }
 
-                    i += k - 1;
+                    i += k;
                 }
 
                 i--;
@@ -536,9 +524,6 @@ compare query::makeReplace(query_replace replace, char *str, int &i, int &j)
             i--;
             j--;
 
-            //TODO
-            // идея: взять слово, начиная со следующего элемента строки s и до пробельного/процента, и проверить
-            // его вхождение в str -- начало и будет новым значением переменной i
             return compare::SATISFIES_CONDITION;
         }
         case query_replace::ANY_SYMBOL_IN_INTERVAL:
