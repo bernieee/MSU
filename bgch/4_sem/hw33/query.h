@@ -52,6 +52,7 @@ class query
         query_replace replace = query_replace::NONE;
         char *s = nullptr;
         char *t = nullptr;
+        int table_t[256];
         int s_len;
         int t_len;
 
@@ -69,12 +70,14 @@ class query
 
         query() = default;
         ~query();
+        void table();
         int parse(int task_num, char *s_new, char *t_new);
         int readNumber(int &j, int &count);
         compare checkCompare(int cmp, query_operation operation);
-        compare checkReplace(query_replace replace, int j);
-        compare makeReplace(query_replace replace, char *str, int &i, int &j);
-        compare applyFindOneWord(char *str, char *buf);
-        compare applyFindAllWords(char *str);
+        compare checkReplace(query_replace replace, char x);
+        compare makeReplace(query_replace replace, char *str, char *s, int &i, int &j);
+        compare applyFindOneWord(char *str, char *s, char *buf);
+        compare applyFindAllWords_1(char *str, char *buf_s, char *buf_str);
+        compare applyFindAllWords_2(char *str);
         int processQuery(char *a_fname, char *b_fname);
 };
