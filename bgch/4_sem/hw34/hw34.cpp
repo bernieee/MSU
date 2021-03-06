@@ -8,10 +8,8 @@ int main(int argc, char *argv[])
     time_t time;
     int res = 0;
     read_status read_res;
-    int i;
     char buf[LEN];
     FILE *fa;
-    //list2<record> *head = new list2<record>;
 
     if (argc != 2)
     {
@@ -59,11 +57,9 @@ int main(int argc, char *argv[])
     while (fgets(buf, LEN, stdin))
     {
         command *x = new command;
-        i = 0;
 
-        while (buf[i] != '\n')
+        for (int i = 0; buf[i] != '\0'; i++)
         {
-            i++;
             if (buf[i] == '\n')
             {
                 buf[i] = '\0';
