@@ -181,7 +181,7 @@ bool command::makeReplace(symbol_replace replace, char *str, int &i, int &j)
                 j++;
             }
 
-            while (y_name[j] != '\0' && checkReplace(j) == symbol_replace::none) // TODO
+            while (y_name[j] != '\0' && checkReplace(j) == symbol_replace::none)
             {
                 if (y_name[j] == '\\')
                 {
@@ -238,7 +238,7 @@ bool command::makeReplace(symbol_replace replace, char *str, int &i, int &j)
                 i++;
             }
 
-            i += k - 1;
+            i += k;
 
             i--;
             j--;
@@ -338,7 +338,12 @@ bool command::applyReplace(record &x)
         j++;
     }
 
-    if (x_name[k] == '\0' && y_name[j] == '\0')
+    while (y_name[j] != '\0' && y_name[j] == '%')
+    {
+        j++;
+    }
+
+    if ((x_name[k] == '\0' && y_name[j] == '\0'))
     {
         cmp = 0;
     }
@@ -383,11 +388,5 @@ bool command::apply(record& x)
         return applyCompare(x);
     }
 }
-
-
-// Print parsed structure
-//void command::print(FILE *fp = stdout) const;
-
-
 
 

@@ -34,7 +34,7 @@ class list2
             head->prev = nullptr;
             end = head;
 
-            while (((res = tmp.read(f)) == read_status::success)) //TODO ????
+            while (((res = tmp.read(f)) == read_status::success))
             {
                 list2_node<T> *curr = new list2_node<T>((list2_node<T> &&) tmp);
 
@@ -67,8 +67,6 @@ class list2
             for(curr = head; curr; curr = next)
             {
                 next = curr->next;
-
-                //curr->remove();
                 delete curr;
             }
         }
@@ -81,7 +79,7 @@ class list2
 
             for (curr = head; curr; curr = curr->next)
             {
-                if (x->apply(*curr)) // TODO
+                if (x->apply(*curr))
                 {
                     res++;
                     printf("%s %d %d\n", curr->get_name(), curr->get_phone(), curr->get_group());
